@@ -1,0 +1,79 @@
+<!--begin::Head-->
+<!-- <div class="kt-login__head">
+	<span class="kt-login__signup-label">Don't have an account yet?</span>&nbsp;&nbsp;
+	<a href="javascript:;" routerLink="/auth/register" class="kt-link kt-login__signup-link">{{ 'AUTH.GENERAL.SIGNUP_BUTTON' | translate }}</a>
+</div> -->
+<!--end::Head-->
+
+<!--begin::Body-->
+<div class="kt-login__body">
+   <!--begin::Signin-->
+   <div class="kt-login__form">
+      <div class="kt-login__title">
+         <h3>Bem Vindo(a)</h3>
+         <h5>Informe suas credenciais para continuar!</h5>
+      </div>
+
+      <!-- <kt-auth-notice></kt-auth-notice> -->
+
+      <!--begin::Form-->
+      <form class="kt-form" [formGroup]="loginForm" autocomplete="off">
+         <div class="form-group">
+            <label>Email:</label>
+            <input type="text" class="form-control" placeholder="Email" formControlName="email">
+            <div class="invalid-feedback" *ngIf="isControlHasError('email','required')">
+               Campo obrigatório
+            </div>
+         </div>
+         <div class="form-group">
+            <label>Senha:</label>
+            <input type="password" class="form-control" placeholder="Email" formControlName="password">
+            <div class="invalid-feedback" *ngIf="isControlHasError('email','required')">
+               Campo obrigatório
+            </div>
+         </div>
+         <!--begin::Action-->
+         <div class="kt-login__actions">
+            <!-- <a href="javascript:;" routerLink="/auth/forgot-password" class="kt-link kt-login__link-forgot">
+               {{ 'AUTH.GENERAL.FORGOT_BUTTON' | translate }}
+            </a> -->
+            <button (click)="submit()" [disabled]="loading"
+               [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}"
+               id="kt_login_signin_submit" class="btn btn-primary btn-elevate kt-login__btn-primary">Entrar</button>
+         </div>
+         <!--end::Action-->
+      </form>
+      <!--end::Form-->
+
+      <!--begin::Divider-->
+      <!-- <div class="kt-login__divider">
+			<div class="kt-divider">
+				<span></span>
+				<span>OR</span>
+				<span></span>
+			</div>
+		</div> -->
+      <!--end::Divider-->
+
+      <!--begin::Options-->
+      <!-- <div class="kt-login__options">
+			<a href="https://www.facebook.com/keenthemes/" target="_blank" class="btn btn-primary kt-btn">
+				<i class="fab fa-facebook-f"></i>
+				Facebook
+			</a>
+
+			<a href="https://twitter.com/keenthemes/" target="_blank" class="btn btn-info kt-btn">
+				<i class="fab fa-twitter"></i>
+				Twitter
+			</a>
+
+			<a href="javascript:;" class="btn btn-danger kt-btn">
+				<i class="fab fa-google"></i>
+				Google
+			</a>
+		</div> -->
+      <!--end::Options-->
+   </div>
+   <!--end::Signin-->
+</div>
+<!--end::Body-->

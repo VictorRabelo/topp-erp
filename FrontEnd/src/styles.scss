@@ -1,0 +1,266 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "~material-design-icons/iconfont/material-icons.css";
+@import "~highlight.js/styles/googlecode.css";
+
+// regular style toast
+// @import '~ngx-toastr/toastr-bs4-alert';
+
+// header base skins
+.kt-header-base-light {
+   @import "sass/global/layout/header/skins/base/light.scss";
+}
+.kt-header-base-dark {
+   @import "sass/global/layout/header/skins/base/dark.scss";
+}
+
+// header menu skins
+.kt-header-menu-light {
+   @import "sass/global/layout/header/skins/menu/light.scss";
+}
+.kt-header-menu-dark {
+   @import "sass/global/layout/header/skins/menu/dark.scss";
+}
+
+// brand skins
+.kt-brand-dark {
+   @import "sass/global/layout/brand/skins/dark.scss";
+}
+.kt-brand-light {
+   @import "sass/global/layout/brand/skins/light.scss";
+}
+
+// aside skins
+.kt-aside-dark {
+   @import "sass/global/layout/aside/skins/dark.scss";
+}
+.kt-aside-light {
+   @import "sass/global/layout/aside/skins/light.scss";
+}
+
+body {
+   color: #4c4c4c !important;
+   font-weight: 400;
+}
+
+// hide bootstrap dropdown arrow globally
+.dropdown-toggle::after {
+   display: none !important;
+}
+
+.mat-table__wrapper--dashboard .mat-table {
+   min-width: 600px !important;
+   width: 100% !important;
+}
+
+.position-static {
+   position: static;
+}
+
+.kt-header {
+   max-height: 4rem;
+}
+.kt-aside__brand {
+   max-height: 4rem;
+}
+.kt-header--fixed .kt-wrapper {
+   padding-top: 4% !important;
+}
+
+.kt-login.kt-login--v1 .kt-login__wrapper .kt-login__body .kt-login__form {
+   box-shadow: 0 0 15px 5px #292929;
+   border-radius: 10px;
+   padding: 15px;
+   background: #fff;
+}
+
+.kt-aside-menu .kt-menu__nav {
+   margin: 0 0 5rem 0 !important;
+}
+
+.form-group {
+   margin-bottom: 1.5rem !important;
+}
+.form-control {
+   height: 35px !important;
+   margin-top: 0 !important;
+   border: 1px solid #cecece !important;
+   background: #fff !important;
+   font-size: 1rem !important;
+   padding: 0.5rem;
+}
+.form-control-sm {
+   height: 30px !important;
+   font-size: 1rem !important;
+   padding: 0.5rem;
+}
+.form-control-lg {
+   height: 45px !important;
+   font-size: 1.1rem !important;
+   padding: 0.65rem;
+}
+.form-control:disabled,
+.form-control[readonly] {
+   background-color: #e9ecef !important;
+}
+
+.kt-login.kt-login--v1 .kt-login__wrapper .kt-login__body .kt-login__form .kt-login__actions {
+   justify-content: center !important;
+}
+
+.kt-portlet .portlet-body-sm {
+   padding: 0px 5px !important;
+}
+
+.btn {
+   margin: 0 5px !important;
+}
+.input-group > .input-group-append > .btn {
+   margin: 0 !important;
+   height: 35px;
+   border-color: #cecece;
+}
+.icon-only {
+   padding: 3px 5px;
+   font-size: 1.3rem;
+   line-height: 1;
+   i {
+      margin: 0 !important;
+   }
+}
+.btn-icon-primary {
+   padding: 0;
+   color: #0148cc;
+}
+.btn-icon-danger {
+   padding: 0;
+   color: #ca1818;
+}
+
+.mat-icon-button {
+   // width: initial !important;
+   height: initial !important;
+   line-height: 1 !important;
+}
+.mat-button.mat-primary,
+.mat-icon-button.mat-primary,
+.mat-stroked-button.mat-primary {
+   color: #0047cc;
+}
+
+.table .thead-dark th {
+   background-color: #1a1a27;
+   border-color: #1a1a27;
+}
+.table th,
+.table td {
+   padding: 0.5rem;
+   vertical-align: middle;
+}
+
+.kt-header-base-dark .kt-header {
+   background-color: #1a1a27;
+}
+
+.kt-aside-menu .kt-menu__nav .kt-menu__item > .kt-menu__heading,
+.kt-aside-menu .kt-menu__nav .kt-menu__item > .kt-menu__link {
+   border-radius: 8px;
+}
+.kt-aside-menu .kt-menu__nav {
+   padding: 15px 4% !important;
+}
+
+.kt-aside-menu .kt-menu__nav .kt-menu__inner,
+.kt-aside-menu .kt-menu__nav .kt-menu__submenu {
+   padding: 5px 8px;
+}
+
+.kt-aside-light .kt-aside-menu .kt-menu__nav > .kt-menu__item > .kt-menu__heading .kt-menu__link-icon,
+.kt-aside-light .kt-aside-menu .kt-menu__nav > .kt-menu__item > .kt-menu__link .kt-menu__link-icon {
+   color: #3e3752;
+}
+.kt-aside-light
+   .kt-aside-menu
+   .kt-menu__nav
+   > .kt-menu__item
+   .kt-menu__submenu
+   .kt-menu__item
+   > .kt-menu__link
+   .kt-menu__link-icon {
+   color: #3e3752;
+}
+
+.kt-aside-light .kt-aside-menu .kt-menu__nav > .kt-menu__item.kt-menu__item--here > .kt-menu__heading,
+.kt-aside-light .kt-aside-menu .kt-menu__nav > .kt-menu__item.kt-menu__item--here > .kt-menu__link {
+   background-color: #1a1a27;
+}
+.kt-aside-light
+   .kt-aside-menu
+   .kt-menu__nav
+   > .kt-menu__item.kt-menu__item--here
+   > .kt-menu__heading
+   .kt-menu__link-icon,
+.kt-aside-light .kt-aside-menu .kt-menu__nav > .kt-menu__item.kt-menu__item--here > .kt-menu__link .kt-menu__link-icon {
+   color: #fdfdfd;
+}
+.kt-aside-light
+   .kt-aside-menu
+   .kt-menu__nav
+   > .kt-menu__item.kt-menu__item--here
+   > .kt-menu__heading
+   .kt-menu__link-text,
+.kt-aside-light .kt-aside-menu .kt-menu__nav > .kt-menu__item.kt-menu__item--here > .kt-menu__link .kt-menu__link-text {
+   color: #fdfdfd;
+}
+
+.kt-aside-light
+   .kt-aside-menu
+   .kt-menu__nav
+   > .kt-menu__item
+   .kt-menu__submenu
+   .kt-menu__item.kt-menu__item--active
+   > .kt-menu__link {
+   background-color: #343a40d6;
+}
+.kt-aside-light
+   .kt-aside-menu
+   .kt-menu__nav
+   > .kt-menu__item
+   .kt-menu__submenu
+   .kt-menu__item.kt-menu__item--active
+   > .kt-menu__heading
+   .kt-menu__link-text,
+.kt-aside-light
+   .kt-aside-menu
+   .kt-menu__nav
+   > .kt-menu__item
+   .kt-menu__submenu
+   .kt-menu__item.kt-menu__item--active
+   > .kt-menu__link
+   .kt-menu__link-text {
+   color: #fdfdfd;
+}
+.kt-aside-light
+   .kt-aside-menu
+   .kt-menu__nav
+   > .kt-menu__item
+   .kt-menu__submenu
+   .kt-menu__item.kt-menu__item--active
+   > .kt-menu__link
+   .kt-menu__link-icon {
+   color: #fdfdfd;
+}
+.kt-aside-light
+   .kt-aside-menu
+   .kt-menu__nav
+   > .kt-menu__item
+   .kt-menu__submenu
+   .kt-menu__item.kt-menu__item--active
+   > .kt-menu__link:hover {
+   background-color: #343a40d6;
+}
+
+.kt-portlet {
+   box-shadow: 0px 0px 13px 3px #523f692e;
+   border-radius: 8px;
+}

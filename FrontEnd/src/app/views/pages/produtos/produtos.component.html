@@ -1,0 +1,59 @@
+<kt-portlet [class]="'kt-portlet--height-fluid'">
+   <kt-portlet-header [title]="'Lista de Produtos'">
+
+      <ng-container ktPortletTools>
+         <button class="btn btn-sm btn-primary" (click)="add()" matTooltip="Cria um novo produto">
+            <i class="fas fa-user-plus"></i> Novo Produto
+         </button>
+         <button class="btn btn-sm btn-success" (click)="add()" matTooltip="Filtra os dados">
+            <i class="fas fa-sliders-h"></i> Filtros
+         </button>
+         <button class="btn btn-label-brand btn-bold btn-sm" (click)="load_list()" matTooltip="Atualizar">
+            <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+         </button>
+      </ng-container>
+   </kt-portlet-header>
+
+   <kt-portlet-body class="portlet-body-sm">
+
+      <div class="table-responsive">
+         <table class="table  mb-0">
+            <thead class="thead-dark">
+               <th width="10%">ID</th>
+               <th width="15%">Código de Barras</th>
+               <th width="15%">Referência</th>
+               <th width="40%">Produto</th>
+               <th width="10%">Preço</th>
+               <th width="10%"></th>
+            </thead>
+         </table>
+         <div>
+            <table class="table table-hover mb-0">
+               <tbody>
+                  <tr *ngFor="let item of dataSource">
+                     <td width="10%">{{item.id}}</td>
+                     <td width="15%">{{item.codigo_barras}}</td>
+                     <td width="15%">{{item.referencia}}</td>
+                     <td width="40%">{{item.nome | titlecase}}</td>
+
+                     <td width="10%">
+                        {{ item.preco | currency:'R$ ':false:'1.2':'br' }}
+                     </td>
+                     <td width="10%">
+                        <button mat-icon-button color="primary" matTooltip="Alterar Cadastro" (click)="edit(item)">
+                           <i class="fas fa-pen"></i>
+                        </button>
+                        <button mat-icon-button color="warn" matTooltip="Deletar Cadastro" (click)="delete_item(item)">
+                           <i class="fas fa-trash"></i>
+                        </button>
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+      </div>
+
+
+   </kt-portlet-body>
+
+</kt-portlet>
