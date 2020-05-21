@@ -18,7 +18,7 @@ class CreateClientes extends Migration
          function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('empresa_id');
-            $table->foreign('empresa_id')->references('id')->on('empresas');
+            $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade')->onUpdate('no action');
             $table->integer('tipo')->default(1);
             $table->string('razao')->nullable();
             $table->string('fantasia')->nullable();

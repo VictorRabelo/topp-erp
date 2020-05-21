@@ -15,7 +15,7 @@ class ClientController extends Controller
    public function index(Request $request)
    {
       $dados = $this->repo->list($request);
-      
+
       return response()->json($dados);
    }
 

@@ -49,7 +49,7 @@ export class InterceptService implements HttpInterceptor {
             },
             error => {
                if (error.status == 0) {
-                  this.message.toastError('Parece que você não tem internet!', 'Falha na conexão');
+                  this.message.alertNet();
                } else if (error.status == 401) {
                   this.message.toastError('Faça login novamente para continuar', 'Sessão expirada');
 

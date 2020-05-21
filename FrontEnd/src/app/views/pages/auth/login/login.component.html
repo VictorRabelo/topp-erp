@@ -20,9 +20,12 @@
       <form class="kt-form" [formGroup]="loginForm" autocomplete="off">
          <div class="form-group">
             <label>Email:</label>
-            <input type="text" class="form-control" placeholder="Email" formControlName="email">
+            <input type="email" class="form-control" placeholder="Email" formControlName="email">
             <div class="invalid-feedback" *ngIf="isControlHasError('email','required')">
                Campo obrigatório
+            </div>
+            <div class="invalid-feedback" *ngIf="isControlHasError('email','email')">
+               Informe um email
             </div>
          </div>
          <div class="form-group">

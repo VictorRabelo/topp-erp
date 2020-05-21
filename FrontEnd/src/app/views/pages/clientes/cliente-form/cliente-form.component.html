@@ -12,13 +12,13 @@
       <div class="row">
 
          <div class="col-sm-3 form-group"
-            [ngClass]="{'is-invalid': !categoria.valid && (categoria.touched || form.submitted)}">
+            [ngClass]="{'is-invalid': !tipo.valid && (tipo.touched || form.submitted)}">
             <strong>Tipo:</strong>
             <select class="form-control" required [(ngModel)]="dados.tipo" name="tipo" #tipo="ngModel">
                <option value="1">Pessoa Física</option>
                <option value="2">Pessoa Jurídica</option>
             </select>
-            <div *ngIf="!categoria.valid && (categoria.touched || form.submitted)"
+            <div *ngIf="!tipo.valid && (tipo.touched || form.submitted)"
                class="invalid-feedback animated fadeInDown">
                Campo obrigatório
             </div>
@@ -27,6 +27,7 @@
          <div class="col-sm-9 form-group" [ngClass]="{'is-invalid': !nome.valid && (nome.touched || form.submitted)}">
             <strong>{{(dados.tipo == 1) ? 'Nome Completo:' : 'Razão Social:'}} </strong>
             <input type="text" class="form-control" [(ngModel)]="dados.razao" required name="razao" #nome="ngModel">
+
             <div *ngIf="!nome.valid && (nome.touched || form.submitted)" class="invalid-feedback animated fadeInDown">
                Campo obrigatório
             </div>
@@ -34,7 +35,7 @@
 
          <div class="col-sm-4 form-group" *ngIf="(dados.tipo == 2)">
             <span>Nome Fantasia:</span>
-            <input type="text" class="form-control" [(ngModel)]="dados.fantasia" name="fantasia" #nome="ngModel">
+            <input type="text" class="form-control" [(ngModel)]="dados.fantasia" name="fantasia">
          </div>
 
          <div class="col-sm-4 form-group">
@@ -45,11 +46,11 @@
 
          <div class="col-sm-4 form-group" *ngIf="dados.tipo == 2">
             <span>Inscrição Estadual: </span>
-            <input type="text" class="form-control" [(ngModel)]="dados.ie" name="ie" mask="00.000.000/0000-00">
+            <input type="text" class="form-control" [(ngModel)]="dados.ie" name="ie">
          </div>
          <div class="col-sm-4 form-group" *ngIf="dados.tipo == 2">
             <span>Inscrição Municipal: </span>
-            <input type="text" class="form-control" [(ngModel)]="dados.im" name="im" mask="00.000.000/0000-00">
+            <input type="text" class="form-control" [(ngModel)]="dados.im" name="im">
          </div>
 
          <div class="col-sm-4 form-group">
@@ -61,18 +62,6 @@
          <div class="col-sm-4 form-group">
             <span>Celular: </span>
             <input type="text" class="form-control" [(ngModel)]="dados.celular" name="celular" mask="(00) 0 0000-0000">
-         </div>
-
-         <div class="col-sm-4 form-group"
-            [ngClass]="{'is-invalid': !categoria.valid && (categoria.touched || form.submitted)}">
-            <span>Categoria:</span>
-            <select class="form-control" [(ngModel)]="dados.id_categoria" name="id_categoria" #categoria="ngModel">
-               <option *ngFor="let item of categorias" [value]="item.id">{{item.descricao}}</option>
-            </select>
-            <div *ngIf="!categoria.valid && (categoria.touched || form.submitted)"
-               class="invalid-feedback animated fadeInDown">
-               Campo obrigatório
-            </div>
          </div>
 
          <div class="col-sm-8 form-group">

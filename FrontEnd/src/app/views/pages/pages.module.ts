@@ -12,13 +12,36 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { NgxMaskModule } from 'ngx-mask';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { MatButtonModule, MatTooltipModule, MatTabsModule, MatIconModule } from '@angular/material';
+import {
+   MatButtonModule, MatTooltipModule,
+   MatTabsModule, MatIconModule,
+   MatProgressSpinnerModule
+} from '@angular/material';
+import { NgxCurrencyModule, CurrencyMaskInputMode } from "ngx-currency";
+
+import { DebounceModule } from 'ngx-debounce';
 
 import { ClientesComponent } from './clientes/clientes.component';
 import { ClienteFormComponent } from './clientes/cliente-form/cliente-form.component';
 import { ProdutosComponent } from './produtos/produtos.component';
 import { ProdutoFormComponent } from './produtos/produto-form/produto-form.component';
+import { VendaBalcaoComponent } from './vendas/venda-balcao/venda-balcao.component';
+import { VendasComponent } from './vendas/vendas.component';
 
+export const customCurrencyMaskConfig = {
+   align: "right",
+   allowNegative: true,
+   allowZero: true,
+   decimal: ",",
+   precision: 2,
+   prefix: "R$ ",
+   suffix: "",
+   thousands: ".",
+   nullable: false,
+   min: null,
+   max: null,
+   inputMode: CurrencyMaskInputMode.FINANCIAL
+};
 
 const routes: Routes = [
    {
@@ -27,7 +50,8 @@ const routes: Routes = [
       ]
    },
    { path: 'produtos', component: ProdutosComponent }
-]
+];
+
 
 @NgModule({
    declarations: [
@@ -35,6 +59,8 @@ const routes: Routes = [
       ClienteFormComponent,
       ProdutosComponent,
       ProdutoFormComponent,
+      VendaBalcaoComponent,
+      VendasComponent,
    ],
    exports: [],
    imports: [
@@ -47,14 +73,18 @@ const routes: Routes = [
       RouterModule.forChild(routes),
       NgbModule,
       NgxMaskModule.forRoot(),
+      NgxCurrencyModule.forRoot(customCurrencyMaskConfig),
+      DebounceModule,
 
       MatButtonModule,
       MatTooltipModule,
       MatTabsModule,
-      MatIconModule
+      MatIconModule,
+      MatProgressSpinnerModule
    ],
    entryComponents: [
-      ClienteFormComponent
+      ClienteFormComponent,
+      ProdutoFormComponent
    ],
    providers: []
 })

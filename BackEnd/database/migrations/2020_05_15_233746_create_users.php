@@ -16,7 +16,7 @@ class CreateUsers extends Migration
       Schema::create('users', function (Blueprint $table) {
          $table->integerIncrements('id');
          $table->unsignedInteger('empresa_id');
-         $table->foreign('empresa_id')->references('id')->on('empresas');
+         $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade')->onUpdate('no action');
          $table->string('nome');
          $table->string('sobrenome');
          $table->integer('status')->default(1);

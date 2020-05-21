@@ -8,7 +8,7 @@ Route::post('auth', 'AuthController@login');
 
 Route::group([
 
-   // 'middleware' => 'apiJWT',
+   'middleware' => 'apiJWT',
 
 ], function () {
 
@@ -28,5 +28,15 @@ Route::group([
       Route::get('{id}', 'ClientController@show');
       Route::put('{id}', 'ClientController@update');
       Route::delete('{id}', 'ClientController@destroy');
+   });
+
+   Route::group([
+      'prefix' => 'product'
+   ], function () {
+      Route::get('', 'ProductController@index');
+      Route::post('', 'ProductController@create');
+      Route::get('{id}', 'ProductController@show');
+      Route::put('{id}', 'ProductController@update');
+      Route::delete('{id}', 'ProductController@destroy');
    });
 });

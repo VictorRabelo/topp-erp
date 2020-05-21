@@ -21,6 +21,18 @@ export class MessageService {
          html: msg,
       });
    }
+   alertNet() {
+      Swal.fire({
+         icon: 'error',
+         title: 'Falha na conexão',
+         html: 'Parece que você está sem internet, verifique a conexão!',
+         allowOutsideClick: false,
+      }).then(resp => {
+         if (resp.value) {
+            location.reload();
+         }
+      });
+   }
 
    public toastError(msg = '', title = '') {
       this.toast.error(msg, title);

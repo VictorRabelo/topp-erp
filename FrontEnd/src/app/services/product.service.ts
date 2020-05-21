@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 @Injectable({
    providedIn: 'root'
 })
-export class ClientService {
+export class ProductService {
    public url = environment.url;
 
    constructor(

@@ -74,7 +74,7 @@ export class ClienteFormComponent implements OnInit {
          return;
       }
 
-      // console.log(this.dados);
+      console.log(this.dados);
 
       if (this.dados.id > 0) {
          this.update();

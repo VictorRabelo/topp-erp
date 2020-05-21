@@ -21,7 +21,7 @@ export class LayoutConfig {
          enabled: true,
          type: 'spinner-logo',
          logo: './assets/media/logos/logo-mini-md.png',
-         message: 'Please wait...',
+         message: 'Aguarde por favor...',
       },
       // == Colors for javascript
       colors: {
@@ -52,7 +52,7 @@ export class LayoutConfig {
       },
       header: {
          self: {
-            skin: 'dark',
+            skin: 'light',
             fixed: {
                desktop: true,
                mobile: true,
@@ -60,15 +60,15 @@ export class LayoutConfig {
          },
          menu: {
             self: {
-               display: false,
+               display: true,
                layout: 'default',
-               'root-arrow': false,
+               'root-arrow': true,
             },
             desktop: {
                arrow: true,
                toggle: 'click',
                submenu: {
-                  skin: 'dark',
+                  skin: 'light',
                   arrow: true,
                },
             },
@@ -88,20 +88,20 @@ export class LayoutConfig {
          style: 'solid',
       },
       content: {
-         width: 'fluid',
+         width: 'fixed',
       },
       brand: {
          self: {
-            skin: 'dark',
+            skin: 'light',
          },
       },
       aside: {
          self: {
             skin: 'light',
-            display: true,
+            display: false,
             fixed: true,
             minimize: {
-               toggle: true,
+               toggle: false,
                default: false,
             },
          },
@@ -111,8 +111,8 @@ export class LayoutConfig {
             },
          },
          menu: {
-            dropdown: false,
-            scroll: false,
+            dropdown: true,
+            scroll: true,
             submenu: {
                accordion: true,
                dropdown: {

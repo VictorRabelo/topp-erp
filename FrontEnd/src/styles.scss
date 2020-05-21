@@ -57,15 +57,24 @@ body {
    position: static;
 }
 
-.kt-header {
-   max-height: 4rem;
+.logo-thumb {
+   img {
+      max-width: 100%;
+   }
 }
-.kt-aside__brand {
-   max-height: 4rem;
+.kt-container {
+   padding: 0 5% !important;
 }
-.kt-header--fixed .kt-wrapper {
-   padding-top: 4% !important;
-}
+
+// .kt-header {
+//    max-height: 4rem;
+// }
+// .kt-aside__brand {
+//    max-height: 4rem;
+// }
+// .kt-header--fixed .kt-wrapper {
+//    padding-top: 4rem !important;
+// }
 
 .kt-login.kt-login--v1 .kt-login__wrapper .kt-login__body .kt-login__form {
    box-shadow: 0 0 15px 5px #292929;
@@ -79,7 +88,7 @@ body {
 }
 
 .form-group {
-   margin-bottom: 1.5rem !important;
+   margin-bottom: 1.2rem !important;
 }
 .form-control {
    height: 35px !important;
@@ -156,6 +165,10 @@ body {
 .table td {
    padding: 0.5rem;
    vertical-align: middle;
+}
+
+.kt-aside--minimize .kt-aside__brand .kt-aside__brand-logo .logo {
+   display: none;
 }
 
 .kt-header-base-dark .kt-header {
@@ -258,6 +271,31 @@ body {
    .kt-menu__item.kt-menu__item--active
    > .kt-menu__link:hover {
    background-color: #343a40d6;
+}
+
+.kt-header-base-dark .kt-header .kt-header-menu .kt-menu__nav > .kt-menu__item.kt-menu__item--here > .kt-menu__link {
+   background-color: #0047cc !important;
+}
+.kt-header-menu-dark
+   .kt-header-menu
+   .kt-menu__nav
+   > .kt-menu__item
+   .kt-menu__submenu
+   > .kt-menu__subnav
+   > .kt-menu__item.kt-menu__item--active
+   > .kt-menu__link {
+   background-color: #0047cc !important;
+}
+.kt-header-menu-dark
+   .kt-header-menu
+   .kt-menu__nav
+   > .kt-menu__item
+   .kt-menu__submenu
+   > .kt-menu__subnav
+   > .kt-menu__item.kt-menu__item--here
+   > .kt-menu__link
+   .kt-menu__link-icon {
+   color: #ffffff !important;
 }
 
 .kt-portlet {

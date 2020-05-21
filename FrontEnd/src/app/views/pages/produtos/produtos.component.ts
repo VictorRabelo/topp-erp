@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MessageService } from '../../../services/message.service';
-import { ClientService } from '../../../services/client.service';
+import { ProductService } from '../../../services/product.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProdutoFormComponent } from './produto-form/produto-form.component';
 
@@ -18,7 +18,7 @@ export class ProdutosComponent implements OnInit {
    constructor(
       private ref: ChangeDetectorRef,
       private message: MessageService,
-      private service: ClientService,
+      private service: ProductService,
       private modalCtrl: NgbModal
 
    ) {
@@ -66,10 +66,11 @@ export class ProdutosComponent implements OnInit {
       this.message.swal.fire({
          title: 'Excluir ?',
          icon: 'question',
-         html: `Desaja excluir o cadastro: <br><b>${item.nome}</b> ?`,
+         html: `Desaja excluir o cadastro: <br><b>${item.descricao}</b> ?`,
          confirmButtonText: 'Confirmar',
          showCancelButton: true,
          cancelButtonText: 'Não',
+         showLoaderOnConfirm: true,
       }).then((result) => {
          if (!result.dismiss) {
             this.delete(item);
@@ -82,8 +83,10 @@ export class ProdutosComponent implements OnInit {
       this.loading = true;
       this.service.delete(item.id).subscribe(resp => {
          this.loading = false;
+         this.ref.detectChanges();
          this.load_list();
       }, erro => {
+         this.ref.detectChanges();
          this.loading = false;
       });
    }

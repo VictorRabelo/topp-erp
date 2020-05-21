@@ -18,7 +18,7 @@ class ClientRepositorie
 
    public function list($params)
    {
-      $query = $this->model->all();
+      $query = $this->model->where('empresa_id', $this->user->empresa_id)->get();
 
       $query = $this->order_list($query);
 

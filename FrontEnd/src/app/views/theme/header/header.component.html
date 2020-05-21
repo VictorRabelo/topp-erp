@@ -2,7 +2,13 @@
 <div ktHeader #ktHeader class="kt-header kt-grid__item" id="kt_header"
    [ngClass]="htmlClassService.getClasses('header', true)">
    <ngb-progressbar class="kt-loading-bar" *ngIf="(loader.progress$|async) > 0" [value]="loader.progress$|async"
-      height="3px"></ngb-progressbar>
+      height="3px">
+   </ngb-progressbar>
+
+
+   <!-- begin:: Brand -->
+   <kt-brand></kt-brand>
+   <!-- end:: Brand -->
 
    <!-- begin: Header Menu -->
    <kt-menu-horizontal *ngIf="menuHeaderDisplay"></kt-menu-horizontal>

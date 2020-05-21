@@ -19,7 +19,58 @@ export class MenuConfig {
                alignment: 'left',
                page: '/dashboard',
                // translate: 'MENU.DASHBOARD',
-            }
+            },
+            {
+               title: 'Cadastros',
+               root: true,
+               // icon: 'flaticon2-browser-2',
+               submenu: [
+                  {
+                     title: 'Clientes',
+                     icon: 'fas fa-users',
+                     page: '/clientes'
+                  },
+                  {
+                     title: 'Produtos',
+                     icon: 'fas fa-box-open',
+                     page: '/produtos'
+                  }
+               ]
+            },
+            {
+               title: 'Estoque',
+               root: true,
+               // icon: 'flaticon2-browser-2',
+               submenu: [
+                  {
+                     title: 'Movimentar Estoque',
+                     icon: 'fas fa-dolly',
+                     page: '/estoque_mov'
+                  }
+               ]
+            },
+            {
+               title: 'Vendas',
+               root: true,
+               // icon: 'flaticon2-browser-2',
+               submenu: [
+                  {
+                     title: 'Balcão',
+                     icon: 'fas fa-shopping-basket',
+                     page: '/venda_standart'
+                  },
+                  {
+                     title: 'PDV - Frente de Caixa',
+                     icon: 'fas fa-desktop',
+                     page: '/venda_front'
+                  },
+                  {
+                     title: 'Lista de Vendas',
+                     icon: 'fas fa-cash-register',
+                     page: '/vendas'
+                  }
+               ]
+            },
          ]
       },
 

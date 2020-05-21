@@ -2,84 +2,62 @@
 
 namespace App\Http\Controllers;
 
-use App\models\Product;
+use App\Repositories\ProductRepositorie;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+   function __construct(ProductRepositorie $repositorie)
+   {
+      $this->repo = $repositorie;
+   }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+   public function index(Request $request)
+   {
+      $dados = $this->repo->list($request);
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+      return response()->json($dados);
+   }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Product $product)
-    {
-        //
-    }
+   public function create(Request $request)
+   {
+      $request = $request->all();
+      $dados = $this->repo->novo($request);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Product $product)
-    {
-        //
-    }
+      if (is_array($dados)) {
+         return response()->json($dados, 500);
+      }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Product $product)
-    {
-        //
-    }
+      return response()->json(['message' => "Cadastro realizado com sucesso!"], 201);
+   }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Product $product)
-    {
-        //
-    }
+   public function show(int $id)
+   {
+      $dados = $this->repo->getSingle($id);
+
+      return response()->json($dados);
+   }
+
+   public function update(Request $request, int $id)
+   {
+      $request = $request->all();
+      $dados = $this->repo->editar($request, $id);
+
+      if (is_array($dados)) {
+         return response()->json($dados, 500);
+      }
+
+      return response()->json(['message' => "Cadastro atualizado com sucesso!"], 201);
+   }
+
+   public function destroy(int $id)
+   {
+      $dados = $this->repo->delete($id);
+
+      if (is_array($dados)) {
+         return response()->json($dados, 500);
+      }
+
+      return response()->json(['message' => "Cadastro deletado com sucesso!"], 201);
+   }
 }
