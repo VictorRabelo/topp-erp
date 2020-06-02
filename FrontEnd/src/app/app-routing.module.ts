@@ -9,6 +9,7 @@ import { AuthGuard } from './core/auth';
 
 const routes: Routes = [
    { path: 'auth', loadChildren: () => import('./views/pages/auth/auth.module').then(m => m.AuthModule) },
+   { path: 'venda_front', loadChildren: () => import('./views/pages/vendas/venda-front/venda-front.module').then(m => m.VendaFrontModule) },
 
    {
       path: '',

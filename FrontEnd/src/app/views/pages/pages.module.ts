@@ -15,7 +15,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {
    MatButtonModule, MatTooltipModule,
    MatTabsModule, MatIconModule,
-   MatProgressSpinnerModule
+   MatProgressSpinnerModule,
+   MatCheckboxModule
 } from '@angular/material';
 import { NgxCurrencyModule, CurrencyMaskInputMode } from "ngx-currency";
 
@@ -27,6 +28,9 @@ import { ProdutosComponent } from './produtos/produtos.component';
 import { ProdutoFormComponent } from './produtos/produto-form/produto-form.component';
 import { VendaBalcaoComponent } from './vendas/venda-balcao/venda-balcao.component';
 import { VendasComponent } from './vendas/vendas.component';
+import { UsersComponent } from './users/users.component';
+import { UserFormComponent } from './users/user-form/user-form.component';
+import { PermissionsFormComponent } from './users/permissions-form/permissions-form.component';
 
 export const customCurrencyMaskConfig = {
    align: "right",
@@ -49,7 +53,10 @@ const routes: Routes = [
          { path: '', component: ClientesComponent }
       ]
    },
-   { path: 'produtos', component: ProdutosComponent }
+   { path: 'users', component: UsersComponent },
+   { path: 'produtos', component: ProdutosComponent },
+   { path: 'vendas', component: VendasComponent },
+   { path: 'venda_standart/:id', component: VendaBalcaoComponent }
 ];
 
 
@@ -61,6 +68,9 @@ const routes: Routes = [
       ProdutoFormComponent,
       VendaBalcaoComponent,
       VendasComponent,
+      UsersComponent,
+      UserFormComponent,
+      PermissionsFormComponent,
    ],
    exports: [],
    imports: [
@@ -80,11 +90,13 @@ const routes: Routes = [
       MatTooltipModule,
       MatTabsModule,
       MatIconModule,
-      MatProgressSpinnerModule
+      MatProgressSpinnerModule,
+      MatCheckboxModule
    ],
    entryComponents: [
       ClienteFormComponent,
-      ProdutoFormComponent
+      ProdutoFormComponent,
+      PermissionsFormComponent
    ],
    providers: []
 })

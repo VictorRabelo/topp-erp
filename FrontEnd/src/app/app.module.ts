@@ -66,6 +66,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { registerLocaleData } from '@angular/common';
 import localeBr from '@angular/common/locales/pt';
 import localeBrExtra from '@angular/common/locales/extra/pt';
+import { ServiceWorkerModule } from '@angular/service-worker';
 registerLocaleData(localeBr, 'br', localeBrExtra);
 
 // tslint:disable-next-line:class-name
@@ -119,7 +120,8 @@ export function hljsLanguages(): HighlightLanguage[] {
       TranslateModule.forRoot(),
       MatProgressSpinnerModule,
       InlineSVGModule.forRoot(),
-      ThemeModule
+      ThemeModule,
+      ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
    ],
    exports: [],
    providers: [

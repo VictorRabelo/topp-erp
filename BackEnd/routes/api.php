@@ -39,4 +39,25 @@ Route::group([
       Route::put('{id}', 'ProductController@update');
       Route::delete('{id}', 'ProductController@destroy');
    });
+
+   Route::group([
+      'prefix' => 'venda'
+   ], function () {
+      Route::get('', 'VendaController@index');
+      Route::post('', 'VendaController@create');
+      Route::get('{id}', 'VendaController@show');
+      Route::put('{id}', 'VendaController@update');
+      Route::delete('{id}', 'VendaController@destroy');
+   });
+
+   Route::group([
+      'prefix' => 'user'
+   ], function () {
+      Route::get('', 'UserController@index');
+      Route::post('', 'UserController@create');
+      Route::get('permissions/{id}', 'UserController@show_permissions');
+      Route::get('{id}', 'UserController@show');
+      Route::put('{id}', 'UserController@update');
+      Route::delete('{id}', 'UserController@destroy');
+   });
 });

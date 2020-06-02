@@ -4,12 +4,15 @@
          <!-- <button mat-icon-button matTooltip="Voltar" [routerLink]="/vendas">
             <i class="fa fa-arrow-left"></i>
          </button> -->
-         <h3 class="kt-portlet__head-title">Lista de Vendas</h3>
+         <h3 class="kt-portlet__head-title">Lista de Usuários</h3>
       </div>
 
       <div class="kt-portlet__head-toolbar">
-         <button class="btn btn-sm btn-primary" (click)="add()" matTooltip="Cria uma novo venda">
-            <i class="fas fa-plus-square"></i> Nova Venda
+         <button class="btn btn-sm btn-primary" (click)="add()" matTooltip="Cria um novo usuário">
+            <i class="fas fa-plus-square"></i> Novo Usuário
+         </button>
+         <button class="btn btn-sm btn-primary" (click)="open_nivel({})" matTooltip="Cria um novo nível">
+            <i class="fas fa-lock"></i> Novo Nível
          </button>
          <button class="btn btn-sm btn-success" (click)="filter()" matTooltip="Filtra os dados">
             <i class="fas fa-sliders-h"></i> Filtros
@@ -27,11 +30,10 @@
 
       <div class="table-responsive">
          <table class="table  mb-0">
-            <thead class="thead-dark">
+            <thead class="">
                <th width="10%">Código</th>
-               <th width="30%">Cliente</th>
-               <th width="15%">Datae Hora</th>
-               <th width="15%">Valor</th>
+               <th width="30%">Nome</th>
+               <th width="15%">Nível</th>
                <th width="10%">status</th>
                <th width="10%"></th>
             </thead>
@@ -39,26 +41,29 @@
          <div [style.height.px]="screen">
 
             <div align="center" *ngIf="dataSource.length <= 0">
-               <strong>Nenhuma venda encontrada!</strong>
+               <strong>Nenhum usuário encontrado!</strong>
             </div>
 
             <table class="table table-hover mb-0">
                <tbody>
                   <tr *ngFor="let item of dataSource">
                      <td width="10%">{{item.id}}</td>
-                     <td width="30%">{{item.cliente | titlecase}}</td>
-                     <td width="15%">{{item.created_at | date: 'dd/MM/yyyy H:mm'}}</td>
+                     <td width="30%">{{item.nome | titlecase}}</td>
                      <td width="15%">
-                        {{ item.total | currency:'R$ ':false:'1.2':'br' }}
+                        {{ item.nivel }}
+                        <button mat-icon-button color="primary" matTooltip="Editar" (click)="open_nivel(item)"
+                           *ngIf="item.permissions > 0">
+                           <i class="fas fa-pen"></i>
+                        </button>
                      </td>
                      <td width="10%"></td>
 
 
-                     <td width="10%">
-                        <button mat-icon-button color="primary" matTooltip="Editar Venda" (click)="open(item)">
+                     <td width="10%" class="text-right">
+                        <button mat-icon-button color="primary" matTooltip="Editar" (click)="open(item)">
                            <i class="fas fa-pen"></i>
                         </button>
-                        <button mat-icon-button color="warn" matTooltip="Deletar Cadastro" (click)="delete_item(item)">
+                        <button mat-icon-button color="warn" matTooltip="Deletar" (click)="delete_item(item)">
                            <i class="fas fa-trash"></i>
                         </button>
                      </td>

@@ -1,16 +1,17 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-// import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MessageService } from '../../../services/message.service';
-import { VendaService } from '../../../services/venda.service';
-import { ToolsService } from '../../../services/tools.service';
 import { Router } from '@angular/router';
+import { MessageService } from '../../../services/message.service';
+import { UserService } from '../../../services/user.service';
+import { ToolsService } from '../../../services/tools.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PermissionsFormComponent } from './permissions-form/permissions-form.component';
 
 @Component({
-   selector: 'kt-vendas',
-   templateUrl: './vendas.component.html',
-   styleUrls: ['./vendas.component.scss']
+   selector: 'kt-users',
+   templateUrl: './users.component.html',
+   styleUrls: ['./users.component.scss']
 })
-export class VendasComponent implements OnInit {
+export class UsersComponent implements OnInit {
 
    loading = false;
 
@@ -20,9 +21,10 @@ export class VendasComponent implements OnInit {
    constructor(
       private ref: ChangeDetectorRef,
       private message: MessageService,
-      private service: VendaService,
+      private service: UserService,
       private util: ToolsService,
-      private router: Router
+      private router: Router,
+      private modalCtrl: NgbModal
    ) {
       this.screen = util.getScreen();
       this.load_list();
@@ -43,10 +45,6 @@ export class VendasComponent implements OnInit {
       });
    }
 
-   generate_sale() {
-
-   }
-
    add() {
       this.loading = true;
       this.service.create({}).subscribe((resp: any) => {
@@ -61,15 +59,25 @@ export class VendasComponent implements OnInit {
       });
    }
 
-   open(venda) {
-      this.router.navigate(['/venda_standart', venda.id]);
+   open_nivel(item) {
+      const modalRef = this.modalCtrl.open(PermissionsFormComponent, { size: 'lg', backdrop: 'static' });
+      modalRef.componentInstance.data = item;
+      modalRef.result.then(resp => {
+         if (resp != undefined) {
+            this.load_list();
+         }
+      })
+   }
+
+   open(item) {
+      // this.router.navigate(['/venda_standart', venda.id]);
    }
 
    delete_confirm(item) {
       this.message.swal.fire({
          title: 'Excluir ?',
          icon: 'question',
-         html: `Desaja excluir o cadastro: <br><b>${item.descricao}</b> ?`,
+         html: `Desaja excluir o cadastro: <br><b>${item.nome}</b> ?`,
          confirmButtonText: 'Confirmar',
          showCancelButton: true,
          cancelButtonText: 'Não',

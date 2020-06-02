@@ -65,16 +65,34 @@ body {
 .kt-container {
    padding: 0 5% !important;
 }
+.kt-footer {
+   padding: 10px 0px !important;
+}
 
-// .kt-header {
-//    max-height: 4rem;
-// }
-// .kt-aside__brand {
-//    max-height: 4rem;
-// }
-// .kt-header--fixed .kt-wrapper {
-//    padding-top: 4rem !important;
-// }
+.input-group-text {
+   border: 1px solid #cecece;
+}
+
+.kt-portlet .kt-portlet-body-sm {
+   padding: 15px;
+}
+legend {
+   font-size: 1.3rem;
+}
+
+.kt-header {
+   max-height: 4.5rem;
+}
+.kt-aside__brand {
+   max-height: 4.5rem;
+}
+.kt-header--fixed .kt-wrapper {
+   padding-top: 4.5rem !important;
+}
+.kt-content {
+   padding: 1.8rem 0;
+   padding-bottom: 0;
+}
 
 .kt-login.kt-login--v1 .kt-login__wrapper .kt-login__body .kt-login__form {
    box-shadow: 0 0 15px 5px #292929;
@@ -301,4 +319,32 @@ body {
 .kt-portlet {
    box-shadow: 0px 0px 13px 3px #523f692e;
    border-radius: 8px;
+}
+.kt-portlet__footer {
+   border-top: 1px solid #ebedf2;
+   padding: 10px;
+}
+
+.text-right {
+   text-align: center;
+}
+.text-sm {
+   font-size: 0.9rem;
+}
+fieldset {
+   min-width: 0;
+   padding: 5px 15px;
+   margin: 0px;
+   border: 1px solid #ccc;
+}
+.table thead th,
+.table thead td {
+   padding-top: 0.5rem;
+   padding-bottom: 0.5rem;
+}
+.table thead th {
+   font-size: 1.1rem;
+}
+.no-margin {
+   margin: 0;
 }

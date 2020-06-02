@@ -1,1 +1,145 @@
-<p>venda-balcao works!</p>
+<div class="kt-portlet" [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+
+   <div class="kt-portlet__head kt-portlet__head__custom">
+      <div class="kt-portlet__head-label">
+         <button mat-icon-button matTooltip="Voltar" [routerLink]="'/vendas'">
+            <i class="fa fa-arrow-left"></i>
+         </button>
+         <h3 class="kt-portlet__head-title">
+            <!-- Venda: -->
+            <span class="badge badge-secondary" *ngIf="vendaCurrent.status == 1">Aberta</span>
+            <span class="badge badge-secondary" *ngIf="vendaCurrent.status == 2">Aguardando</span>
+            <span class="badge badge-danger" *ngIf="vendaCurrent.status == 0">Cancelada</span>
+            <span class="badge badge-success" *ngIf="vendaCurrent.status == 10">Finalizada</span>
+            <span class="text-sm"> {{ vendaCurrent.created_at | date: 'dd/MM/yyyy HH:mm' }}</span>
+         </h3>
+      </div>
+
+      <div class="kt-portlet__head-toolbar">
+
+         <!-- <button class="btn btn-sm btn-secondary">Aguardar</button> -->
+         <button class="btn btn-sm btn-danger">Cancelar</button>
+         <button class="btn btn-sm btn-success">Finalizar</button>
+
+      </div>
+   </div>
+
+   <div class="kt-form kt-portlet__body ">
+
+      <div class="kt-portlet__body-progress">
+         <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
+
+      <div class="row">
+
+         <div class="col-sm-2">
+            <span>Nº Venda:</span>
+            <input type="text" class="form-control" [(ngModel)]="vendaCurrent.id" readonly>
+         </div>
+
+         <div class="col-sm-3">
+            <span>Vendedor: <strong *ngIf="vendaCurrent.user_id">{{vendaCurrent.user_id}}</strong></span>
+            <div class="input-group">
+               <input type="text" class="form-control" [(ngModel)]="vendaCurrent.vendedor" readonly
+                  placeholder="Informe um vendedor!">
+               <div class="input-group-append">
+                  <button class="input-group-text">
+                     <i class="fas fa-search"></i>
+                  </button>
+               </div>
+
+            </div>
+         </div>
+
+         <div class="col-sm-4">
+            <span>Cliente: <strong *ngIf="vendaCurrent.cliente_id">{{vendaCurrent.cliente_id}}</strong></span>
+            <div class="input-group">
+               <input type="text" class="form-control" [(ngModel)]="vendaCurrent.cliente" readonly
+                  placeholder="Informe um cliente!">
+               <div class="input-group-append">
+                  <button class="input-group-text">
+                     <i class="fas fa-search"></i>
+                  </button>
+               </div>
+
+            </div>
+         </div>
+
+      </div>
+
+      <div class="row">
+
+         <div style="width: 100%;">
+            <hr>
+         </div>
+
+         <div class="col-sm-9">
+            <div class="table-responsive">
+               <table class="table  mb-0">
+                  <thead class="">
+                     <th width="35%">Produto</th>
+                     <th width="15%">Quant.</th>
+                     <th width="15%">Valor Unit.</th>
+                     <th width="15%">Total R$</th>
+                     <th width="20%">
+                        <button class="btn btn-sm btn-primary">
+                           <i class="fas fa-plus-square"></i> Adicionar item
+                        </button>
+                     </th>
+                  </thead>
+               </table>
+               <div>
+                  <table class="table table-hover mb-0">
+                     <tbody>
+                        <tr *ngFor="let item of ItemSource">
+                           <td width="35%">{{item.descricao | titlecase}}</td>
+                           <td width="15%">
+                              {{ item.quantidade | currency:'R$ ':false:'1.3':'br' }}
+                           </td>
+                           <td width="15%">
+                              {{ item.valor_unitario | currency:'R$ ':false:'1.2':'br' }}
+                           </td>
+                           <td width="15%">
+                              {{ item.total | currency:'R$ ':false:'1.2':'br' }}
+                              <div class="text-danger">
+                                 {{ item.desconto | currency:'R$ ':false:'1.2':'br' }}
+                              </div>
+                           </td>
+                           <td width="20%">
+                              <button mat-icon-button color="primary" matTooltip="Alterar Item" (click)="edit(item)">
+                                 <i class="fas fa-pen"></i>
+                              </button>
+                              <button mat-icon-button color="warn" matTooltip="Deletar Item"
+                                 (click)="delete_item(item)">
+                                 <i class="fas fa-trash"></i>
+                              </button>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+
+         <div class="col-sm-3">
+            <fieldset>
+               <legend>Totais:</legend>
+
+               <div>
+                  <h6>Descontos: <span class="text-danger"> {{ '0' | currency:'R$ ':false:'1.2':'br' }}</span></h6>
+               </div>
+
+               <div>
+                  <h6>Subtotal: <span class="text-success"> {{ '0' | currency:'R$ ':false:'1.2':'br' }}</span></h6>
+               </div>
+
+               <div>
+                  <h4>Total: <span class="text-success"> {{ '0' | currency:'R$ ':false:'1.2':'br' }}</span></h4>
+               </div>
+            </fieldset>
+         </div>
+
+      </div>
+
+   </div>
+</div>

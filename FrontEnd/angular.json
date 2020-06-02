@@ -25,7 +25,8 @@
                   "assets": [
                      "src/favicon.ico",
                      "src/assets",
-                     "src/.htaccess"
+                     "src/.htaccess",
+                     "src/manifest.webmanifest"
                   ],
                   "styles": [
                      "node_modules/bootstrap/dist/css/bootstrap.css",
@@ -68,14 +69,16 @@
                      "aot": true,
                      "extractLicenses": true,
                      "vendorChunk": false,
-                     "buildOptimizer": true,
+                     "buildOptimizer": false,
                      "budgets": [
                         {
                            "type": "initial",
                            "maximumWarning": "5mb",
                            "maximumError": "10mb"
                         }
-                     ]
+                     ],
+                     "serviceWorker": true,
+                     "ngswConfigPath": "ngsw-config.json"
                   }
                }
             },
@@ -108,7 +111,8 @@
                   ],
                   "scripts": [],
                   "assets": [
-                     "src/assets"
+                     "src/assets",
+                     "src/manifest.webmanifest"
                   ]
                }
             },
