@@ -23,7 +23,6 @@ export class PermissionsFormComponent implements OnInit {
 
    constructor(
       private ref: ChangeDetectorRef,
-      private message: MessageService,
       private service: UserService,
       private util: ToolsService,
       private router: Router,
@@ -67,7 +66,7 @@ export class PermissionsFormComponent implements OnInit {
       this.loading = true;
       this.service.createPermissions(this.permissions).subscribe(resp => {
          this.loading = false;
-         this.permissions = resp;
+         this.close(resp);
          this.ref.detectChanges();
       }, erro => {
          this.loading = false;
@@ -76,6 +75,14 @@ export class PermissionsFormComponent implements OnInit {
    }
 
    update() {
-
+      this.loading = true;
+      this.service.updatePermissions(this.permissions, this.permissions.id).subscribe(resp => {
+         this.loading = false;
+         this.close(resp);
+         this.ref.detectChanges();
+      }, erro => {
+         this.loading = false;
+         this.ref.detectChanges();
+      });
    }
 }

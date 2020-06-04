@@ -22,7 +22,7 @@ class UserRepositorie
       $query = DB::table("users")
          ->select('users.*', 'users_permissions.descricao as nivel')
          ->leftJoin('users_permissions', 'users_permissions.id', 'users.permissions')
-         ->where('empresa_id', $this->user->empresa_id)->get();
+         ->where('users.empresa_id', $this->user->empresa_id)->get();
 
       return $query;
    }
@@ -49,26 +49,10 @@ class UserRepositorie
       return $dados;
    }
 
-   public function getSinglePermissions(int $id)
-   {
-      $permissions = DB::table('users_permissions')->find($id);
-
-      return $permissions;
-   }
-
    public function editar($post, int $id)
    {
-      if (isset($post['cnpj'])) {
-         $verifica = $this->verifyCNPJ($post['cnpj'], $id);
-         if (count($verifica) > 0) {
-            return ['message' => "CNPJ/CPF: " . $post['cnpj'] . " vinculado a outro cadastro!"];
-         }
-      }
-
-      $dados_padrao = $this->post_padrao($post);
-
       $model = $this->model->find($id);
-      $model->fill($dados_padrao);
+      $model->fill($post);
 
       return $model->save();
    }
@@ -120,5 +104,34 @@ class UserRepositorie
       ];
 
       return $dados_padrao;
+   }
+
+
+   public function lista_permissoes()
+   {
+      $query = DB::table("users_permissions")
+         ->where('empresa_id', $this->user->empresa_id)->get();
+
+      return $query;
+   }
+   public function getSinglePermissions(int $id)
+   {
+      $permissions = DB::table('users_permissions')->find($id);
+
+      return $permissions;
+   }
+   public function nova_permissions($post)
+   {
+      $post['empresa_id'] = $this->user->empresa_id;
+      $query = DB::table('users_permissions')->insertGetId($post);
+
+      return $query;
+   }
+   public function editar_permissions($post, int $id)
+   {
+      $post['empresa_id'] = $this->user->empresa_id;
+      $query = DB::table('users_permissions')->where('id', $id)->update($post);
+
+      return $query;
    }
 }

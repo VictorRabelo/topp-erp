@@ -34,10 +34,14 @@ export class UserService {
       return this.http.delete<any[]>(`${this.url}/user/${id}`);
    }
 
+
+   //permissions
+   getListPermissions(): Observable<any[]> {
+      return this.http.get<any[]>(`${this.url}/user/permissions`);
+   }
    getByIdPermissions(id: number): Observable<any[]> {
       return this.http.get<any[]>(`${this.url}/user/permissions/${id}`);
    }
-
    createPermissions(data: any): Observable<any[]> {
       return this.http.post<any[]>(`${this.url}/user/permissions`, data);
    }

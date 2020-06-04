@@ -33,4 +33,12 @@ export class VendaService {
    delete(id: number): Observable<any[]> {
       return this.http.delete<any[]>(`${this.url}/venda/${id}`);
    }
+
+   //itens
+   getListItens(id_venda: number): Observable<any[]> {
+      return this.http.get<any[]>(`${this.url}/venda_itens/${id_venda}`);
+   }
+   create_item(data: any): Observable<any[]> {
+      return this.http.post<any[]>(`${this.url}/venda_itens`, data);
+   }
 }

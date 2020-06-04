@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Repositories\UserRepositorie;
 
 class AuthController extends Controller
 {
@@ -13,8 +14,9 @@ class AuthController extends Controller
     *
     * @return void
     */
-   public function __construct()
+   public function __construct(UserRepositorie $repository)
    {
+      $this->repo = $repository;
       $this->middleware('auth:api', ['except' => ['login']]);
    }
 
@@ -43,7 +45,16 @@ class AuthController extends Controller
     */
    public function me()
    {
-      return response()->json($this->guard()->user());
+      $user = $this->guard()->user();
+
+      $id_permissions = (int) $user['permissions'];
+      $permissions = $this->repo->getSinglePermissions($id_permissions);
+
+      $user['permissions'] = $permissions;
+
+      // print_r($id_permissions);
+
+      return response()->json($user);
    }
 
    /**

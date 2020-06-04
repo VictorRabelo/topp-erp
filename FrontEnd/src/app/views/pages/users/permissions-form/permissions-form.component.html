@@ -6,25 +6,17 @@
             <i class="fa fa-arrow-left"></i>
          </button> -->
          <h3 class="kt-portlet__head-title">
-            <span *ngIf="permissions.id > 0">Lista de Permissões</span>
-            <span *ngIf="!permissions.id">Nova Permissão</span>: <span *ngIf="permissions.id > 0">{{user.nivel}}</span>
+            <span *ngIf="permissions.id > 0">Lista de Permissões: </span>
+            <span *ngIf="!permissions.id">Nova Permissão</span> <span *ngIf="permissions.id > 0"> {{user.nivel}}</span>
          </h3>
       </div>
 
-      <!-- <div class="kt-portlet__head-toolbar">
-         <button class="btn btn-sm btn-primary" (click)="add()" matTooltip="Cria uma novo venda">
-            <i class="fas fa-plus-square"></i> Novo Usuário
-         </button>
-         <button class="btn btn-sm btn-success" (click)="filter()" matTooltip="Filtra os dados">
-            <i class="fas fa-sliders-h"></i> Filtros
-         </button>
-         <button class="btn btn-label-brand btn-bold btn-sm" (click)="load_list()" matTooltip="Atualiza a lista">
-            <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
-         </button>
-      </div> -->
-
    </div>
    <div class="kt-form kt-portlet__body">
+
+      <div class="kt-portlet__body-progress">
+         <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
 
       <div class="row" *ngIf="!permissions.id">
          <div class="col-sm-6 form-group">
@@ -71,16 +63,16 @@
          <div class="col-sm-4 form-group">
             <fieldset>
                <legend>
-                  <mat-checkbox [(ngModel)]="permissions.produtos">Produtos</mat-checkbox>
+                  <mat-checkbox [(ngModel)]="permissions.products">Produtos</mat-checkbox>
                </legend>
                <div class="col-sm">
-                  <mat-checkbox class="margin-right" [(ngModel)]="permissions.create_produtct">
+                  <mat-checkbox class="margin-right" [(ngModel)]="permissions.create_product">
                      Criar Produto
                   </mat-checkbox>
-                  <mat-checkbox class="margin-right" [(ngModel)]="permissions.edit_produtct">
+                  <mat-checkbox class="margin-right" [(ngModel)]="permissions.edit_product">
                      Editar Produto
                   </mat-checkbox>
-                  <mat-checkbox class="margin-right" [(ngModel)]="permissions.delete_produtct">
+                  <mat-checkbox class="margin-right" [(ngModel)]="permissions.delete_product">
                      Deletar Produto
                   </mat-checkbox>
                </div>
@@ -117,7 +109,10 @@
    </div>
 
    <div class="kt-portlet__footer" align="right">
-      <button class="btn btn-sm btn-default" (click)="close()">Voltar</button>
-      <button class="btn btn-sm btn-success">{{(permissions.id > 0) ? 'Atualizar' : 'Cadastrar'}}</button>
+      <button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+      <button class="btn btn-sm btn-success" [disabled]="loading" (click)="submit()"
+         [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+         {{(permissions.id > 0) ? 'Atualizar' : 'Cadastrar'}}
+      </button>
    </div>
 </div>

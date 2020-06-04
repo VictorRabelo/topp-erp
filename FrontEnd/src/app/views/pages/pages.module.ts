@@ -31,6 +31,8 @@ import { VendasComponent } from './vendas/vendas.component';
 import { UsersComponent } from './users/users.component';
 import { UserFormComponent } from './users/user-form/user-form.component';
 import { PermissionsFormComponent } from './users/permissions-form/permissions-form.component';
+import { ProdutoSearchComponent } from './vendas/produto-search/produto-search.component';
+import { ProdutoDetalheComponent } from './vendas/produto-detalhe/produto-detalhe.component';
 
 export const customCurrencyMaskConfig = {
    align: "right",
@@ -71,6 +73,8 @@ const routes: Routes = [
       UsersComponent,
       UserFormComponent,
       PermissionsFormComponent,
+      ProdutoSearchComponent,
+      ProdutoDetalheComponent,
    ],
    exports: [],
    imports: [
@@ -96,7 +100,10 @@ const routes: Routes = [
    entryComponents: [
       ClienteFormComponent,
       ProdutoFormComponent,
-      PermissionsFormComponent
+      PermissionsFormComponent,
+      UserFormComponent,
+      ProdutoSearchComponent,
+      ProdutoDetalheComponent,
    ],
    providers: []
 })

@@ -15,8 +15,8 @@ class CreateUsersNiveis extends Migration
    {
       Schema::create('users_permissions', function (Blueprint $table) {
          $table->integerIncrements('id');
-         $table->unsignedInteger('user_id');
-         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('no action');
+         $table->unsignedInteger('empresa_id');
+         $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade')->onUpdate('no action');
 
          $table->string('descricao');
 

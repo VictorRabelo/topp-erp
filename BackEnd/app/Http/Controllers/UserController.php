@@ -38,13 +38,6 @@ class UserController extends Controller
       return response()->json($dados);
    }
 
-   public function show_permissions(int $id)
-   {
-      $dados = $this->repo->getSinglePermissions($id);
-
-      return response()->json($dados);
-   }
-
    public function update(Request $request, int $id)
    {
       $request = $request->all();
@@ -66,5 +59,44 @@ class UserController extends Controller
       }
 
       return response()->json(['message' => "Cadastro deletado com sucesso!"], 201);
+   }
+
+   //permissões
+   public function list_permissions()
+   {
+      $dados = $this->repo->lista_permissoes();
+
+      return response()->json($dados);
+   }
+
+   public function show_permissions(int $id)
+   {
+      $dados = $this->repo->getSinglePermissions($id);
+
+      return response()->json($dados);
+   }
+
+   public function create_permissions(Request $request)
+   {
+      $request = $request->all();
+      $dados = $this->repo->nova_permissions($request);
+
+      if (is_array($dados)) {
+         return response()->json($dados, 500);
+      }
+
+      return response()->json(['message' => "Cadastro realizado com sucesso!", 'dados' => $dados], 200);
+   }
+
+   public function update_permissions(Request $request, int $id)
+   {
+      $request = $request->all();
+      $dados = $this->repo->editar_permissions($request, $id);
+
+      if (is_array($dados)) {
+         return response()->json($dados, 500);
+      }
+
+      return response()->json(['message' => "Cadastro atualizado com sucesso!", 'dados' => $dados], 200);
    }
 }

@@ -1,1 +1,69 @@
-<p>user-form works!</p>
+<div class="kt-portlet no-margin"
+   [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+
+   <form #form="ngForm" (ngSubmit)="submit(form)">
+      <div class="kt-portlet__head kt-portlet__head__custom">
+         <div class="kt-portlet__head-label">
+            <!-- <button mat-icon-button matTooltip="Voltar" [routerLink]="/vendas">
+               <i class="fa fa-arrow-left"></i>
+            </button> -->
+            <h3 class="kt-portlet__head-title">
+               <span *ngIf="user.id > 0">Alterar Usuário: </span>
+               <span *ngIf="!user.id">Novo Usuário</span> <span *ngIf="user.id > 0"> {{user.nome}}</span>
+            </h3>
+         </div>
+
+      </div>
+      <div class="kt-form kt-portlet__body">
+         <div class="kt-portlet__body-progress">
+            <mat-spinner [diameter]="40"></mat-spinner>
+         </div>
+
+         <div class="row">
+            <div class="col-sm-6 form-group">
+               <strong>Nome: </strong>
+               <input type="text" class="form-control" required name="nome" #nome="ngModel" [(ngModel)]="user.nome">
+            </div>
+            <div class="col-sm-6 form-group">
+               <span>Sobrenome: </span>
+               <input type="text" class="form-control" name="sobrenome" #sobrenome="ngModel"
+                  [(ngModel)]="user.sobrenome">
+            </div>
+            <div class="col-sm-4 form-group">
+               <strong>Status: </strong>
+               <select class="form-control" required name="status" #status="ngModel" [(ngModel)]="user.status">
+                  <option value="1">Ativo</option>
+                  <option value="2">Inativo</option>
+               </select>
+            </div>
+            <div class="col-sm-8 form-group">
+               <strong>Email: </strong>
+               <input type="email" required class="form-control" name="email" #email="ngModel" [(ngModel)]="user.email">
+            </div>
+            <div class="col-sm-6 form-group">
+               <strong>Grupo de Permissões: </strong>
+               <select class="form-control" required name="permissions" #permissions="ngModel" [(ngModel)]="user.permissions">
+                  <option *ngFor="let permite of permissionsList" [value]="permite.id">{{permite.id}} - {{permite.descricao}}</option>
+               </select>
+            </div>
+            <div class="col-sm-4 form-group" *ngIf="!user.id">
+               <strong>Senha de Acesso: </strong>
+               <input type="password" required class="form-control" name="password" #password="ngModel"
+                  [(ngModel)]="user.password">
+            </div>
+         </div>
+
+      </div>
+      <div class="kt-portlet__footer" align="right">
+         <button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+         <button class="btn btn-sm btn-info" [disabled]="loading" (click)="alterPassword()" *ngIf="user.id">
+            <i class="fas fa-key"></i> Alterar Senha
+         </button>
+         <button class="btn btn-sm btn-success" [disabled]="loading" (click)="submit()"
+            [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+            {{(user.id > 0) ? 'Atualizar' : 'Cadastrar'}}
+         </button>
+      </div>
+   </form>
+
+</div>

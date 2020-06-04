@@ -22,7 +22,7 @@ class CreateVendaItens extends Migration
          $table->unsignedInteger('produto_id')->nullable();
          $table->foreign('produto_id')->references('id')->on('produtos')->onDelete('no action')->onUpdate('no action');
 
-         $table->string('produto')->nullable();
+         $table->string('descricao')->nullable();
 
          $table->decimal('quantidade', 15, 4);
          $table->decimal('valor_unitario', 15, 4);

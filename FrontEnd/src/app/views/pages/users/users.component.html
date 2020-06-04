@@ -8,10 +8,10 @@
       </div>
 
       <div class="kt-portlet__head-toolbar">
-         <button class="btn btn-sm btn-primary" (click)="add()" matTooltip="Cria um novo usuário">
-            <i class="fas fa-plus-square"></i> Novo Usuário
+         <button class="btn btn-sm btn-primary" (click)="open()" matTooltip="Cria um novo usuário">
+            <i class="fas fa-user-plus"></i> Novo Usuário
          </button>
-         <button class="btn btn-sm btn-primary" (click)="open_nivel({})" matTooltip="Cria um novo nível">
+         <button class="btn btn-sm btn-primary" (click)="open_nivel()" matTooltip="Cria um novo nível">
             <i class="fas fa-lock"></i> Novo Nível
          </button>
          <button class="btn btn-sm btn-success" (click)="filter()" matTooltip="Filtra os dados">
@@ -56,14 +56,17 @@
                            <i class="fas fa-pen"></i>
                         </button>
                      </td>
-                     <td width="10%"></td>
+                     <td width="10%">
+                        <span class="badge badge-info" *ngIf="item.status == 1">Ativo</span>
+                        <span class="badge badge-danger" *ngIf="item.status == 2">Inativo</span>
+                     </td>
 
 
                      <td width="10%" class="text-right">
                         <button mat-icon-button color="primary" matTooltip="Editar" (click)="open(item)">
                            <i class="fas fa-pen"></i>
                         </button>
-                        <button mat-icon-button color="warn" matTooltip="Deletar" (click)="delete_item(item)">
+                        <button mat-icon-button color="warn" matTooltip="Deletar" (click)="delete_confirm(item)">
                            <i class="fas fa-trash"></i>
                         </button>
                      </td>

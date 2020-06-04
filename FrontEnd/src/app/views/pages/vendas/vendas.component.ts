@@ -1,9 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 // import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
 import { MessageService } from '../../../services/message.service';
 import { VendaService } from '../../../services/venda.service';
 import { ToolsService } from '../../../services/tools.service';
-import { Router } from '@angular/router';
+import { AppState } from '../../../core/reducers';
+import { currentUser } from '../../../core/auth';
 
 @Component({
    selector: 'kt-vendas',
@@ -14,6 +17,8 @@ export class VendasComponent implements OnInit {
 
    loading = false;
 
+   permissions: any = {};
+
    dataSource = [];
    screen: number;
 
@@ -22,13 +27,25 @@ export class VendasComponent implements OnInit {
       private message: MessageService,
       private service: VendaService,
       private util: ToolsService,
-      private router: Router
+      private store: Store<AppState>,
+      private router: Router,
    ) {
-      this.screen = util.getScreen();
+      this.screen = this.util.getScreen();
       this.load_list();
+
+      this.getPermissions();
    }
 
    ngOnInit() {
+   }
+
+   getPermissions() {
+      this.store.pipe(select(currentUser)).subscribe((resp: any) => {
+         if (resp) {
+            console.log(resp.permissions);
+            this.permissions = resp.permissions;
+         }
+      });
    }
 
    load_list() {
@@ -41,10 +58,6 @@ export class VendasComponent implements OnInit {
          this.loading = false;
          this.ref.detectChanges();
       });
-   }
-
-   generate_sale() {
-
    }
 
    add() {

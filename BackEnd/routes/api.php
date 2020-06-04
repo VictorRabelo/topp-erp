@@ -51,10 +51,23 @@ Route::group([
    });
 
    Route::group([
+      'prefix' => 'venda_itens'
+   ], function () {
+      Route::post('', 'VendaItensController@create');
+      Route::get('{id_venda}', 'VendaItensController@index');
+      // Route::get('{id}', 'VendaItensController@show');
+      // Route::put('{id}', 'VendaItensController@update');
+      // Route::delete('{id}', 'VendaItensController@destroy');
+   });
+
+   Route::group([
       'prefix' => 'user'
    ], function () {
       Route::get('', 'UserController@index');
       Route::post('', 'UserController@create');
+      Route::get('permissions/', 'UserController@list_permissions');
+      Route::post('permissions/', 'UserController@create_permissions');
+      Route::put('permissions/{id}', 'UserController@update_permissions');
       Route::get('permissions/{id}', 'UserController@show_permissions');
       Route::get('{id}', 'UserController@show');
       Route::put('{id}', 'UserController@update');

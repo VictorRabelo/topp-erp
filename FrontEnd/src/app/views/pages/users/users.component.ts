@@ -5,6 +5,7 @@ import { UserService } from '../../../services/user.service';
 import { ToolsService } from '../../../services/tools.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PermissionsFormComponent } from './permissions-form/permissions-form.component';
+import { UserFormComponent } from './user-form/user-form.component';
 
 @Component({
    selector: 'kt-users',
@@ -45,21 +46,7 @@ export class UsersComponent implements OnInit {
       });
    }
 
-   add() {
-      this.loading = true;
-      this.service.create({}).subscribe((resp: any) => {
-         this.loading = false;
-
-         this.open(resp.dados);
-
-         this.ref.detectChanges();
-      }, erro => {
-         this.loading = false;
-         this.ref.detectChanges();
-      });
-   }
-
-   open_nivel(item) {
+   open_nivel(item = {}) {
       const modalRef = this.modalCtrl.open(PermissionsFormComponent, { size: 'lg', backdrop: 'static' });
       modalRef.componentInstance.data = item;
       modalRef.result.then(resp => {
@@ -69,7 +56,14 @@ export class UsersComponent implements OnInit {
       })
    }
 
-   open(item) {
+   open(item = {}) {
+      const modalRef = this.modalCtrl.open(UserFormComponent, { size: 'md', backdrop: 'static' });
+      modalRef.componentInstance.data = item;
+      modalRef.result.then(resp => {
+         if (resp != undefined) {
+            this.load_list();
+         }
+      })
       // this.router.navigate(['/venda_standart', venda.id]);
    }
 
