@@ -1,0 +1,38 @@
+<div class="kt-portlet no-margin"
+   [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+   <div class="kt-portlet__head kt-portlet__head__custom">
+      <div class="kt-portlet__head-label">
+
+         <h3 class="kt-portlet__head-title">
+            <span>Configurações Certificado: </span>
+         </h3>
+      </div>
+
+   </div>
+   <div class="kt-form kt-portlet__body">
+
+      <div class="kt-portlet__body-progress">
+         <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
+
+      <div class="form-group">
+         <span>Certificado:</span>
+         <input type="file" class="form-control" (change)="onFileSelected($event)">
+      </div>
+
+      <div class="form-group">
+         <span>Senha:</span>
+         <input type="password" class="form-control" [(ngModel)]="certificate.senha_pfx">
+      </div>
+
+   </div>
+
+   <div class="kt-portlet__footer" align="right">
+      <button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+      <button class="btn btn-sm btn-success" [disabled]="loading" (click)="update()"
+         [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+         Atualizar
+      </button>
+   </div>
+
+</div>

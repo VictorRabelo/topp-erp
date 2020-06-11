@@ -1,0 +1,78 @@
+<div class="kt-portlet no-margin"
+   [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+
+   <div class="kt-portlet__head kt-portlet__head__custom">
+      <div class="kt-portlet__head-label">
+         <h3 class="kt-portlet__head-title">
+            <span>Parcelas: {{payment.forma}} - {{ payment.valor | currency:'R$ ' }} </span>
+         </h3>
+      </div>
+
+   </div>
+   <div class="kt-form kt-portlet__body portlet-body-sm">
+
+      <div class="kt-portlet__body-progress">
+         <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
+
+      <div class="row" style="margin-bottom: 10px;">
+         <div class="col-sm-3">
+            <span>Valor a parcelar:</span>
+            <input type="text" class="form-control" currencyMask disabled [(ngModel)]="payment.aparcelar">
+         </div>
+         <div class="col-sm-3">
+            <span>Entrada:</span>
+            <input type="text" class="form-control" debounce [delay]="500" (func)="gera_parcelas()" currencyMask
+               [(ngModel)]="payment.entrada">
+         </div>
+         <div class="col-sm-3">
+            <span>Parcelas:</span>
+            <input type="number" class="form-control" debounce [delay]="500" (func)="gera_parcelas()"
+               [(ngModel)]="payment.qtd_parcelas">
+         </div>
+         <div class="col-sm-3">
+            <span>Data da 1°:</span>
+            <input type="date" class="form-control" debounce [delay]="500" (func)="gera_parcelas()"
+               (change)="gera_parcelas()" [(ngModel)]="payment.data_start">
+         </div>
+
+      </div>
+
+      <div class="kt-portlet__body">
+         <div class=" table-responsive">
+            <table class=" table mb-0">
+               <thead class="">
+                  <th class="text-left" width="30%">Parcela</th>
+                  <!-- <th class="text-center" width="30%">Documento</th> -->
+                  <th class="text-center" width="40%">Vencimento</th>
+                  <th class="text-right" width="30%">Valor R$</th>
+               </thead>
+
+            </table>
+         </div>
+         <div class=" table-responsive" [style.max-height.px]="screenHeight - 150">
+            <table class="table mb-0">
+               <tbody>
+                  <tr *ngFor="let parcela of payment.parcelas; let i = index;">
+                     <td class="text-left" width="30%">{{parcela.num}} ª</td>
+                     <!-- <td class="text-center" width="30%">{{parcela.documento}}</td> -->
+                     <td class="text-center" width="40%">
+                        <input type="date" class="form-control form-control-sm" [(ngModel)]="parcela.data_vence">
+                     </td>
+                     <td class="text-right" width="30%">{{ parcela.valor | currency:'R$ ' }}</td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+      </div>
+
+
+   </div>
+   <div class="kt-portlet__footer" align="right">
+      <button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+      <button class="btn btn-sm btn-success" [disabled]="loading" (click)="confirm_parcelas()"
+         [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+         Confirmar
+      </button>
+   </div>
+</div>

@@ -39,21 +39,10 @@ export class MenuConfig {
                      title: 'Usuários',
                      icon: 'fas fa-user',
                      page: '/users'
-                  }
+                  },
+
                ]
             },
-            // {
-            //    title: 'Estoque',
-            //    root: true,
-            //    // icon: 'flaticon2-browser-2',
-            //    submenu: [
-            //       {
-            //          title: 'Movimentar Estoque',
-            //          icon: 'fas fa-dolly',
-            //          page: '/estoque_mov'
-            //       }
-            //    ]
-            // },
             {
                title: 'Vendas',
                root: true,
@@ -72,8 +61,32 @@ export class MenuConfig {
                   },
                   {
                      title: 'Vendas',
-                     icon: 'fas fa-cash-register',
+                     icon: 'fas fa-shopping-basket',
                      page: '/vendas'
+                  }
+               ]
+            },
+            {
+               title: 'Fiscal',
+               root: true,
+               // icon: 'flaticon2-browser-2',
+               submenu: [
+                  {
+                     title: 'Emitentes',
+                     icon: 'fas fa-building',
+                     page: '/emitentes'
+                  }
+               ]
+            },
+            {
+               title: 'Financeiro',
+               root: true,
+               // icon: 'flaticon2-browser-2',
+               submenu: [
+                  {
+                     title: 'Caixa',
+                     icon: 'fas fa-cash-register',
+                     page: '/caixa'
                   }
                ]
             },

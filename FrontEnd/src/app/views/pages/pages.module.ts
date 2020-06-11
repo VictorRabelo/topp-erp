@@ -31,8 +31,17 @@ import { VendasComponent } from './vendas/vendas.component';
 import { UsersComponent } from './users/users.component';
 import { UserFormComponent } from './users/user-form/user-form.component';
 import { PermissionsFormComponent } from './users/permissions-form/permissions-form.component';
-import { ProdutoSearchComponent } from './vendas/produto-search/produto-search.component';
-import { ProdutoDetalheComponent } from './vendas/produto-detalhe/produto-detalhe.component';
+import { ProdutoSearchComponent } from './vendas/modais/produto-search/produto-search.component';
+import { ProdutoDetalheComponent } from './vendas/modais/produto-detalhe/produto-detalhe.component';
+import { ClienteSearchComponent } from './vendas/modais/cliente-search/cliente-search.component';
+import { ClienteManualComponent } from './vendas/modais/cliente-manual/cliente-manual.component';
+import { VendaFinishComponent } from './vendas/modais/venda-finish/venda-finish.component';
+import { GeraParcelasComponent } from './vendas/modais/gera-parcelas/gera-parcelas.component';
+import { EmitentesComponent } from './emitentes/emitentes.component';
+import { EmitenteFormComponent } from './emitentes/emitente-form/emitente-form.component';
+import { EmitenteConfigFormComponent } from './emitentes/emitente-config-form/emitente-config-form.component';
+import { EmitenteDetalheComponent } from './emitentes/emitente-detalhe/emitente-detalhe.component';
+import { EmitenteCertificateComponent } from './emitentes/emitente-certificate/emitente-certificate.component';
 
 export const customCurrencyMaskConfig = {
    align: "right",
@@ -57,7 +66,9 @@ const routes: Routes = [
    },
    { path: 'users', component: UsersComponent },
    { path: 'produtos', component: ProdutosComponent },
+   { path: 'emitentes', component: EmitentesComponent },
    { path: 'vendas', component: VendasComponent },
+   { path: 'emitente/:id', component: EmitenteDetalheComponent },
    { path: 'venda_standart/:id', component: VendaBalcaoComponent }
 ];
 
@@ -75,6 +86,15 @@ const routes: Routes = [
       PermissionsFormComponent,
       ProdutoSearchComponent,
       ProdutoDetalheComponent,
+      ClienteSearchComponent,
+      ClienteManualComponent,
+      VendaFinishComponent,
+      GeraParcelasComponent,
+      EmitentesComponent,
+      EmitenteFormComponent,
+      EmitenteConfigFormComponent,
+      EmitenteDetalheComponent,
+      EmitenteCertificateComponent,
    ],
    exports: [],
    imports: [
@@ -104,6 +124,12 @@ const routes: Routes = [
       UserFormComponent,
       ProdutoSearchComponent,
       ProdutoDetalheComponent,
+      ClienteSearchComponent,
+      VendaFinishComponent,
+      GeraParcelasComponent,
+      EmitenteFormComponent,
+      EmitenteConfigFormComponent,
+      EmitenteCertificateComponent
    ],
    providers: []
 })

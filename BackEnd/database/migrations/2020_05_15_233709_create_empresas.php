@@ -34,8 +34,6 @@ class CreateEmpresas extends Migration
             $table->string('cidade', 200)->nullable();
             $table->string('ibge', 20)->nullable();
             $table->string('uf', 2)->nullable();
-            $table->text('file_pfx')->nullable();
-            $table->string('senha_pfx', 255)->nullable();
             $table->text('logo')->nullable();
             $table->integer('plano')->default(1);
             $table->date('licenca');

@@ -51,7 +51,8 @@ export class UsersComponent implements OnInit {
       modalRef.componentInstance.data = item;
       modalRef.result.then(resp => {
          if (resp != undefined) {
-            this.load_list();
+            // this.load_list();
+            location.reload();
          }
       })
    }

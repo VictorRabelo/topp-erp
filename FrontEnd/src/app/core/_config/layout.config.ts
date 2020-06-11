@@ -52,7 +52,7 @@ export class LayoutConfig {
       },
       header: {
          self: {
-            skin: 'light',
+            skin: 'dark',
             fixed: {
                desktop: true,
                mobile: true,
@@ -68,7 +68,7 @@ export class LayoutConfig {
                arrow: true,
                toggle: 'click',
                submenu: {
-                  skin: 'light',
+                  skin: 'dark',
                   arrow: true,
                },
             },
@@ -92,7 +92,7 @@ export class LayoutConfig {
       },
       brand: {
          self: {
-            skin: 'light',
+            skin: 'dark',
          },
       },
       aside: {

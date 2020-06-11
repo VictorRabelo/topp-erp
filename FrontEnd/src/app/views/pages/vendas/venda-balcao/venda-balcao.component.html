@@ -2,7 +2,7 @@
 
    <div class="kt-portlet__head kt-portlet__head__custom">
       <div class="kt-portlet__head-label">
-         <button mat-icon-button matTooltip="Voltar" [routerLink]="'/vendas'">
+         <button mat-icon-button matTooltip="Voltar" class="icon-back" [routerLink]="'/vendas'">
             <i class="fa fa-arrow-left"></i>
          </button>
          <h3 class="kt-portlet__head-title">
@@ -17,9 +17,23 @@
 
       <div class="kt-portlet__head-toolbar">
 
-         <button class="btn btn-sm btn-info" *ngIf="!permissions.finalizar_venda">Salvar</button>
-         <button class="btn btn-sm btn-danger" *ngIf="permissions.cancel_venda">Cancelar</button>
-         <button class="btn btn-sm btn-success" *ngIf="permissions.finalizar_venda">Finalizar</button>
+         <button class="btn btn-sm btn-primay" *ngIf="!permissions.finalizar_venda && vendaCurrent.status == 1">
+            Salvar
+         </button>
+         <button class="btn btn-sm btn-info" *ngIf="vendaCurrent.status == 10" [disabled]="loading" (click)="gen_nfce()"
+            [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">
+            <i class="fas fa-receipt"></i> Gerar NFC-e
+         </button>
+         <button class="btn btn-sm btn-info" *ngIf="vendaCurrent.status == 10">
+            <i class="fas fa-print"></i>
+         </button>
+         <button class="btn btn-sm btn-danger" *ngIf="permissions.cancel_venda  && vendaCurrent.status == 1">
+            Cancelar
+         </button>
+         <button class="btn btn-sm btn-success" (click)="finish()"
+            *ngIf="permissions.finalizar_venda && vendaCurrent.status == 1">
+            Finalizar
+         </button>
 
       </div>
    </div>
@@ -57,7 +71,7 @@
                <input type="text" class="form-control" [(ngModel)]="vendaCurrent.cliente" readonly
                   placeholder="Informe um cliente!">
                <div class="input-group-append">
-                  <button class="input-group-text">
+                  <button class="input-group-text" (click)="add_cliente()">
                      <i class="fas fa-search"></i>
                   </button>
                </div>
@@ -77,12 +91,13 @@
             <div class="table-responsive">
                <table class="table  mb-0">
                   <thead class="">
-                     <th width="35%">Produto</th>
-                     <th width="15%" class="text-right">Quant.</th>
-                     <th width="15%" class="text-right">Valor Unit.</th>
-                     <th width="15%" class="text-right">Total R$</th>
+                     <th width="29%">Produto</th>
+                     <th width="12%" class="text-right">Quant.</th>
+                     <th width="12%" class="text-right">Valor Unit.</th>
+                     <th width="12%" class="text-right">Total R$</th>
                      <th width="20%" class="text-right">
                         <button class="btn btn-sm btn-primary" [disabled]="loadingItens" (click)="search_item()"
+                           *ngIf="permissions.edit_venda && vendaCurrent.status == 1"
                            [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loadingItens}">
                            <i class="fas fa-plus-square"></i> Adicionar item
                         </button>
@@ -93,25 +108,28 @@
                   <table class="table table-hover mb-0">
                      <tbody>
                         <tr *ngFor="let item of ItemSource">
-                           <td width="35%">{{item.descricao | titlecase}}</td>
-                           <td width="15%" class="text-right">
-                              {{ item.quantidade | currency:'R$ ':false:'1.3':'br' }}
+                           <td width="29%">{{item.descricao | titlecase}}</td>
+                           <td width="12%" class="text-right">
+                              {{ item.quantidade | currency:' ' }}
                            </td>
-                           <td width="15%" class="text-right">
-                              {{ item.valor_unitario | currency:'R$ ':false:'1.2':'br' }}
+                           <td width="12%" class="text-right">
+                              {{ item.valor_unitario | currency:'R$' }}
                            </td>
-                           <td width="15%" class="text-right">
-                              {{ item.total | currency:'R$ ':false:'1.2':'br' }}
+                           <td width="12%" class="text-right">
+                              {{ item.total | currency:'R$' }}
                               <div class="text-danger" *ngIf="item.desconto > 0">
-                                 {{ item.desconto | currency:'R$ ':false:'1.2':'br' }}
+                                 {{ item.desconto | currency:'R$' }}
                               </div>
                            </td>
                            <td width="20%" class="text-right">
-                              <button mat-icon-button color="primary" matTooltip="Alterar Item" (click)="edit(item)">
+                              <button mat-icon-button color="primary" [disabled]="loadingItens"
+                                 matTooltip="Alterar Item" (click)="open_item(item)"
+                                 *ngIf="permissions.edit_venda && vendaCurrent.status == 1">
                                  <i class="fas fa-pen"></i>
                               </button>
-                              <button mat-icon-button color="warn" matTooltip="Deletar Item"
-                                 (click)="delete_item(item)">
+                              <button mat-icon-button color="warn" [disabled]="loadingItens" matTooltip="Deletar Item"
+                                 (click)="del_item_confirm(item)"
+                                 *ngIf="permissions.edit_venda && vendaCurrent.status == 1">
                                  <i class="fas fa-trash"></i>
                               </button>
                            </td>
@@ -129,7 +147,7 @@
                <div>
                   <h6>Descontos:
                      <span class="text-danger">
-                        {{ vendaCurrent.descontos | currency:'R$ ':false:'1.2':'br' }}
+                        {{ vendaCurrent.descontos | currency:'R$' }}
                      </span>
                   </h6>
                </div>
@@ -137,7 +155,7 @@
                <div>
                   <h6>Subtotal:
                      <span class="text-success">
-                        {{ vendaCurrent.subtotal | currency:'R$ ':false:'1.2':'br' }}
+                        {{ vendaCurrent.subtotal | currency:'R$' }}
                      </span>
                   </h6>
                </div>
@@ -145,9 +163,23 @@
                <div>
                   <h4>Total:
                      <span class="text-success">
-                        {{ vendaCurrent.total | currency:'R$ ':false:'1.2':'br' }}
+                        {{ vendaCurrent.total | currency:'R$' }}
                      </span>
                   </h4>
+               </div>
+            </fieldset>
+
+            <fieldset *ngIf="paymentSource.length > 0">
+               <legend>Pagamentos: </legend>
+               <div *ngFor="let payment of paymentSource">
+                  <strong>{{payment.forma}}:
+                     <span class="text-info">{{ payment.valor | currency:'R$' }}</span>
+                  </strong>
+               </div>
+               <div *ngIf="getTroco() > 0">
+                  <strong>
+                     Troco: <span class="text-info">{{ getTroco() | currency:'R$' }}</span>
+                  </strong>
                </div>
             </fieldset>
          </div>

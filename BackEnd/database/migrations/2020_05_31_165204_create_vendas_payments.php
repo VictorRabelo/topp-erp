@@ -18,7 +18,10 @@ class CreateVendasPayments extends Migration
          $table->unsignedInteger('venda_id');
          $table->foreign('venda_id')->references('id')->on('vendas')->onDelete('cascade')->onUpdate('no action');
 
-         $table->unsignedInteger('forma_id');
+         $table->integer('forma_id');
+         $table->text('forma');
+         $table->decimal('valor', 10, 2);
+         $table->text('obs');
 
          $table->timestamps();
       });

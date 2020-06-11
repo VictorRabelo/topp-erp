@@ -78,7 +78,7 @@ export class AppComponent implements OnInit, OnDestroy {
       const routerSubscription = this.router.events.subscribe(event => {
          if (event instanceof NavigationEnd) {
             this.loadUser().subscribe(resp => {
-               console.log(resp);
+               // console.log(resp);
                if (resp == true) {
                   // hide splash screen
                   this.splashScreenService.hide();

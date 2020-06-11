@@ -12,9 +12,9 @@ class VendaItensController extends Controller
       $this->repo = $repositorie;
    }
 
-   public function index(int $id_venda)
+   public function index(int $venda_id)
    {
-      $resp = $this->repo->list($id_venda);
+      $resp = $this->repo->list($venda_id);
       return response()->json($resp);
    }
 
@@ -24,17 +24,16 @@ class VendaItensController extends Controller
       $resp = $this->repo->create_item($data);
       return response()->json($resp);
    }
-   public function show(int $id)
+   public function update(Request $request, int $item_id)
    {
-      //
-   }
-   public function update(Request $request, int $id)
-   {
-      //
+      $data = $request->only('venda_id', 'produto_id', 'descricao', 'quantidade', 'valor_unitario', 'desconto', 'total');
+      $resp = $this->repo->update_item($data, $item_id);
+      return response()->json($resp);
    }
 
-   public function destroy(int $id)
+   public function destroy(int $item_id)
    {
-      //
+      $resp = $this->repo->delete_item($item_id);
+      return response()->json($resp);
    }
 }

@@ -34,11 +34,26 @@ export class VendaService {
       return this.http.delete<any[]>(`${this.url}/venda/${id}`);
    }
 
+   finish(data: any, id: number): Observable<any[]> {
+      return this.http.put<any[]>(`${this.url}/venda/${id}`, data);
+   }
+
    //itens
-   getListItens(id_venda: number): Observable<any[]> {
-      return this.http.get<any[]>(`${this.url}/venda_itens/${id_venda}`);
+   getListItens(venda_id: number): Observable<any[]> {
+      return this.http.get<any[]>(`${this.url}/venda_itens/${venda_id}`);
    }
    create_item(data: any): Observable<any[]> {
       return this.http.post<any[]>(`${this.url}/venda_itens`, data);
+   }
+   update_item(data: any, item_id: number): Observable<any[]> {
+      return this.http.put<any[]>(`${this.url}/venda_itens/${item_id}`, data);
+   }
+   delete_item(item_id: number): Observable<any[]> {
+      return this.http.delete<any[]>(`${this.url}/venda_itens/${item_id}`);
+   }
+
+   //cliente
+   setClient(data: any, venda_id: number): Observable<any[]> {
+      return this.http.put<any[]>(`${this.url}/venda/set-client/${venda_id}`, data);
    }
 }

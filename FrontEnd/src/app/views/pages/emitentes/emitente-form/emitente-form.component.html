@@ -1,0 +1,131 @@
+<form #form="ngForm" (ngSubmit)="onSubmit(form)">
+
+   <div class="modal-header">
+      <h4 class="modal-title">{{getTitle()}}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="close()">
+         <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+
+   <div class="modal-body">
+
+      <div class="row">
+
+         <div class="col-sm-3 form-group" [ngClass]="{'is-invalid': !tipo.valid && (tipo.touched || form.submitted)}">
+            <strong>Tipo:</strong>
+            <select class="form-control" required [(ngModel)]="dados.tipo" name="tipo" #tipo="ngModel">
+               <option value="1">Pessoa Física</option>
+               <option value="2">Pessoa Jurídica</option>
+            </select>
+            <div *ngIf="!tipo.valid && (tipo.touched || form.submitted)" class="invalid-feedback animated fadeInDown">
+               Campo obrigatório
+            </div>
+         </div>
+
+         <div class="col-sm-9 form-group" [ngClass]="{'is-invalid': !nome.valid && (nome.touched || form.submitted)}">
+            <strong>{{(dados.tipo == 1) ? 'Nome Completo:' : 'Razão Social:'}} </strong>
+            <input type="text" class="form-control" [(ngModel)]="dados.razao" required name="razao" #nome="ngModel">
+
+            <div *ngIf="!nome.valid && (nome.touched || form.submitted)" class="invalid-feedback animated fadeInDown">
+               Campo obrigatório
+            </div>
+         </div>
+
+         <div class="col-sm-4 form-group" *ngIf="(dados.tipo == 2)">
+            <span>Nome Fantasia:</span>
+            <input type="text" class="form-control" [(ngModel)]="dados.fantasia" name="fantasia">
+         </div>
+
+         <div class="col-sm-4 form-group">
+            <span>{{(dados.tipo == 1) ? 'CPF:' : 'CNPJ:'}} </span>
+            <input type="text" class="form-control" [(ngModel)]="dados.cnpj" name="cnpj"
+               [mask]="(dados.tipo == 1) ? '000.000.000-00' : '00.000.000/0000-00'">
+         </div>
+
+         <div class="col-sm-4 form-group" *ngIf="dados.tipo == 2">
+            <span>Inscrição Estadual: </span>
+            <input type="text" class="form-control" [(ngModel)]="dados.inscricao_estadual" name="ie">
+         </div>
+         <div class="col-sm-4 form-group" *ngIf="dados.tipo == 2">
+            <span>Inscrição Municipal: </span>
+            <input type="text" class="form-control" [(ngModel)]="dados.inscricao_municipal" name="im">
+         </div>
+
+         <div class="col-sm-4 form-group">
+            <span>Telefone: </span>
+            <input type="text" class="form-control" [(ngModel)]="dados.telefone" name="telefone" mask="(00) 0000-0000">
+         </div>
+
+         <div class="col-sm-4 form-group">
+            <span>Celular: </span>
+            <input type="text" class="form-control" [(ngModel)]="dados.celular" name="celular" mask="(00) 0 0000-0000">
+         </div>
+
+         <div class="col-sm-7 form-group">
+            <span>Email: </span>
+            <input type="email" class="form-control" [(ngModel)]="dados.email" name="email">
+         </div>
+
+         <div class="col-sm-5 form-group">
+            <span>Logo:</span>
+            <div class="">
+               <input type="file" class="form-control" (change)="onFileSelected($event)">
+            </div>
+         </div>
+
+      </div>
+
+      <div class="row">
+         <div class="col-sm-4 form-group">
+            <span>CEP: </span>
+            <div class="input-group">
+               <input type="text" class="form-control" [disabled]="loadingCep" [(ngModel)]="dados.cep" name="cep"
+                  mask="00.000-000">
+               <div class="input-group-append">
+                  <button type="button" class="btn btn-outline-dark" (click)="getAddress()">
+                     <i class="fas fa-search" *ngIf="!loadingCep"></i>
+                     <i class="fas fa-cog fa-spin" *ngIf="loadingCep"></i>
+                  </button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="row">
+         <div class="col-sm-5 form-group">
+            <span>Rua/Avenida:</span>
+            <input type="text" class="form-control" [(ngModel)]="dados.logradouro" name="logra">
+         </div>
+         <div class="col-sm-2 form-group">
+            <span>Número:</span>
+            <input type="text" class="form-control" [(ngModel)]="dados.numero" name="numero">
+         </div>
+         <div class="col-sm-5 form-group">
+            <span>Bairro:</span>
+            <input type="text" class="form-control" [(ngModel)]="dados.bairro" name="bairro">
+         </div>
+         <div class="col-sm-5 form-group">
+            <span>Complemento:</span>
+            <input type="text" class="form-control" [(ngModel)]="dados.complemento" name="complemento">
+         </div>
+         <div class="col-sm-5 form-group">
+            <span>Cidade:</span>
+            <input type="text" class="form-control" [(ngModel)]="dados.cidade" readonly name="cidade">
+         </div>
+         <div class="col-sm-2 form-group">
+            <span>UF:</span>
+            <input type="text" class="form-control" [(ngModel)]="dados.uf" readonly name="uf">
+         </div>
+      </div>
+
+   </div>
+
+   <div class="modal-footer">
+      <button type="button" class="btn btn-sm btn-outline-dark" (click)="close()">Voltar</button>
+      <button type="submit" class="btn btn-sm btn-success" [disabled]="submited"
+         [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': submited }">
+         <i class="fas fa-check"></i> Salvar
+      </button>
+   </div>
+
+</form>

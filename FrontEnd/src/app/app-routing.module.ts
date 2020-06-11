@@ -22,6 +22,10 @@ const routes: Routes = [
             loadChildren: () => import('./views/pages/dashboard/dashboard.module').then(m => m.DashboardModule),
          },
          {
+            path: 'theme',
+            loadChildren: () => import('./views/theme/content/builder/builder.module').then(m => m.BuilderModule),
+         },
+         {
             path: '',
             loadChildren: () => import('./views/pages/pages.module').then(m => m.PagesModule),
          },

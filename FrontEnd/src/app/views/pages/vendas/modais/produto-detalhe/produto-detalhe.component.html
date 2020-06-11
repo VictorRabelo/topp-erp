@@ -1,0 +1,74 @@
+<div class="kt-portlet no-margin"
+   [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+
+   <div class="kt-portlet__head kt-portlet__head__custom">
+      <div class="kt-portlet__head-label">
+         <h3 class="kt-portlet__head-title">
+            <span *ngIf="item.id">Alterar Item: </span>
+            <span *ngIf="!item.id">Adicionar Item</span> <span *ngIf="item.id"> {{item.descricao}}</span>
+         </h3>
+      </div>
+
+   </div>
+   <div class="kt-form kt-portlet__body">
+
+      <div class="kt-portlet__body-progress">
+         <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
+
+      <div class="row">
+         <div class="col-sm-4">
+            <div class="logo-thumb">
+               <img [src]="item.foto" [alt]="item.descricao" *ngIf="item.foto">
+               <img src="assets/media/product-no-image.png" alt="sem imagem" *ngIf="!item.foto">
+            </div>
+         </div>
+
+         <div class="col-sm-8">
+            <div class="row">
+               <div class="col-sm-12 form-group">
+                  <span>Produto:</span>
+                  <input type="text" class="form-control" [(ngModel)]="item.descricao" readonly>
+               </div>
+
+               <div class="col-sm-4 form-group">
+                  <span>Quantidade:</span>
+                  <input type="text" class="form-control" currencyMask [(ngModel)]="item.quantidade" debounce
+                     [delay]="700" (func)="calc_desconto(1)" [options]="{prefix:' ', precision: 3}">
+               </div>
+               <div class="col-sm-4 form-group">
+                  <span>Desconto R$:</span>
+                  <input type="text" class="form-control" currencyMask [(ngModel)]="item.desconto" debounce
+                     [delay]="700" (func)="calc_desconto(1)">
+               </div>
+
+               <div class="col-sm-4 form-group">
+                  <span>Desconto %:</span>
+                  <input type="text" class="form-control" currencyMask [(ngModel)]="item.descontop" debounce
+                     [delay]="700" (func)="calc_desconto(2)" [options]="{prefix:' ', suffix:' %'}">
+               </div>
+
+               <div class="col-sm-6 form-group">
+                  <span>Valor Unitário:</span>
+                  <input type="text" class="form-control" currencyMask [(ngModel)]="item.valor_unitario" readonly>
+               </div>
+
+               <div class="col-sm-6 form-group">
+                  <strong>Total:</strong>
+                  <input type="text" class="form-control" currencyMask [(ngModel)]="item.total" readonly>
+               </div>
+            </div>
+         </div>
+
+      </div>
+
+
+   </div>
+   <div class="kt-portlet__footer" align="right">
+      <button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+      <button class="btn btn-sm btn-success" [disabled]="loading" (click)="submit()"
+         [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+         {{(item.id > 0) ? 'Atualizar' : 'Adicionar'}}
+      </button>
+   </div>
+</div>

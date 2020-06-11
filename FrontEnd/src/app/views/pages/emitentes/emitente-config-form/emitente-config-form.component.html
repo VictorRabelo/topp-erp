@@ -1,0 +1,109 @@
+<div class="kt-portlet no-margin"
+   [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+   <div class="kt-portlet__head kt-portlet__head__custom">
+      <div class="kt-portlet__head-label">
+
+         <h3 class="kt-portlet__head-title">
+            <span *ngIf="config.modelo == 55">Configurações NFe: </span>
+            <span *ngIf="config.modelo == 65">Configurações NFCe: </span>
+         </h3>
+      </div>
+
+   </div>
+   <div class="kt-form kt-portlet__body">
+
+      <div class="kt-portlet__body-progress">
+         <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
+
+      <div class="row">
+
+         <div class="col-sm-6 form-group">
+            <span>Sequência:</span>
+            <input type="number" class="form-control" [(ngModel)]="config.seq">
+         </div>
+
+         <div class="col-sm-6 form-group">
+            <span>Sequência Homolog.:</span>
+            <input type="number" class="form-control" [(ngModel)]="config.seqHomolog">
+         </div>
+
+         <div class="col-sm-6 form-group">
+            <span>Série:</span>
+            <input type="number" class="form-control" [(ngModel)]="config.serie">
+         </div>
+
+         <div class="col-sm-6 form-group">
+            <span>Série Homolog.:</span>
+            <input type="number" class="form-control" [(ngModel)]="config.serieHomolog">
+         </div>
+
+         <div class="col-sm-6 form-group">
+            <span>Tipo da Nota:</span>
+            <select class="form-control" [(ngModel)]="config.tpnf">
+               <option value="0">0 - Entrada</option>
+               <option value="1">1 - Saída</option>
+            </select>
+         </div>
+
+         <div class="col-sm-6 form-group">
+            <span>Tipo da Emissão:</span>
+            <select class="form-control" [(ngModel)]="config.tpemiss">
+               <option value="1">1 - Emissão normal</option>
+            </select>
+         </div>
+
+         <div class="col-sm-6 form-group">
+            <span>Tipo da Impressão:</span>
+            <select class="form-control" [(ngModel)]="config.tpimp">
+               <option value="0">0 - Sem geração de DANFE</option>
+               <option value="1">1 - DANFE normal, Retrato</option>
+               <option value="2">2 - DANFE normal, Paisagem</option>
+               <option value="3">3 - DANFE Simplificado</option>
+               <option value="4">4 - DANFE NFC-e</option>
+               <option value="5">5 - DANFE NFC-e em mensagem eletrônica</option>
+            </select>
+         </div>
+
+         <div class="col-sm-6 form-group">
+            <span>Tipo de Ambiente:</span>
+            <select class="form-control" [(ngModel)]="config.tpamb">
+               <option value="1">1 - Produção</option>
+               <option value="2">2 - Homolog(Teste)</option>
+            </select>
+         </div>
+
+         <div class="col-sm-4 form-group" *ngIf="config.tpamb != 2 && config.modelo == 65">
+            <span>CSC ID:</span>
+            <input type="number" class="form-control" [(ngModel)]="config.cscid">
+         </div>
+
+         <div class="col-sm-8 form-group" *ngIf="config.tpamb != 2 && config.modelo == 65">
+            <span>CSC:</span>
+            <input type="text" class="form-control" [(ngModel)]="config.csc">
+         </div>
+
+         <div class="col-sm-4 form-group" *ngIf="config.tpamb == 2 && config.modelo == 65">
+            <span>CSC ID Homolog:</span>
+            <input type="number" class="form-control" [(ngModel)]="config.cscidHomolog">
+         </div>
+
+         <div class="col-sm-8 form-group" *ngIf="config.tpamb == 2 && config.modelo == 65">
+            <span>CSC Homolog:</span>
+            <input type="text" class="form-control" [(ngModel)]="config.cscHomolog">
+         </div>
+
+
+
+      </div>
+
+   </div>
+
+   <div class="kt-portlet__footer" align="right">
+      <button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+      <button class="btn btn-sm btn-success" [disabled]="loading" (click)="submit()"
+         [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+         {{(config.id > 0) ? 'Atualizar' : 'Cadastrar'}}
+      </button>
+   </div>
+</div>

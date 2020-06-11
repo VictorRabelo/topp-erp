@@ -18,9 +18,20 @@ class ClientRepositorie
 
    public function list($params)
    {
-      $query = $this->model->where('empresa_id', $this->user->empresa_id)->get();
+      // print_r($params);
+      $query = $this->model->where('empresa_id', $this->user->empresa_id)->limit(100);
 
-      $query = $this->order_list($query);
+      if (isset($params['termo']) && !empty($params['termo'])) {
+         $query = $query->where(function ($subquery) use ($params) {
+            $subquery->orWhere('razao', 'like', '%' . $params['termo'] . '%')
+               ->orWhere('fantasia', 'like', '%' . $params['termo'] . '%')
+               ->orWhere('cnpj', 'like', '%' . $params['termo'] . '%');
+         });
+      }
+
+      $query = $query->get();
+
+      // $query = $this->order_list($query);
 
       return $query;
    }

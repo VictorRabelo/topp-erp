@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
 import { MessageService } from '../../../../services/message.service';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 /**
@@ -14,12 +14,20 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
  */
 @Injectable()
 export class InterceptService implements HttpInterceptor {
+   private returnUrl: string;
 
    constructor(
+      private router: Router,
       private message: MessageService,
       private redirect: Router,
       private modalCtrl: NgbModal
-   ) { }
+   ) {
+      this.router.events.subscribe(event => {
+         if (event instanceof NavigationEnd) {
+            this.returnUrl = event.url;
+         }
+      });
+   }
 
    // intercept request and add token
    intercept(
@@ -55,7 +63,7 @@ export class InterceptService implements HttpInterceptor {
 
                   localStorage.removeItem(environment.authTokenKey);
                   this.modalCtrl.dismissAll();
-                  this.redirect.navigate(['/auth']);
+                  this.redirect.navigate(['/auth'], { queryParams: { returnUrl: this.returnUrl } });
 
                } else {
                   this.message.toastError(error.error.message, 'Falha na requisição');

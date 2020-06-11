@@ -31,6 +31,22 @@ Route::group([
    });
 
    Route::group([
+      'prefix' => 'emitente'
+   ], function () {
+      Route::get('', 'EmitenteController@index');
+      Route::post('', 'EmitenteController@create');
+
+      //configs
+      Route::get('config/{id}', 'EmitenteController@configDados');
+      Route::put('config/{id}', 'EmitenteController@configUpdate');
+      Route::put('certificate/{id}', 'EmitenteController@configCertificate');
+
+      Route::get('{id}', 'EmitenteController@show');
+      Route::put('{id}', 'EmitenteController@update');
+      Route::delete('{id}', 'EmitenteController@destroy');
+   });
+
+   Route::group([
       'prefix' => 'product'
    ], function () {
       Route::get('', 'ProductController@index');
@@ -45,6 +61,7 @@ Route::group([
    ], function () {
       Route::get('', 'VendaController@index');
       Route::post('', 'VendaController@create');
+      Route::put('set-client/{venda_id}', 'VendaController@setClient');
       Route::get('{id}', 'VendaController@show');
       Route::put('{id}', 'VendaController@update');
       Route::delete('{id}', 'VendaController@destroy');
@@ -54,10 +71,9 @@ Route::group([
       'prefix' => 'venda_itens'
    ], function () {
       Route::post('', 'VendaItensController@create');
-      Route::get('{id_venda}', 'VendaItensController@index');
-      // Route::get('{id}', 'VendaItensController@show');
-      // Route::put('{id}', 'VendaItensController@update');
-      // Route::delete('{id}', 'VendaItensController@destroy');
+      Route::get('{venda_id}', 'VendaItensController@index');
+      Route::put('{item_id}', 'VendaItensController@update');
+      Route::delete('{item_id}', 'VendaItensController@destroy');
    });
 
    Route::group([
@@ -72,5 +88,25 @@ Route::group([
       Route::get('{id}', 'UserController@show');
       Route::put('{id}', 'UserController@update');
       Route::delete('{id}', 'UserController@destroy');
+   });
+
+   Route::group([
+      'prefix' => 'payment'
+   ], function () {
+      Route::get('', 'PaymentController@index');
+      Route::post('', 'PaymentController@create');
+      Route::get('{id}', 'PaymentController@show');
+      Route::put('{id}', 'PaymentController@update');
+      Route::delete('{id}', 'PaymentController@destroy');
+   });
+
+   Route::group([
+      'prefix' => 'nfce'
+   ], function () {
+      Route::get('', 'NFCeController@index');
+      Route::post('', 'NFCeController@create');
+      Route::get('{id}', 'NFCeController@show');
+      Route::put('{id}', 'NFCeController@update');
+      Route::delete('{id}', 'NFCeController@destroy');
    });
 });

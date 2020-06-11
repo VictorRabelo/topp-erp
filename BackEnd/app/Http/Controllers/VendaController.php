@@ -43,11 +43,8 @@ class VendaController extends Controller
       $request = $request->all();
       $dados = $this->repo->editar($request, $id);
 
-      if (is_array($dados)) {
-         return response()->json($dados, 500);
-      }
-
-      return response()->json(['message' => "Cadastro atualizado com sucesso!"], 201);
+      // return response()->json(['message' => "Venda Finalizada com sucesso!"], 201);
+      return response()->json($dados);
    }
 
    public function destroy(int $id)
@@ -59,5 +56,14 @@ class VendaController extends Controller
       }
 
       return response()->json(['message' => "Cadastro deletado com sucesso!"], 201);
+   }
+
+
+   public function setClient(Request $request, int $venda_id)
+   {
+      $request = $request->only('cliente_id', 'cliente', 'cpf');
+      $resp = $this->repo->set_cliente($request, $venda_id);
+
+      return response()->json(['message' => "Cliente adicionado com sucesso!"], 200);
    }
 }

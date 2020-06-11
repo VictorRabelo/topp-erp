@@ -1,0 +1,92 @@
+<div class="kt-portlet no-margin"
+   [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+
+   <div class="kt-portlet__head kt-portlet__head__custom">
+      <div class="kt-portlet__head-label">
+         <h3 class="kt-portlet__head-title">
+            <span>Finalizar Venda: </span>
+         </h3>
+      </div>
+
+   </div>
+   <div class="kt-form kt-portlet__body portlet-body-sm">
+
+      <div class="kt-portlet__body-progress">
+         <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
+
+      <div class="row">
+
+         <div class="col-sm-4 form-group">
+            <div class="form-group-sm">
+               <span>Subtotal:</span>
+               <input type="text" class="form-control" readonly currencyMask [(ngModel)]="vendaCurrent.subtotal">
+            </div>
+            <div class="form-group-sm">
+               <span>Desconto R$:</span>
+               <input type="text" class="form-control" [disabled]="paymentsCurrent.length > 0" currencyMask debounce
+                  [delay]="500" (func)="calc_desconto(1)" [(ngModel)]="vendaCurrent.desconto_b">
+            </div>
+            <div class="form-group-sm">
+               <span>Desconto %:</span>
+               <input type="text" class="form-control" [disabled]="paymentsCurrent.length > 0" currencyMask debounce
+                  [delay]="500" (func)="calc_desconto(2)" [(ngModel)]="vendaCurrent.descontop_b"
+                  [options]="{prefix:' ', suffix:' %'}">
+            </div>
+
+            <div class="form-group-sm">
+               <span>Desconto Total R$:</span>
+               <input type="text" class="form-control" readonly currencyMask [(ngModel)]="vendaCurrent.desconto_total">
+            </div>
+            <div class="form-group-sm">
+               <span>Desconto Total %:</span>
+               <input type="text" class="form-control" readonly currencyMask [(ngModel)]="vendaCurrent.descontop_total"
+                  [options]="{prefix:' ', suffix:' %'}">
+            </div>
+            <div class="form-group-sm">
+               <strong>Total R$:</strong>
+               <input type="text" class="form-control" readonly currencyMask [(ngModel)]="vendaCurrent.total">
+            </div>
+            <div class="form-group-sm">
+               <strong>Resto R$:</strong>
+               <input type="text" class="form-control" readonly currencyMask [(ngModel)]="vendaCurrent.resto">
+            </div>
+         </div>
+
+         <div class="col-sm-8 form-group">
+            <div class="form-group-sm">
+               <strong>Formas de Pagamento:</strong>
+               <select class="form-control" [(ngModel)]="payment" (change)="change_payment($event)">
+                  <option value="">Selecione uma opção</option>
+                  <option *ngFor="let pay of paymentsList; let i = index" [value]="pay.id">
+                     {{i+1 +' - '+ pay.forma}}
+                  </option>
+               </select>
+            </div>
+            <div class="form-group-sm">
+               <table class="table mb-0">
+                  <tr *ngFor="let payment of paymentsCurrent; let i = index">
+                     <td>{{payment.forma}}</td>
+                     <td>{{ payment.valor | currency:'R$' }}</td>
+                     <td>
+                        <button mat-icon-button color="warn" matTooltip="Remover Pagamento" (click)="remove_payment(i)">
+                           <i class="fas fa-trash"></i>
+                        </button>
+                     </td>
+                  </tr>
+               </table>
+            </div>
+         </div>
+
+      </div>
+
+
+   </div>
+   <div class="kt-portlet__footer" align="right">
+      <button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+      <button class="btn btn-sm btn-success" [disabled]="loading" (click)="submit()"
+         [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+         Finalizar
+      </button>
+   </div>
+</div>

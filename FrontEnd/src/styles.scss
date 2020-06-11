@@ -58,8 +58,18 @@ body {
 }
 
 .logo-thumb {
+   text-align: center;
    img {
       max-width: 100%;
+      border-radius: 8px;
+      max-height: 200px;
+   }
+}
+.logo-click:hover {
+   img {
+      margin-top: -4px;
+      transition: ease-in-out 0.2s;
+      box-shadow: 0 4px 10px 0 #bdbdbd;
    }
 }
 .kt-container {
@@ -136,7 +146,7 @@ legend {
 }
 
 .kt-portlet .portlet-body-sm {
-   padding: 0px 5px !important;
+   padding: 10px 8px !important;
 }
 
 .btn {
@@ -351,4 +361,42 @@ fieldset {
 
 .modal-xl {
    max-width: 900px;
+}
+
+.form-group-sm {
+   margin-bottom: 0.4rem;
+}
+
+.badge {
+   font-weight: 600;
+}
+
+.badge-alt-success {
+   background: #69e693;
+   color: #006900;
+}
+.badge-alt-primary {
+   background: #69a3e6;
+   color: #002e69;
+}
+.badge-alt-danger {
+   background: #e66969;
+   color: #690000;
+}
+
+.btn-alt-primary {
+   background: #2f87eb;
+   color: #ffffff;
+}
+.btn-alt-success {
+   background: #45c26f;
+   color: #ffffff;
+}
+
+.icon-back {
+   left: -20px;
+}
+
+.swal2-input[type="number"] {
+   max-width: 90% !important;
 }
