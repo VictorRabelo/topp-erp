@@ -105,6 +105,7 @@ Route::group([
    ], function () {
       Route::get('', 'NFCeController@index');
       Route::post('', 'NFCeController@create');
+      Route::post('print', 'NFCeController@print');
       Route::get('{id}', 'NFCeController@show');
       Route::put('{id}', 'NFCeController@update');
       Route::delete('{id}', 'NFCeController@destroy');

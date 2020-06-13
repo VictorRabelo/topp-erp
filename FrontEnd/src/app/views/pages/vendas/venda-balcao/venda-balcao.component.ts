@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { MessageService } from '../../../../services/message.service';
 import { VendaService } from '../../../../services/venda.service';
-import { NFCeService } from '../../../../services/nfce.service';
 import { ToolsService } from '../../../../services/tools.service';
 import { AppState } from '../../../../core/reducers';
 import { currentUser } from '../../../../core/auth';
@@ -12,6 +11,8 @@ import { ProdutoSearchComponent } from '../modais/produto-search/produto-search.
 import { ProdutoDetalheComponent } from '../modais/produto-detalhe/produto-detalhe.component';
 import { ClienteSearchComponent } from '../modais/cliente-search/cliente-search.component';
 import { VendaFinishComponent } from '../modais/venda-finish/venda-finish.component';
+import { GeraNotaComponent } from '../modais/gera-nota/gera-nota.component';
+import { FiscalService } from '../../../../services/fiscal.service';
 
 @Component({
    selector: 'kt-venda-balcao',
@@ -35,7 +36,7 @@ export class VendaBalcaoComponent implements OnInit {
       private ref: ChangeDetectorRef,
       private message: MessageService,
       private service: VendaService,
-      private serviceNFCe: NFCeService,
+      private serviceFiscal: FiscalService,
       private util: ToolsService,
       private ActiveRoute: ActivatedRoute,
       private modalCtrl: NgbModal,
@@ -50,7 +51,8 @@ export class VendaBalcaoComponent implements OnInit {
       this.ActiveRoute.params.subscribe(params => {
          if (params['id']) {
             const id = params['id'];
-            this.getDados(id)
+            this.getDados(id);
+            this.getItens(id);
          }
          else {
             this.router.navigate(['/vendas']);
@@ -81,7 +83,6 @@ export class VendaBalcaoComponent implements OnInit {
          this.loading = false;
 
          this.vendaCurrent = resp;
-         this.getItens(this.vendaCurrent.id);
 
          this.ref.detectChanges();
       }, erro => {
@@ -197,14 +198,27 @@ export class VendaBalcaoComponent implements OnInit {
       });
    }
 
-   gen_nfce() {
-      this.loading = true;
-      this.serviceNFCe.create(this.vendaCurrent).subscribe(resp => {
-         this.loading = false;
+   gen_nota(modelo) {
+      const modalRef = this.modalCtrl.open(GeraNotaComponent, { size: 'md', backdrop: 'static' });
+      modalRef.componentInstance.data = { 'venda': this.vendaCurrent, modelo: modelo };
+      modalRef.result.then(resp => {
+         if (resp) {
+            this.getDados(this.vendaCurrent.id);
+         }
+      });
+   }
+
+   print_nota(modelo) {
+      this.loadingItens = true;
+      this.ref.detectChanges();
+      this.serviceFiscal.printNFCe(this.vendaCurrent.nfce).subscribe((resp: any) => {
+         if (resp.pdf_url) {
+            window.open(resp.pdf_url, '_blank');
+         }
+         this.loadingItens = true;
          this.ref.detectChanges();
-         console.log(resp);
       }, erro => {
-         this.loading = false;
+         this.loadingItens = false;
          this.ref.detectChanges();
       });
    }

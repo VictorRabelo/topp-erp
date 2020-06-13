@@ -21,14 +21,18 @@ class NFCeController extends Controller
 
    public function create(Request $request)
    {
-      $request = $request->all('id');
-      $dados = $this->repo->emitir($request);
+      $data = $request->all();
+      $resp = $this->repo->emitir($data);
 
-      if (!is_array($dados)) {
-         return response()->json($dados, 500);
+      if (is_array($resp)) {
+         foreach ($resp as $row) {
+            echo "$row </br></br>";
+         }
+      } else {
+
+         return response()->json(['pdf_url' => $resp], 200);
       }
-
-      return response()->json(['message' => "NFCe Autorizada com sucesso!"], 201);
+      // return $resp;
    }
 
    public function show(int $id)
@@ -59,5 +63,12 @@ class NFCeController extends Controller
       }
 
       return response()->json(['message' => "Cadastro deletado com sucesso!"], 201);
+   }
+
+   public function print(Request $request)
+   {
+      $data = (object) $request->all();
+      $resp = $this->repo->printNota($data);
+      return response()->json($resp);
    }
 }

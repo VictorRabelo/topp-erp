@@ -87,15 +87,15 @@
 
                <div class="col-sm-3 form-group">
                   <span>NCM:</span>
-                  <input type="number" class="form-control" [(ngModel)]="dados.ncm" name="ncm">
+                  <input type="text" mask="00000000" class="form-control" [(ngModel)]="dados.ncm" name="ncm">
                </div>
                <div class="col-sm-3 form-group">
                   <span>CFOP:</span>
-                  <input type="number" class="form-control" [(ngModel)]="dados.cfop" name="cfop">
+                  <input type="text" mask="0000" class="form-control" [(ngModel)]="dados.cfop" name="cfop">
                </div>
                <div class="col-sm-3 form-group">
                   <span>CST:</span>
-                  <input type="number" class="form-control" [(ngModel)]="dados.cst" name="cst">
+                  <input type="text" mask="0009" class="form-control" [(ngModel)]="dados.cst" name="cst">
                </div>
                <div class="col-sm-3 form-group">
                   <span>Foto:</span>

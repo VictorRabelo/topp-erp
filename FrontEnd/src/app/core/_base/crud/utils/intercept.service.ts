@@ -63,7 +63,7 @@ export class InterceptService implements HttpInterceptor {
 
                   localStorage.removeItem(environment.authTokenKey);
                   this.modalCtrl.dismissAll();
-                  this.redirect.navigate(['/auth'], { queryParams: { returnUrl: this.returnUrl } });
+                  this.redirect.navigate(['/auth']);
 
                } else {
                   this.message.toastError(error.error.message, 'Falha na requisição');

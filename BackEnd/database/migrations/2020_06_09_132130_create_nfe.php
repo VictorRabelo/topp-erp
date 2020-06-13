@@ -23,8 +23,8 @@ class CreateNfe extends Migration
          $table->integer('cstatus');
          $table->string('status');
          $table->string('chave', 44);
-         $table->integer('recibo')->nullable();
-         $table->integer('protocolo')->nullable();
+         $table->string('recibo', 100)->nullable();
+         $table->string('protocolo', 100)->nullable();
          $table->text('xjust')->nullable();
          $table->timestamps();
       });

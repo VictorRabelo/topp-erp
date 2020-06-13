@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\models\Client;
+use App\models\NFCe;
 use App\models\Venda;
 use App\User;
 // use Hashids\Hashids;
@@ -45,6 +46,9 @@ class VendaRepositorie
       $dados->cliente = (isset($client->razao)) ? $client->razao : "Consumidor Final";
       $vendedor = User::find($dados->user_id);
       $dados->vendedor = (isset($vendedor->nome)) ? $vendedor->nome : "";
+
+      $nfce = NFCe::where('venda_id', $id)->where('cstatus', 100)->orderBy('created_at', 'desc')->first();
+      $dados->nfce = $nfce;
 
       // $dados = $this->return_padrao($dados);
 

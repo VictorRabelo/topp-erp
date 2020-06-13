@@ -42,6 +42,7 @@ import { EmitenteFormComponent } from './emitentes/emitente-form/emitente-form.c
 import { EmitenteConfigFormComponent } from './emitentes/emitente-config-form/emitente-config-form.component';
 import { EmitenteDetalheComponent } from './emitentes/emitente-detalhe/emitente-detalhe.component';
 import { EmitenteCertificateComponent } from './emitentes/emitente-certificate/emitente-certificate.component';
+import { GeraNotaComponent } from './vendas/modais/gera-nota/gera-nota.component';
 
 export const customCurrencyMaskConfig = {
    align: "right",
@@ -95,6 +96,7 @@ const routes: Routes = [
       EmitenteConfigFormComponent,
       EmitenteDetalheComponent,
       EmitenteCertificateComponent,
+      GeraNotaComponent,
    ],
    exports: [],
    imports: [
@@ -129,7 +131,8 @@ const routes: Routes = [
       GeraParcelasComponent,
       EmitenteFormComponent,
       EmitenteConfigFormComponent,
-      EmitenteCertificateComponent
+      EmitenteCertificateComponent,
+      GeraNotaComponent
    ],
    providers: []
 })

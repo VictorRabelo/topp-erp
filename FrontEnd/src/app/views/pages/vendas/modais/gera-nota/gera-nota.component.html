@@ -1,0 +1,35 @@
+<div class="kt-portlet no-margin"
+   [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+
+   <div class="kt-portlet__head kt-portlet__head__custom">
+      <div class="kt-portlet__head-label">
+         <h3 class="kt-portlet__head-title">
+            <span>Emissão de: {{ (dados.modelo == 65) ? 'NFC-e' : 'NF-e' }} </span>
+         </h3>
+      </div>
+
+   </div>
+   <div class="kt-form kt-portlet__body">
+
+      <div class="kt-portlet__body-progress">
+         <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
+
+      <div class="form-group">
+         <strong>Emitente: </strong>
+         <select class="form-control" [(ngModel)]="dados.emitente_id" placeholder="Selecione um emitente">
+            <!-- <option value="" selected>Selecione um emitente</option> -->
+            <option *ngFor="let item of emitentes" [value]="item.id">{{item.razao}} - {{item.cnpj}}</option>
+         </select>
+      </div>
+
+   </div>
+
+   <div class="kt-portlet__footer" align="right">
+      <button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+      <button class="btn btn-sm btn-success" [disabled]="loading || !dados.emitente_id" (click)="gera_nota()"
+         [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+         Emitir
+      </button>
+   </div>
+</div>
