@@ -9,6 +9,6 @@ class EstoqueSaida extends Model
    protected $table = "estoque_saida";
 
    protected $fillable = [
-      'produto_id', 'valor_unitario', 'quantidade', 'nota',
+      'venda_id', 'produto_id', 'valor_unitario', 'quantidade', 'nota',
    ];
 }

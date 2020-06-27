@@ -52,26 +52,26 @@ export class ProdutoDetalheComponent implements OnInit {
 
    add_item() {
 
-      this.item.venda_id = this.vendaCurrent.id;
+      // this.item.venda_id = this.vendaCurrent.id;
 
-      this.loading = true;
-      this.service.create_item(this.item).subscribe(resp => {
-         this.close(resp);
-      }, erro => {
-         this.loading = false;
-         this.ref.detectChanges();
-      });
+      // this.loading = true;
+      // this.service.create_item(this.item).subscribe(resp => {
+         this.close(this.item);
+      // }, erro => {
+      //    this.loading = false;
+      //    this.ref.detectChanges();
+      // });
    }
 
    edit_item() {
 
-      this.loading = true;
-      this.service.update_item(this.item, this.item.id).subscribe(resp => {
-         this.close(resp);
-      }, erro => {
-         this.loading = false;
-         this.ref.detectChanges();
-      });
+      // this.loading = true;
+      // this.service.update_item(this.item, this.item.id).subscribe(resp => {
+         this.close(this.item);
+      // }, erro => {
+      //    this.loading = false;
+      //    this.ref.detectChanges();
+      // });
    }
 
    calc_desconto(type = 1) {

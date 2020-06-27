@@ -54,15 +54,19 @@ class NFCeController extends Controller
       return response()->json(['message' => "Cadastro atualizado com sucesso!"], 201);
    }
 
-   public function destroy(int $id)
+   public function destroy(Request $request, int $id)
    {
-      $dados = $this->repo->delete($id);
+      $params = $request->all();
+      $resp = $this->repo->cancela($params, $id);
+      if (is_array($resp)) {
+         foreach ($resp as $row) {
+            echo "$row </br></br>";
+         }
+      } else {
 
-      if (is_array($dados)) {
-         return response()->json($dados, 500);
+         return response()->json(['pdf_url' => $resp], 200);
       }
 
-      return response()->json(['message' => "Cadastro deletado com sucesso!"], 201);
    }
 
    public function print(Request $request)

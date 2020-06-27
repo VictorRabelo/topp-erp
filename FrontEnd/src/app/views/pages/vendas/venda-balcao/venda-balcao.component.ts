@@ -179,9 +179,26 @@ export class VendaBalcaoComponent implements OnInit {
       modalRef.componentInstance.data = this.vendaCurrent;
       modalRef.result.then(resp => {
          if (resp) {
-            this.getDados(this.vendaCurrent.id);
+            this.setClient(resp);
          }
       });
+   }
+
+   setClient(item) {
+      const request = {
+         'cliente_id': item.id,
+         'cliente': item.razao,
+         'cpf': item.cnpj,
+      }
+
+      this.loading = true;
+      this.service.setClient(request, this.vendaCurrent.id).subscribe(resp => {
+         this.getDados(this.vendaCurrent.id);
+         this.getItens(this.vendaCurrent.id);
+      }, erro => {
+         this.loading = false;
+         this.ref.detectChanges();
+      })
    }
 
    finish() {
@@ -194,6 +211,7 @@ export class VendaBalcaoComponent implements OnInit {
       modalRef.result.then(resp => {
          if (resp) {
             this.getDados(this.vendaCurrent.id);
+            this.getItens(this.vendaCurrent.id);
          }
       });
    }
@@ -204,6 +222,7 @@ export class VendaBalcaoComponent implements OnInit {
       modalRef.result.then(resp => {
          if (resp) {
             this.getDados(this.vendaCurrent.id);
+            this.getItens(this.vendaCurrent.id);
          }
       });
    }
@@ -215,7 +234,7 @@ export class VendaBalcaoComponent implements OnInit {
          if (resp.pdf_url) {
             window.open(resp.pdf_url, '_blank');
          }
-         this.loadingItens = true;
+         this.loadingItens = false;
          this.ref.detectChanges();
       }, erro => {
          this.loadingItens = false;

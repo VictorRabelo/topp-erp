@@ -13,6 +13,8 @@ export class GeraParcelasComponent implements OnInit {
    payment: any = {};
    screen: number;
 
+   loading: boolean = false;
+
    @Input() data;
 
    constructor(

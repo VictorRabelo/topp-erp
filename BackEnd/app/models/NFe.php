@@ -4,11 +4,11 @@ namespace App\models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class NFCe extends Model
+class NFe extends Model
 {
-   protected $table = "nfce";
+   protected $table = "nfe";
 
-   protected $fillable = ['empresa_id', 'emitente_id', 'venda_id', 'numero', 'tpamb', 'cstatus', 'status', 'chave', 'recibo', 'protocolo', 'xjust',];
+   protected $guarded = ['id'];
 
    public function emitente()
    {

@@ -96,4 +96,6 @@ export class UsersComponent implements OnInit {
       });
    }
 
+   filter() {}
+
 }

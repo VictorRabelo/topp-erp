@@ -396,7 +396,7 @@ class NFCeXML
             Storage::disk('public')->put($path, $xml);
 
             return array(
-               'empresa_id' => $this->empresa->id,
+               'emitente_id' => $this->empresa->id,
                'venda_id' => $this->venda->id,
                'numero' => $this->numero,
                'tpamb' => $this->tpamb,
@@ -419,28 +419,105 @@ class NFCeXML
    }
 
 
+   public function cancelarNFCe($nota, $business)
+   {
+      $mesPath = date('Y-m', strtotime($nota->created_at));
+      $tpambPath = ($nota->tpamb == 1) ? "producao" : "homologacao";
+
+      $this->config  = [
+         "atualizacao" => date('Y-m-d h:i:s'),
+         "tpAmb" => $nota->tpamb,
+         "razaosocial" => $business->razao,
+         "cnpj" => $business->cnpj, // PRECISA SER VÁLIDO
+         "ie" => $business->inscricao_estadual, // PRECISA SER VÁLIDO
+         "siglaUF" => $business->uf,
+         "schemes" => "PL_009_V4",
+         "versao" => self::VERSION,
+         "tokenIBPT" => "AAAAAAA",
+         "CSC" => ($nota->tpamb == 1) ? $business->config->csc : $business->config->cscHomolog,
+         "CSCid" => ($nota->tpamb == 1) ? $business->config->cscid : $business->config->cscidHomolog,
+         "aProxyConf" => [
+            "proxyIp" => "",
+            "proxyPort" => "",
+            "proxyUser" => "",
+            "proxyPass" => ""
+         ]
+      ];
+
+      $configJson = json_encode($this->config);
+
+      $certificate = Storage::disk('public')->get("{$business->cnpj}/certificates/{$business->file_pfx}");
+
+      // try {
+      $tools = new Tools($configJson, Certificate::readPfx($certificate, $business->senha_pfx));
+      $tools->model('65');
+
+      $chave = $nota->chave;
+      $xJust = $nota->xjust;
+      $nProt = $nota->protocolo;
+      $response = $tools->sefazCancela($chave, $xJust, $nProt);
+
+      $stdCl = new Standardize($response);
+      $std = $stdCl->toStd();
+
+      //verifique se o evento foi processado
+      if ($std->cStat != 128) {
+         //houve alguma falha e o evento não foi processado
+         return ["{$std->cStat} - {$std->xMotivo}"];
+      } else {
+         $cStat = $std->retEvento->infEvento->cStat;
+         if ($cStat == '101' || $cStat == '135' || $cStat == '155') {
+
+            $pathXML = "{$nota->cnpj}/xml/nfc/autorizados/{$mesPath}/{$tpambPath}/{$nota->chave}.xml";
+
+            $docxml = Storage::disk('public')->get($pathXML);
+
+            //SUCESSO PROTOCOLAR A SOLICITAÇÂO ANTES DE GUARDAR
+            $xml = Complements::cancelRegister($docxml, $response);
+
+            //grave o XML protocolado
+            $path = "{$nota->cnpj}/xml/nfc/cancelados/{$mesPath}/{$tpambPath}/{$nota->chave}.xml";
+
+            Storage::disk('public')->put($path, $xml);
+
+            $nota->cstatus = $std->retEvento->infEvento->cStat;
+            $nota->status = $std->retEvento->infEvento->xMotivo;
+
+            return $nota;
+         } else {
+            //houve alguma falha no evento 
+            return ["{$std->retEvento->infEvento->cStat} - {$std->retEvento->infEvento->xMotivo}"];
+         }
+      }
+      // } catch (\Exception $e) {
+      //    return [$e->getMessage()];
+      // }
+   }
+
+
    public function geraPDF($nota)
    {
       // try {
 
-         $mesPath = date('Y-m', strtotime($nota->created_at));
-         $tpambPath = ($nota->tpamb == 1) ? "producao" : "homologacao";
+      $mesPath = date('Y-m', strtotime($nota->created_at));
+      $tpambPath = ($nota->tpamb == 1) ? "producao" : "homologacao";
+      $locationPath = ($nota->cstatus == 100) ? "autorizados" : "cancelados";
 
-         $pathXML = "{$nota->cnpj}/xml/nfc/autorizados/{$mesPath}/{$tpambPath}/{$nota->chave}.xml";
+      $pathXML = "{$nota->cnpj}/xml/nfc/{$locationPath}/{$mesPath}/{$tpambPath}/{$nota->chave}.xml";
 
-         $docxml = Storage::disk('public')->get($pathXML);
+      $docxml = Storage::disk('public')->get($pathXML);
 
-         $logo = "";
+      $logo = "";
 
-         $danfce = new Danfce($docxml);
-         $danfce->debugMode(false);
-         $danfce->creditsIntegratorFooter('TOPP Automação - www.toppautomacao.com.br');
-         $pdf = $danfce->render($logo);
+      $danfce = new Danfce($docxml);
+      $danfce->debugMode(false);
+      $danfce->creditsIntegratorFooter('TOPP Automação - www.toppautomacao.com.br');
+      $pdf = $danfce->render($logo);
 
-         $pathPDF = "{$nota->cnpj}/pdf/nfc/{$mesPath}/{$tpambPath}/{$nota->chave}.pdf";
-         Storage::disk('public')->put($pathPDF, $pdf);
+      $pathPDF = "{$nota->cnpj}/pdf/nfc/{$mesPath}/{$tpambPath}/{$nota->chave}.pdf";
+      Storage::disk('public')->put($pathPDF, $pdf);
 
-         return Storage::url($pathPDF);
+      return Storage::url($pathPDF);
    }
 
    public function getPDF($nota)
@@ -457,6 +534,61 @@ class NFCeXML
       }
 
       return $pdf = Storage::url($pathPDF);
+   }
+
+   public function consultarChave($nota, $business)
+   {
+      $mesPath = date('Y-m', strtotime($nota->created_at));
+      $tpambPath = ($nota->tpamb == 1) ? "producao" : "homologacao";
+
+      $this->config  = [
+         "atualizacao" => date('Y-m-d h:i:s'),
+         "tpAmb" => $nota->tpamb,
+         "razaosocial" => $business->razao,
+         "cnpj" => $business->cnpj, // PRECISA SER VÁLIDO
+         "ie" => $business->inscricao_estadual, // PRECISA SER VÁLIDO
+         "siglaUF" => $business->uf,
+         "schemes" => "PL_009_V4",
+         "versao" => self::VERSION,
+         "tokenIBPT" => "AAAAAAA",
+         "CSC" => ($nota->tpamb == 1) ? $business->config->csc : $business->config->cscHomolog,
+         "CSCid" => ($nota->tpamb == 1) ? $business->config->cscid : $business->config->cscidHomolog,
+         "aProxyConf" => [
+            "proxyIp" => "",
+            "proxyPort" => "",
+            "proxyUser" => "",
+            "proxyPass" => ""
+         ]
+      ];
+
+      $configJson = json_encode($this->config);
+
+      $certificate = Storage::disk('public')->get("{$business->cnpj}/certificates/{$business->file_pfx}");
+
+      // try {
+      $tools = new Tools($configJson, Certificate::readPfx($certificate, $business->senha_pfx));
+      $tools->model('65');
+
+      $chave = $nota->chave;
+      $response = $tools->sefazConsultaChave($chave);
+
+      $stdCl = new Standardize($response);
+      $std = $stdCl->toStd();
+
+      //verifique se o evento foi processado
+      $cStat = $std->cStat;
+      if ($cStat == '101' || $cStat == '135' || $cStat == '155') {
+
+         $nota->cstatus = $std->cStat;
+         $nota->status = $std->xMotivo;
+
+         return $nota;
+      } else {
+         //houve alguma falha no evento 
+         return ["{$std->cStat} - {$std->xMotivo}"];
+      }
+
+      // return $std;
    }
 
    /**

@@ -3,8 +3,11 @@
 namespace App\Repositories;
 
 use App\models\Client;
+use App\models\EstoqueSaida;
 use App\models\NFCe;
+use App\models\Product;
 use App\models\Venda;
+use App\models\VendaItens;
 use App\User;
 // use Hashids\Hashids;
 use Illuminate\Support\Facades\Auth;
@@ -79,6 +82,8 @@ class VendaRepositorie
       $venda->desconto = $dados['desconto_b'];
       $venda->total = $dados['total'];
 
+      $this->move_estoque_saida($dados['id']);
+
       return $venda->save();
    }
    function gen_payments(array $payments, int $venda_id)
@@ -99,6 +104,25 @@ class VendaRepositorie
       }
 
       return true;
+   }
+   function move_estoque_saida($venda_id)
+   {
+      $itens = VendaItens::where('venda_id', $venda_id)->get();
+
+      foreach ($itens as $item) {
+         $dados = array(
+            'venda_id' => $item['venda_id'],
+            'produto_id' => $item['produto_id'],
+            'valor_unitario' => $item['valor_unitario'],
+            'quantidade' => $item['quantidade']
+         );
+
+         $mov = EstoqueSaida::create($dados);
+
+         $produto = Product::find($item['produto_id']);
+         $produto->estoque -= $item['quantidade'];
+         $produto->save();
+      }
    }
 
    public function delete(int $id)

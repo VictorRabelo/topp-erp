@@ -23,9 +23,20 @@
          <mat-spinner [diameter]="40"></mat-spinner>
       </div> -->
 
-      <div class="col-sm-8 form-group">
-         <input type="text" class="form-control" [(ngModel)]="filters.termo" placeholder="Pesquisar..." debounce
-            [delay]="500" (func)="list()">
+      <div class="row">
+         <div class="col-sm-7 form-group">
+            <input type="text" class="form-control" [(ngModel)]="filters.termo" placeholder="Pesquisar..." debounce
+               [delay]="500" (func)="list()">
+         </div>
+
+         <div class="col-sm-5 form-group" *ngIf="!source.nfe">
+            <button class="btn btn-sm btn-primary">
+               Inserir Manual
+            </button>
+            <button class="btn btn-sm btn-info" (click)="cadastro_cliente()">
+               Cadastro rápido
+            </button>
+         </div>
       </div>
 
       <div class="table-responsive">

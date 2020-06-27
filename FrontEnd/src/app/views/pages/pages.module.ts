@@ -43,6 +43,9 @@ import { EmitenteConfigFormComponent } from './emitentes/emitente-config-form/em
 import { EmitenteDetalheComponent } from './emitentes/emitente-detalhe/emitente-detalhe.component';
 import { EmitenteCertificateComponent } from './emitentes/emitente-certificate/emitente-certificate.component';
 import { GeraNotaComponent } from './vendas/modais/gera-nota/gera-nota.component';
+import { NfceComponent } from './nfce/nfce.component';
+import { NfeComponent } from './nfe/nfe.component';
+import { NfeFormComponent } from './nfe/nfe-form/nfe-form.component';
 
 export const customCurrencyMaskConfig = {
    align: "right",
@@ -69,6 +72,9 @@ const routes: Routes = [
    { path: 'produtos', component: ProdutosComponent },
    { path: 'emitentes', component: EmitentesComponent },
    { path: 'vendas', component: VendasComponent },
+   { path: 'nfe', component: NfeComponent },
+   { path: 'nfce', component: NfceComponent },
+   { path: 'nfe/:id', component: NfeFormComponent },
    { path: 'emitente/:id', component: EmitenteDetalheComponent },
    { path: 'venda_standart/:id', component: VendaBalcaoComponent }
 ];
@@ -97,6 +103,9 @@ const routes: Routes = [
       EmitenteDetalheComponent,
       EmitenteCertificateComponent,
       GeraNotaComponent,
+      NfceComponent,
+      NfeComponent,
+      NfeFormComponent
    ],
    exports: [],
    imports: [
@@ -132,7 +141,8 @@ const routes: Routes = [
       EmitenteFormComponent,
       EmitenteConfigFormComponent,
       EmitenteCertificateComponent,
-      GeraNotaComponent
+      GeraNotaComponent,
+      NfeFormComponent
    ],
    providers: []
 })

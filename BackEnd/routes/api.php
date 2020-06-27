@@ -101,6 +101,28 @@ Route::group([
    });
 
    Route::group([
+      'prefix' => 'nfe'
+   ], function () {
+      Route::get('', 'NFeController@index');
+      Route::post('', 'NFeController@create');
+
+      Route::post('emitir', 'NFeController@transmitir');
+
+      Route::get('itens', 'NFeController@index_item');
+      Route::post('itens', 'NFeController@create_item');
+      Route::put('itens/{id}', 'NFeController@update_item');
+      Route::delete('itens/{id}', 'NFeController@destroy_item');
+
+      Route::post('payment', 'NFeController@create_payment');
+      Route::delete('payment/{id}', 'NFeController@destroy_payment');
+
+      Route::get('print/{id}', 'NFeController@print');
+      Route::get('{id}', 'NFeController@show');
+      Route::put('{id}', 'NFeController@update');
+      Route::post('{id}', 'NFeController@destroy');
+   });
+
+   Route::group([
       'prefix' => 'nfce'
    ], function () {
       Route::get('', 'NFCeController@index');
@@ -108,6 +130,6 @@ Route::group([
       Route::post('print', 'NFCeController@print');
       Route::get('{id}', 'NFCeController@show');
       Route::put('{id}', 'NFCeController@update');
-      Route::delete('{id}', 'NFCeController@destroy');
+      Route::post('{id}', 'NFCeController@destroy');
    });
 });

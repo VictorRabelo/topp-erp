@@ -18,8 +18,24 @@ export class FiscalService {
       return this.http.post<any[]>(`${this.url}/nfce`, data);
    }
 
+   cancelNFCe(data: any, id: number): Observable<any[]> {
+      return this.http.post<any[]>(`${this.url}/nfce/${id}`, data);
+   }
+
    printNFCe(data: any): Observable<any[]> {
       return this.http.post<any[]>(`${this.url}/nfce/print`, data);
+   }
+
+   createNFe(data: any): Observable<any[]> {
+      return this.http.post<any[]>(`${this.url}/nfe`, data);
+   }
+
+   cancelNFe(data: any, id: number): Observable<any[]> {
+      return this.http.post<any[]>(`${this.url}/nfe/${id}`, data);
+   }
+
+   printNFe(data: any): Observable<any[]> {
+      return this.http.post<any[]>(`${this.url}/nfe/print`, data);
    }
 
 }

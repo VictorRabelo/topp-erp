@@ -1,0 +1,355 @@
+<div class="kt-portlet" [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+
+   <div class="kt-portlet__head kt-portlet__head__custom">
+      <div class="kt-portlet__head-label">
+         <button mat-icon-button matTooltip="Voltar" class="icon-back" [routerLink]="'/nfe'">
+            <i class="fa fa-arrow-left"></i>
+         </button>
+         <h3 class="kt-portlet__head-title">
+            Nota Fiscal Eletrônica:
+            <span class="badge badge-secondary" *ngIf="nfe.cstatus == 1">{{nfe.status}}</span>
+            <span class="badge badge-danger"
+               *ngIf="nfe.cstatus == 101 || nfe.cstatus == 135 || nfe.cstatus == 155">{{nfe.status}}</span>
+            <span class="badge badge-success" *ngIf="nfe.cstatus == 100">{{nfe.status}}</span>
+            <!-- <span class="text-sm"> {{ nfe.created_at | date: 'dd/MM/yyyy HH:mm' }}</span> -->
+         </h3>
+      </div>
+
+      <div class="kt-portlet__head-toolbar">
+
+         <button class="btn btn-sm btn-primary" [disabled]="loading" (click)="save()" *ngIf="nfe.cstatus == 1">
+            Salvar
+         </button>
+         <button class="btn btn-sm btn-info" (click)="printNFe()"
+            *ngIf="nfe.cstatus == 100 || nfe.cstatus == 101 || nfe.cstatus == 135 || nfe.cstatus == 155">
+            <i class="fas fa-print"></i>
+         </button>
+         <button class="btn btn-sm btn-danger" *ngIf="nfe.cstatus == 10">
+            Cancelar
+         </button>
+         <button class="btn btn-sm btn-success" (click)="selectEmitente()" *ngIf="nfe.cstatus == 1">
+            Transmitir
+         </button>
+
+      </div>
+   </div>
+
+   <div class="kt-form kt-portlet__body ">
+
+      <div class="kt-portlet__body-progress">
+         <mat-spinner [diameter]="40"></mat-spinner>
+      </div>
+
+
+      <mat-tab-group mat-align-tabs="center">
+         <mat-tab label="GERAL">
+
+            <div class="row">
+
+               <div class="col-sm-6 form-group">
+                  <span>Natureza da operação:</span>
+                  <select class="form-control">
+                     <option>Venda de Mercadoria</option>
+                  </select>
+               </div>
+
+               <div class="col-sm-2 form-group">
+                  <span>Número:</span>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.sequencia" readonly>
+               </div>
+               <div class="col-sm-2 form-group">
+                  <span>Série:</span>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.serie" readonly>
+               </div>
+               <div class="col-sm-2 form-group">
+                  <span>Tipo:</span>
+                  <select class="form-control" [(ngModel)]="nfe.tipo_nf">
+                     <option value="0">0 - Entrada</option>
+                     <option value="1">1 - Saída</option>
+                  </select>
+               </div>
+               <div class="col-sm-3 form-group">
+                  <span>Finalidade:</span>
+                  <select class="form-control" [(ngModel)]="nfe.finalidade_nf">
+                     <option value="1">1 - NF-e normal</option>
+                     <option value="2">2 - NF-e complementar</option>
+                     <option value="3">3 - NF-e de ajuste</option>
+                     <option value="4">4 - Devolução</option>
+                  </select>
+               </div>
+
+               <div class="col-sm-3 form-group">
+                  <span>Tipo operação:</span>
+                  <select class="form-control" [(ngModel)]="nfe.ind_pres">
+                     <option value="1">1 - Operação presencial</option>
+                     <option value="2">2 - Operação não presencial, pela Internet</option>
+                     <option value="3">3 - Operação não presencial, Teleatendimento</option>
+                     <option value="5">5 - Operação presencial fora do estabelecimento</option>
+                     <option value="9">9 - Operação não presencial, outros</option>
+                  </select>
+               </div>
+               <div class="col-sm-2 form-group">
+                  <span>Subtotal R$:</span>
+                  <input type="text" class="form-control" currencyMask [(ngModel)]="nfe.subtotal" readonly>
+               </div>
+               <div class="col-sm-2 form-group">
+                  <span>Desconto R$:</span>
+                  <input type="text" class="form-control" currencyMask [(ngModel)]="nfe.desconto">
+               </div>
+               <div class="col-sm-2 form-group">
+                  <span>Total R$:</span>
+                  <input type="text" class="form-control" currencyMask [(ngModel)]="nfe.total" readonly>
+               </div>
+
+            </div>
+
+         </mat-tab>
+
+         <mat-tab label="CLIENTE">
+
+            <div class="row">
+
+               <div class="col-sm-2 form-group">
+                  <span>Consumidor Final:</span>
+                  <select class="form-control" [(ngModel)]="nfe.ind_final">
+                     <option value="0">0 - Não</option>
+                     <option value="1">1 - Sim</option>
+                  </select>
+               </div>
+
+               <div class="col-sm-4 form-group">
+                  <strong>Razão Social: <strong *ngIf="nfe.cliente_id">{{nfe.cliente_id}}</strong></strong>
+                  <div class="input-group">
+                     <input type="text" class="form-control" [(ngModel)]="nfe.razao">
+                     <div class="input-group-append">
+                        <button class="input-group-text" (click)="add_cliente()">
+                           <i class="fas fa-search"></i>
+                        </button>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-4 form-group">
+                  <span>Nome Fantasia:</span>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.fantasia">
+               </div>
+
+               <div class="col-sm-2 form-group">
+                  <strong>CPF/CNPJ:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.cnpj">
+               </div>
+               <div class="col-sm-2 form-group">
+                  <span>Inscrição Estadual:</span>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.inscricao_estadual">
+               </div>
+               <div class="col-sm-4 form-group">
+                  <strong>Rua/Avenida:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.logradouro">
+               </div>
+               <div class="col-sm-1 form-group">
+                  <strong>Número:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.numero">
+               </div>
+               <div class="col-sm-4 form-group">
+                  <strong>Bairro:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.bairro">
+               </div>
+               <div class="col-sm-3 form-group">
+                  <span>Complemento:</span>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.complemento">
+               </div>
+               <div class="col-sm-3 form-group">
+                  <strong>Cidade:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.cidade">
+               </div>
+               <div class="col-sm-1 form-group">
+                  <strong>UF:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.uf">
+               </div>
+               <div class="col-sm-2 form-group">
+                  <strong>Código Cidade:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.ibge">
+               </div>
+            </div>
+
+         </mat-tab>
+         <mat-tab label="PRODUTOS">
+
+            <div class="table-responsive">
+               <table class="table  mb-0">
+                  <thead class="">
+                     <th width="29%">Produto</th>
+                     <th width="12%" class="text-right">Quant.</th>
+                     <th width="12%" class="text-right">Valor Unit.</th>
+                     <th width="12%" class="text-right">Total R$</th>
+                     <th width="20%" class="text-right">
+                        <button class="btn btn-sm btn-primary" [disabled]="loadingItens" (click)="search_item()"
+                           *ngIf="nfe.cstatus != 100 || nfe.cstatus != 101 || nfe.cstatus != 135 || nfe.cstatus != 155"
+                           [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loadingItens}">
+                           <i class="fas fa-plus-square"></i> Adicionar item
+                        </button>
+                     </th>
+                  </thead>
+                  <!-- </table>
+                  <div>
+                     <table class="table table-hover mb-0"> -->
+                  <tbody>
+                     <tr *ngFor="let item of ItemSource">
+                        <td width="29%">{{item.descricao | titlecase}}</td>
+                        <td width="12%" class="text-right">
+                           {{ item.quantidade | currency:' ' }}
+                        </td>
+                        <td width="12%" class="text-right">
+                           {{ item.valor_unitario | currency:'R$' }}
+                        </td>
+                        <td width="12%" class="text-right">
+                           {{ item.total | currency:'R$' }}
+                           <div class="text-danger" *ngIf="item.desconto > 0">
+                              {{ item.desconto | currency:'R$' }}
+                           </div>
+                        </td>
+                        <td width="20%" class="text-right">
+                           <button mat-icon-button color="primary" [disabled]="loadingItens" matTooltip="Alterar Item"
+                              (click)="open_item(item)"
+                              *ngIf="nfe.cstatus != 100 || nfe.cstatus != 101 || nfe.cstatus != 135 || nfe.cstatus != 155">
+                              <i class="fas fa-pen"></i>
+                           </button>
+                           <button mat-icon-button color="warn" [disabled]="loadingItens" matTooltip="Deletar Item"
+                              (click)="del_item_confirm(item)"
+                              *ngIf="nfe.cstatus != 100 || nfe.cstatus != 101 || nfe.cstatus != 135 || nfe.cstatus != 155">
+                              <i class="fas fa-trash"></i>
+                           </button>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+               <!-- </div> -->
+            </div>
+
+         </mat-tab>
+         <mat-tab label="TRANSPORTE">
+
+            <div class="row">
+               <div class="col-sm-4 form-group">
+                  <span>Frete:</span>
+                  <select class="form-control" [(ngModel)]="nfe.mod_frete">
+                     <option value="0">0 - Contratação do Frete por conta do Remetente (CIF)</option>
+                     <option value="1">1 - Contratação do Frete por conta do Destinatário (FOB)</option>
+                     <option value="2">2 - Contratação do Frete por conta de Terceiros</option>
+                     <option value="3">3 - Transporte Próprio por conta do Remetente</option>
+                     <option value="4">4 - Transporte Próprio por conta do Destinatário</option>
+                     <option value="9">9 - Sem Ocorrência de Transporte</option>
+                  </select>
+               </div>
+            </div>
+
+            <div class="row" *ngIf="nfe.mod_frete != 9">
+               <div class="col-sm-5 form-group">
+                  <strong>Razão Social: <strong
+                        *ngIf="nfe.transportadora_id">{{nfe.transportadora_id}}</strong></strong>
+                  <div class="input-group">
+                     <input type="text" class="form-control" [(ngModel)]="nfe.transportadora">
+                     <div class="input-group-append">
+                        <button class="input-group-text" (click)="add_transportadora()">
+                           <i class="fas fa-search"></i>
+                        </button>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-3 form-group">
+                  <strong>CNPJ:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.transp_cnpj">
+               </div>
+               <div class="col-sm-3 form-group">
+                  <strong>Inscrição Estadual:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.transp_inscricao_estadual">
+               </div>
+               <div class="col-sm-1 form-group">
+                  <strong>UF:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.transp_uf">
+               </div>
+               <div class="col-sm-2 form-group">
+                  <strong>Placa:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.transp_placa">
+               </div>
+               <div class="col-sm-1 form-group">
+                  <strong>UF Placa:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.transp_placaUF">
+               </div>
+               <div class="col-sm-2 form-group">
+                  <strong>Volume:</strong>
+                  <input type="text" class="form-control" currencyMask [(ngModel)]="nfe.transp_quantidade"
+                     [options]="{prefix:' '}">
+               </div>
+               <div class="col-sm-2 form-group">
+                  <strong>Especie:</strong>
+                  <input type="text" class="form-control" [(ngModel)]="nfe.transp_especie">
+               </div>
+               <div class="col-sm-2 form-group">
+                  <strong>Peso Bruto:</strong>
+                  <input type="text" class="form-control" currencyMask [(ngModel)]="nfe.transp_pesoBruto"
+                     [options]="{prefix:' '}">
+               </div>
+               <div class="col-sm-2 form-group">
+                  <strong>Peso Líquido:</strong>
+                  <input type="text" class="form-control" currencyMask [(ngModel)]="nfe.transp_pesoLiquido"
+                     [options]="{prefix:' '}">
+               </div>
+            </div>
+
+         </mat-tab>
+         <mat-tab label="PAGAMENTO">
+
+            <div class="row"
+               *ngIf="nfe.cstatus != 100 || nfe.cstatus != 101 || nfe.cstatus != 135 || nfe.cstatus != 155">
+               <div class="col-sm-4 form-group">
+                  <span>Formas de Pagamento:</span>
+                  <select class="form-control" [(ngModel)]="payment" (change)="change_payment($event)">
+                     <option value="">Selecione um opção</option>
+                     <option *ngFor="let payments of paymentSource" [value]="payments.id">{{payments.id}} -
+                        {{payments.forma}}</option>
+                  </select>
+               </div>
+            </div>
+
+            <div class="row" *ngIf="paymentSelect.length > 0">
+               <div class="col-sm-6">
+                  <table class="table">
+                     <thead>
+                        <th>Forma</th>
+                        <th class="text-right">Valor R$</th>
+                        <th class="text-right"></th>
+                     </thead>
+                     <tbody>
+                        <tr *ngFor="let item of paymentSelect">
+                           <td>{{item.forma}}</td>
+                           <td class="text-right">{{ item.valor | currency:'R$' }}</td>
+                           <td class="text-right">
+                              <button mat-icon-button color="warn" matTooltip="Deletar Pagamento"
+                                 (click)="remove_payment(item)"
+                                 *ngIf="nfe.cstatus != 100 || nfe.cstatus != 101 || nfe.cstatus != 135 || nfe.cstatus != 155">
+                                 <i class="fas fa-trash"></i>
+                              </button>
+                           </td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+
+         </mat-tab>
+         <mat-tab label="OBSERVAÇÕES">
+
+            <div class="row">
+               <div class="col-sm-12">
+                  <span>Informações adicionais:</span>
+                  <textarea class="form-control" style="height: 150px !important;"
+                     [(ngModel)]="nfe.infor_adicional"></textarea>
+               </div>
+            </div>
+
+         </mat-tab>
+      </mat-tab-group>
+
+
+   </div>
+</div>

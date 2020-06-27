@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNfe extends Migration
+class CreateNfce extends Migration
 {
    /**
     * Run the migrations.
@@ -13,10 +13,14 @@ class CreateNfe extends Migration
     */
    public function up()
    {
-      Schema::create('nfe', function (Blueprint $table) {
+      Schema::create('nfce', function (Blueprint $table) {
          $table->integerIncrements('id');
          $table->unsignedInteger('empresa_id');
          $table->foreign('empresa_id')->references('id')->on('empresas')->onDelete('cascade')->onUpdate('no action');
+
+         $table->unsignedInteger('emitente_id');
+         $table->foreign('emitente_id')->references('id')->on('emitentes')->onDelete('no action')->onUpdate('no action');
+
          $table->unsignedInteger('venda_id')->nullable();
          $table->integer('numero');
          $table->integer('tpamb');
@@ -37,6 +41,6 @@ class CreateNfe extends Migration
     */
    public function down()
    {
-      Schema::dropIfExists('nfe');
+      Schema::dropIfExists('nfce');
    }
 }

@@ -106,4 +106,6 @@ export class VendasComponent implements OnInit {
       });
    }
 
+
+   filter() {}
 }

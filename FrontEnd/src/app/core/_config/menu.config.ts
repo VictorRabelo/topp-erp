@@ -72,6 +72,16 @@ export class MenuConfig {
                // icon: 'flaticon2-browser-2',
                submenu: [
                   {
+                     title: 'NFe',
+                     icon: 'fas fa-file-alt',
+                     page: '/nfe'
+                  },
+                  {
+                     title: 'NFCe',
+                     icon: 'fas fa-receipt',
+                     page: '/nfce'
+                  },
+                  {
                      title: 'Emitentes',
                      icon: 'fas fa-building',
                      page: '/emitentes'

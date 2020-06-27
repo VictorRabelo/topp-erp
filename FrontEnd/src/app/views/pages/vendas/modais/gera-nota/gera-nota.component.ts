@@ -60,6 +60,8 @@ export class GeraNotaComponent implements OnInit {
    gera_nota() {
       if (this.dados.modelo == 55) {
 
+         this.close(this.dados);
+
       } else if (this.dados.modelo == 65) {
          this.dados.venda_id = this.venda.id;
          this.gerar_nfce();

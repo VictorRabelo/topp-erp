@@ -42,8 +42,10 @@
             </div>
             <div class="col-sm-6 form-group">
                <strong>Grupo de Permissões: </strong>
-               <select class="form-control" required name="permissions" #permissions="ngModel" [(ngModel)]="user.permissions">
-                  <option *ngFor="let permite of permissionsList" [value]="permite.id">{{permite.id}} - {{permite.descricao}}</option>
+               <select class="form-control" required name="permissions" #permissions="ngModel"
+                  [(ngModel)]="user.permissions">
+                  <option *ngFor="let permite of permissionsList" [value]="permite.id">{{permite.id}} -
+                     {{permite.descricao}}</option>
                </select>
             </div>
             <div class="col-sm-4 form-group" *ngIf="!user.id">
@@ -59,7 +61,7 @@
          <button class="btn btn-sm btn-info" [disabled]="loading" (click)="alterPassword()" *ngIf="user.id">
             <i class="fas fa-key"></i> Alterar Senha
          </button>
-         <button class="btn btn-sm btn-success" [disabled]="loading" (click)="submit()"
+         <button class="btn btn-sm btn-success" [disabled]="loading" type="submit"
             [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
             {{(user.id > 0) ? 'Atualizar' : 'Cadastrar'}}
          </button>

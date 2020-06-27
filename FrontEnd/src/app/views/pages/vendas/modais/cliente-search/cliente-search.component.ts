@@ -1,8 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToolsService } from '../../../../../services/tools.service';
 import { ClientService } from '../../../../../services/client.service';
 import { VendaService } from '../../../../../services/venda.service';
+import { ClienteFormComponent } from '../../../clientes/cliente-form/cliente-form.component';
 
 @Component({
    selector: 'kt-cliente-search',
@@ -13,7 +14,7 @@ export class ClienteSearchComponent implements OnInit {
 
    loading = false;
 
-   vendaCurrent: any = {};
+   source: any = {};
    dataSource = [];
    screen: number;
 
@@ -26,14 +27,15 @@ export class ClienteSearchComponent implements OnInit {
       private service: ClientService,
       private serviceVenda: VendaService,
       private util: ToolsService,
-      private modalActive: NgbActiveModal
+      private modalActive: NgbActiveModal,
+      private modalCtrl: NgbModal
    ) {
       this.screen = this.util.getScreen();
 
    }
 
    ngOnInit() {
-      this.vendaCurrent = this.data;
+      this.source = this.data;
       this.list();
    }
 
@@ -54,19 +56,15 @@ export class ClienteSearchComponent implements OnInit {
    }
 
    chage(item) {
+      this.close(item);
+   }
 
-      const request = {
-         'cliente_id': item.id,
-         'cliente': item.razao,
-         'cpf': item.cnpj,
-      }
-
-      this.loading = true;
-      this.serviceVenda.setClient(request, this.vendaCurrent.id).subscribe(resp => {
-         this.close(resp);
-      }, erro => {
-         this.loading = false;
-         this.ref.detectChanges();
+   cadastro_cliente() {
+      const modalRef = this.modalCtrl.open(ClienteFormComponent, { size: 'lg', backdrop: 'static' });
+      modalRef.result.then(resp => {
+         if (resp) {
+            this.list();
+         }
       })
    }
 
