@@ -16,6 +16,7 @@ import { LayoutConfigService, SplashScreenService, TranslationService } from './
 import { Store, select } from '@ngrx/store';
 import { AppState } from './core/reducers';
 import { currentUser } from './core/auth';
+import { MessageService } from './services/message.service';
 
 @Component({
    // tslint:disable-next-line:component-selector
@@ -28,6 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
    // Public properties
    title = 'TOPP - ERP';
    loader: boolean;
+   hide: boolean = false;
    private unsubscribe: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
 
 	/**
@@ -43,7 +45,8 @@ export class AppComponent implements OnInit, OnDestroy {
       private router: Router,
       private layoutConfigService: LayoutConfigService,
       private splashScreenService: SplashScreenService,
-      private store: Store<AppState>
+      private store: Store<AppState>,
+      private message: MessageService,
    ) {
 
       // register translations
@@ -54,14 +57,61 @@ export class AppComponent implements OnInit, OnDestroy {
       return new Observable<boolean>(observer => {
          observer.next(false);
          this.store.pipe(select(currentUser))
-            .subscribe(res => {
-               if (res != undefined) {
-
+            .subscribe((user: any) => {
+               if (user != undefined) {
+                  // this.alertaRegistro(user.registro.dias);
                   observer.next(true);
-
                }
             });
       })
+   }
+
+   alertaRegistro(data) {
+      // const hoje = new Date(); // Data de hoje
+      // const licenca = new Date(data); // Outra data no passado
+      // const diff = Math.abs(hoje.getTime() - licenca.getTime()); // Subtrai uma data pela outra
+      // const days = Math.round(diff / (1000 * 60 * 60 * 24)); // Divide o total pelo total de milisegundos correspondentes a 1 dia. (1000 milisegundos = 1 segundo).
+
+      // console.log(hoje);
+      // console.log(data);
+      // console.log(licenca);
+      // console.log(diff);
+
+      const days = data;
+
+      if (days == 0 && this.hide == false) {
+         this.registroWarning(`Sua licença vence <b>HOJE</b>`);
+         this.hide = true;
+      } else if ((days > 0 && days < 5) && this.hide == false) {
+         this.registroWarning(`Sua licença está vencida hà <b>${days} dias</b>`);
+         this.hide = true;
+      } else if ((days > 0 && days == 5) && this.hide == false) {
+         this.registroWarning(`Sua licença está vencida hà <b>${days} dias</b>! </br> O sistema será bloqueado amanhã!`);
+         this.hide = true;
+      } else if (days > 5) {
+         this.registroDanger(`Sua licença está vencida hà <b>${days} dias</b>! </br> Efetue o pagamento para liberação do sistema!`);
+      }
+      console.log(days);
+   }
+
+   registroWarning(msg) {
+      msg = msg + `</br></br> Entre em contato com a nossa central: </br> <b>(63)9 99632031</b>`;
+      this.message.swal.fire({
+         title: 'Atenção!',
+         icon: 'warning',
+         html: msg,
+         confirmButtonText: 'OK'
+      });
+   }
+   registroDanger(msg) {
+      msg = msg + `</br></br> Entre em contato com a nossa central: </br> <b>(63)9 99632031</b>`;
+      this.message.swal.fire({
+         title: 'Bloqueado!',
+         icon: 'error',
+         html: msg,
+         showConfirmButton: false,
+         allowOutsideClick: false
+      });
    }
 
 	/**

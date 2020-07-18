@@ -2,12 +2,18 @@
 
 namespace App\Repositories;
 
+use App\models\Caixa;
 use App\models\Client;
 use App\models\EstoqueSaida;
 use App\models\NFCe;
+use App\models\NFe;
+use App\models\NfeItens;
+use App\models\NfePayment;
+use App\models\Payment;
 use App\models\Product;
 use App\models\Venda;
 use App\models\VendaItens;
+use App\models\VendasPayments;
 use App\User;
 // use Hashids\Hashids;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +30,7 @@ class VendaRepositorie
 
    public function list($params)
    {
-      $query = $this->model->where('empresa_id', $this->user->empresa_id)->get();
+      $query = $this->model->where('empresa_id', $this->user->empresa_id)->orderBy('created_at', 'DESC')->get();
 
       // $query = $this->order_list($query);
 
@@ -53,6 +59,9 @@ class VendaRepositorie
       $nfce = NFCe::where('venda_id', $id)->where('cstatus', 100)->orderBy('created_at', 'desc')->first();
       $dados->nfce = $nfce;
 
+      $nfe = NFe::where('venda_id', $id)->where('cstatus', 100)->orderBy('created_at', 'desc')->first();
+      $dados->nfe = $nfe;
+
       // $dados = $this->return_padrao($dados);
 
       return $dados;
@@ -63,7 +72,7 @@ class VendaRepositorie
       $venda = $post['vendaCurrent'];
       $payments = $post['paymentsCurrent'];
 
-      $_gen_payments = $this->gen_payments($payments, $venda['id']);
+      $_gen_payments = $this->gen_payments($payments, $venda);
 
       if (!$_gen_payments) {
          return $_gen_payments;
@@ -82,30 +91,73 @@ class VendaRepositorie
       $venda->desconto = $dados['desconto_b'];
       $venda->total = $dados['total'];
 
-      $this->move_estoque_saida($dados['id']);
+      $resp = $venda->save();
 
-      return $venda->save();
+      if ($resp) {
+         $this->move_estoque_saida($venda->id);
+         $this->geraCaixa($venda);
+      }
+
+      return $resp;
    }
-   function gen_payments(array $payments, int $venda_id)
+   private function geraCaixa(object $venda)
    {
+      $caixa = new Caixa();
+      $caixa->empresa_id = $this->user->empresa_id;
+      $caixa->cliente_id = $venda->cliente_id;
+      $caixa->venda_id = $venda->id;
+      $caixa->tipo = 1;
+      $caixa->descricao = "Ref. Venda n° {$venda->id} Realizada no balcão";
+      $caixa->valor = $venda->total;
+      $caixa->save();
+   }
+   private function gen_payments(array $payments, array $venda)
+   {
+      $qtd_payment_troco = 0;
+      $total_pago = 0;
+      foreach ($payments as $pay) {
+         $dados = Payment::find($pay['id']);
+         if ($dados->more > 0) {
+            $qtd_payment_troco++;
+         }
+         $total_pago += $pay['valor'];
+      }
+
+      $total_pago -= $venda['total'];
+
+      $troco = ($qtd_payment_troco > 0) ? ($total_pago / $qtd_payment_troco) : 0;
+
       foreach ($payments as $payment) {
+         $dados = Payment::find($payment['id']);
+
          $data = [
-            'venda_id' => $venda_id,
+            'venda_id' => $venda['id'],
             'forma_id' => $payment['id'],
             'forma' => $payment['forma'],
             'valor' => $payment['valor'],
+            'troco' => ($dados->more > 0) ? $troco : 0,
             'obs' => (isset($payment['obs'])) ? $payment['obs'] : null
          ];
-         $query = DB::table('vendas_payments')->insertGetId($data);
-         if ($query < 1) {
-            DB::table('vendas_payments')->where('venda_id', $venda_id)->delete();
+
+         // print_r($data);
+
+         $pagamento = new VendasPayments();
+         $pagamento->fill($data);
+         $pagamento->save();
+
+         // print_r($pagamento);
+
+         // $query = DB::table('vendas_payments')->insertGetId($data);
+         if (!$pagamento->id) {
+            VendasPayments::where('venda_id', $venda['id'])->delete();
+            // DB::table('vendas_payments')->where('venda_id', $venda->id)->delete();
             return false;
          }
       }
 
       return true;
    }
-   function move_estoque_saida($venda_id)
+   private function move_estoque_saida($venda_id)
    {
       $itens = VendaItens::where('venda_id', $venda_id)->get();
 
@@ -137,5 +189,66 @@ class VendaRepositorie
       $resp = $venda->fill($post)->save();
 
       return $resp;
+   }
+
+   public function geraNFe(array $data)
+   {
+      $venda = $this->model->find($data['id']);
+      $client = Client::find($venda->cliente_id);
+      $itens = VendaItens::where('venda_id', $venda->id)->get();
+      $payments = DB::table('vendas_payments')->where('venda_id', $venda->id)->get();
+
+      $nfe = new NFe;
+
+      $nfe->empresa_id = $venda->empresa_id;
+      $nfe->venda_id = $venda->id;
+
+      if (!empty($client)) {
+         $nfe->cliente_id = $client->id;
+         $nfe->razao = $client->razao;
+         $nfe->fantasia = $client->fantasia;
+         $nfe->cnpj = $client->cnpj;
+         $nfe->inscricao_estadual = $client->inscricao_estadual;
+         $nfe->logradouro = $client->logradouro;
+         $nfe->numero = $client->numero;
+         $nfe->bairro = $client->bairro;
+         $nfe->complemento = $client->complemento;
+         $nfe->cidade = $client->cidade;
+         $nfe->uf = $client->uf;
+         $nfe->ibge = $client->ibge;
+      }
+
+      $nfe->subtotal = $venda->subtotal;
+      $nfe->desconto = $venda->desconto;
+      $nfe->total = $venda->total;
+
+      $nfe->status = "Aberta";
+      $nfe->cstatus = 1;
+
+      $nfe->save();
+
+      if ($nfe->id > 0) {
+         foreach ($itens as $item) {
+            $array['nfe_id'] = $nfe->id;
+            $array['produto_id'] = $item->produto_id;
+            $array['descricao'] = $item->descricao;
+            $array['quantidade'] = $item->quantidade;
+            $array['valor_unitario'] = $item->valor_unitario;
+            $array['desconto'] = $item->desconto;
+            $array['total'] = $item->total;
+
+            NfeItens::create($array);
+         }
+         foreach ($payments as $payment) {
+            $array['nfe_id'] = $nfe->id;
+            $array['forma_id'] = $payment->forma_id;
+            $array['forma'] = $payment->forma;
+            $array['valor'] = $payment->valor;
+            $array['obs'] = $payment->obs;
+            NfePayment::create($array);
+         }
+      }
+
+      return array("nfe_id" => $nfe->id);
    }
 }

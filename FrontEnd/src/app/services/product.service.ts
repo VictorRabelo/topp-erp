@@ -33,4 +33,8 @@ export class ProductService {
    delete(id: number): Observable<any[]> {
       return this.http.delete<any[]>(`${this.url}/product/${id}`);
    }
+
+   mov_estoque(data: any) {
+      return this.http.post<any[]>(`${this.url}/product/mov_estoque`, data);
+   }
 }

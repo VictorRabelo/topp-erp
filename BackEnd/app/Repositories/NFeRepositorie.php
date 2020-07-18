@@ -58,110 +58,8 @@ class NFeRepositorie
       return $nfc;
    }
 
-   public function emitir($data)
-   {
-      // return $data;
-      //dados do emitente
-      $emitente_id = $data['emitente_id'];
-      $emitente = Emitente::find($emitente_id);
-      $emitente->config = EmitenteConfig::where('emitente_id', $emitente_id)->where('modelo', 55)->first();
 
-      //dados da nota
-      $dados = NFe::find($data['id']);
-
-      //dados dos itens
-      $itens = NfeItens::with('produto')->where('nfe_id', $data['id'])->get();
-
-      //dados dos pagamentos
-      $payments = NfePayment::with('payment')->where('nfe_id', $data['id'])->get();
-
-      $nfe = new NFeXML($emitente, $dados, $itens, $payments);
-
-      $resp = $nfe->make();
-
-      if (isset($resp['cstatus']) && $resp['cstatus'] == 100) {
-         $dados->fill($resp);
-         $dados->save();
-
-         if ($resp['tpamb'] == 1) {
-            $emitente->config->seq += 1;
-         } else {
-            $emitente->config->seqHomolog += 1;
-         }
-
-         //atualiza a sequencia da nota
-         $emitente->config->save();
-
-         //retorna url do PDF
-         return $this->printNota($data['id']);
-      }
-
-      return $resp;
-   }
-
-   public function cancela($data, int $id)
-   {
-      $nota = $this->model->find($id);
-      $nota->xjust = $data['xjust'];
-
-      $emitente = Emitente::find($nota->emitente_id);
-      $emitente->config = EmitenteConfig::where('emitente_id', $nota->emitente_id)->where('modelo', 65)->first();
-
-      $nota->cnpj = $emitente->cnpj;
-
-      if ($nota->cstatus == 101 || $nota->cstatus == 135 || $nota->cstatus == 155) {
-         return $this->consultaNota($nota, $emitente);
-      }
-
-      $response = $this->nfce->cancelarNFCe($nota, $emitente);
-      // print_r($response);
-
-      //verifica se tem recibo
-      if (isset($response['protocolo'])) {
-
-         //verifica se ja existe registro parecido
-         // $nota = $this->editar($response, $nota->id);
-
-         // $urlPDF = $this->nfce->getPDF($nota);
-         // if ($urlPDF == false) {
-         //    $urlPDF = $this->nfce->geraPDF($nota);
-         // }
-
-         $this->consultaNota($nota, $emitente);
-
-         unset($nota->cnpj);
-         $nota = $response->save();
-
-         return $nota;
-      }
-
-      return $response;
-   }
-   function consultaNota($nota, $emitente)
-   {
-      $consulta = $this->nfce->consultarChave($nota, $emitente);
-      if (isset($consulta->cstatus)) {
-         unset($nota->cnpj);
-         return $nota =  $consulta->save();
-      }
-
-      return $consulta;
-   }
-
-   public function printNota(int $id)
-   {
-      $dados = $this->model->find($id);
-      $emitente = Emitente::find($dados->emitente_id);
-      $dados->cnpj = $emitente->cnpj;
-
-      $urlPDF = $this->nfe->getPDF($dados);
-      // if ($urlPDF == false) {
-      //    return array('pdf_url' => $this->nfce->geraPDF($nota));
-      // }
-
-      return array('pdf_url' => $urlPDF);
-   }
-
+   //itens
    public function create_item($data)
    {
       $item = NfeItens::create($data);
@@ -224,7 +122,7 @@ class NFeRepositorie
       return $query;
    }
 
-
+   //pagamentos
    public function create_payment($data)
    {
       $payment = NfePayment::create($data);
@@ -236,5 +134,93 @@ class NFeRepositorie
    {
       $payment = NfePayment::find($id);
       return $payment->delete();
+   }
+
+   //funções nota
+   public function emitir($data)
+   {
+      // return $data;
+      //dados do emitente
+      $emitente_id = $data['emitente_id'];
+      $emitente = Emitente::find($emitente_id);
+      $emitente->config = EmitenteConfig::where('emitente_id', $emitente_id)->where('modelo', 55)->first();
+
+      //dados da nota
+      $dados = NFe::find($data['id']);
+
+      //dados dos itens
+      $itens = NfeItens::with('produto')->where('nfe_id', $data['id'])->get();
+
+      //dados dos pagamentos
+      $payments = NfePayment::with('payment')->where('nfe_id', $data['id'])->get();
+
+      $nfe = new NFeXML($emitente, $dados, $itens, $payments);
+
+      $resp = $nfe->make();
+
+      if (isset($resp['cstatus']) && $resp['cstatus'] == 100) {
+         $dados->fill($resp);
+         $dados->save();
+
+         if ($resp['tpamb'] == 1) {
+            $emitente->config->seq += 1;
+         } else {
+            $emitente->config->seqHomolog += 1;
+         }
+
+         //atualiza a sequencia da nota
+         $emitente->config->save();
+
+         //retorna url do PDF
+         return $this->printNota($data['id']);
+      }
+
+      return $resp;
+   }
+
+   public function cancelar_nota($data)
+   {
+      //dados do emitente
+      $emitente_id = $data['emitente_id'];
+      $emitente = Emitente::find($emitente_id);
+      $emitente->config = EmitenteConfig::where('emitente_id', $emitente_id)->where('modelo', 55)->first();
+
+      //dados da nota
+      $dados = NFe::find($data['id']);
+      $dados->xjust = $data['xjust'];
+
+      $resp = $this->nfe->cancelarNFe($dados, $emitente);
+
+      // return $resp;
+
+      if (isset($resp->cstatus) && ($resp->cstatus == "101" || $resp->cstatus == "135" || $resp->cstatus == "155" || $resp->cstatus == "573")) {
+         return $this->consultaNota($resp, $emitente);
+      }
+
+      return $resp;
+   }
+
+   function consultaNota($nota, $emitente)
+   {
+      $consulta = $this->nfe->consultarChave($nota, $emitente);
+      if (isset($consulta->cstatus)) {
+         return $nota =  $consulta->save();
+      }
+
+      return $consulta;
+   }
+
+   public function printNota(int $id)
+   {
+      $dados = $this->model->find($id);
+      $emitente = Emitente::find($dados->emitente_id);
+      // $dados->cnpj = $emitente->cnpj;
+
+      $urlPDF = $this->nfe->getPDF($dados, $emitente);
+      // if ($urlPDF == false) {
+      //    return array('pdf_url' => $this->nfce->geraPDF($nota));
+      // }
+
+      return array('pdf_url' => $urlPDF);
    }
 }

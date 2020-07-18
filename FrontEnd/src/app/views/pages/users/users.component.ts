@@ -1,11 +1,14 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageService } from '../../../services/message.service';
 import { UserService } from '../../../services/user.service';
 import { ToolsService } from '../../../services/tools.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PermissionsFormComponent } from './permissions-form/permissions-form.component';
 import { UserFormComponent } from './user-form/user-form.component';
+import { AppState } from '../../../core/reducers';
+import { currentUser } from '../../../core/auth';
 
 @Component({
    selector: 'kt-users',
@@ -19,12 +22,16 @@ export class UsersComponent implements OnInit {
    dataSource = [];
    screen: number;
 
+   filters: any = {};
+   permissions: any = {};
+
    constructor(
       private ref: ChangeDetectorRef,
       private message: MessageService,
       private service: UserService,
       private util: ToolsService,
       private router: Router,
+      private store: Store<AppState>,
       private modalCtrl: NgbModal
    ) {
       this.screen = util.getScreen();
@@ -32,11 +39,21 @@ export class UsersComponent implements OnInit {
    }
 
    ngOnInit() {
+      this.getPermissions();
+   }
+
+   getPermissions() {
+      this.store.pipe(select(currentUser)).subscribe((resp: any) => {
+         if (resp) {
+            console.log(resp.permissions);
+            this.permissions = resp.permissions;
+         }
+      });
    }
 
    load_list() {
       this.loading = true;
-      this.service.getList({}).subscribe(resp => {
+      this.service.getList(this.filters).subscribe(resp => {
          this.loading = false;
          this.dataSource = resp;
          this.ref.detectChanges();
@@ -96,6 +113,8 @@ export class UsersComponent implements OnInit {
       });
    }
 
-   filter() {}
+   open_filters(content) {
+      this.modalCtrl.open(content, { size: 'md', backdrop: 'static' });
+   }
 
 }

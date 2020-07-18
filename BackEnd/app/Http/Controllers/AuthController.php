@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\UserRepositorie;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -52,7 +53,20 @@ class AuthController extends Controller
 
       $user['permissions'] = $permissions;
 
-      // print_r($id_permissions);
+      $empresa_id = (int) $user['empresa_id'];
+      $registro = DB::table('empresas')->where('id', $empresa_id)->first();
+
+      //verifica vencimento
+      $hoje = new \DateTime(date('Y-m-d'));
+      $licenca = new \DateTime($registro->licenca);
+
+      $dateInterval = $hoje->diff($licenca);
+
+      $registro->dias = ($hoje > $licenca) ? $dateInterval->days : $dateInterval->days * -1;
+
+      $user['registro'] = $registro;
+
+      // print_r($dateInterval);
 
       return response()->json($user);
    }

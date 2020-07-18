@@ -4,6 +4,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MessageService } from '../../../services/message.service';
 import { NFeService } from '../../../services/nfe.service';
 import { FiscalService } from '../../../services/fiscal.service';
+import { Store, select } from '@ngrx/store';
+import { AppState } from '../../../core/reducers';
+import { currentUser } from '../../../core/auth';
 
 @Component({
    selector: 'kt-nfe',
@@ -16,23 +19,37 @@ export class NfeComponent implements OnInit {
 
    dataSource = [];
 
+   filters: any = {};
+   permissions: any = {};
+
    constructor(
       private ref: ChangeDetectorRef,
       private message: MessageService,
       private service: NFeService,
       private serviceFiscal: FiscalService,
       private modalCtrl: NgbModal,
-      private router: Router
+      private router: Router,
+      private store: Store<AppState>,
    ) {
       this.load_list();
    }
 
    ngOnInit() {
+      this.getPermissions();
+   }
+
+   getPermissions() {
+      this.store.pipe(select(currentUser)).subscribe((resp: any) => {
+         if (resp) {
+            console.log(resp.permissions);
+            this.permissions = resp.permissions;
+         }
+      });
    }
 
    load_list() {
       this.loading = true;
-      this.service.getList({}).subscribe(resp => {
+      this.service.getList(this.filters).subscribe(resp => {
          this.loading = false;
          this.dataSource = resp;
          this.ref.detectChanges();
@@ -119,6 +136,8 @@ export class NfeComponent implements OnInit {
       });
    }
 
-   filters() { }
+   open_filters(content) {
+      this.modalCtrl.open(content, { size: 'md', backdrop: 'static' });
+   }
 
 }

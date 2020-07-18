@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\models\EstoqueEntrada;
+use App\models\EstoqueSaida;
 use App\models\Product;
 // use Hashids\Hashids;
 use Illuminate\Support\Facades\Auth;
@@ -11,169 +12,173 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductRepositorie
 {
-   function __construct()
-   {
-      $this->model = new Product();
-      $this->user = Auth::guard('api')->user();
-      // $this->hashids = new Hashids();
-   }
+    function __construct()
+    {
+        $this->model = new Product();
+        $this->user = Auth::guard('api')->user();
+        // $this->hashids = new Hashids();
+    }
 
-   public function list($params)
-   {
-      $query = $this->model->where('empresa_id', $this->user->empresa_id)->get();
+    public function list($params)
+    {
+        $query = $this->model->where('empresa_id', $this->user->empresa_id)->limit(100);
 
-      $query = $this->parse_dados($query);
+        if (isset($params['termo']) && !empty($params['termo'])) {
+            $query = $query->where(function ($subquery) use ($params) {
+                $subquery->orWhere('codigo_barras', 'like', '%' . $params['termo'] . '%')
+                    ->orWhere('referencia', 'like', '%' . $params['termo'] . '%')
+                    ->orWhere('descricao', 'like', '%' . $params['termo'] . '%');
+            });
+        }
 
-      return $query;
-   }
-   public function parse_dados($list)
-   {
+        $query = $query->get();
 
-      $array = array();
-      foreach ($list as $post) {
+        $query = $this->parse_dados($query);
 
-         $dados = $this->return_padrao($post);
+        return $query;
+    }
+    public function parse_dados($list)
+    {
+        $dados = [];
+        foreach ($list as $item) {
+            if (!empty($item->foto)) {
+                $item->foto_url = $this->set_foto($item->foto);
+            }
 
-         array_push($array, $dados);
-      }
+            array_push($dados, $item);
+        }
 
-      return $array;
-   }
+        // for ($i = 0; $i < count($list); $i++) {
+        //     print_r($list);
+        //     if (!empty($list[$i]->foto)) {
+        //         $list->foto_url = $this->set_foto($list->foto);
+        //     }
+        // }
 
-   public function novo($post)
-   {
-      // print_r($post);
-      $dados_padrao = $this->post_padrao($post);
+        return $dados;
+    }
 
-      $data = $this->model->create($dados_padrao);
-      // print_r($data);
-      $produto_id = (isset($data->id)) ? $data->id : 0;
+    public function novo($dados)
+    {
+        // print_r($post);
+        if (isset($dados['foto']) && isset($dados['photo_name'])) {
+            $dados['foto'] = $this->parse_foto($dados);
+        }
 
-      if ($produto_id > 0 && $dados_padrao['estoque'] > 0) {
-         $this->entra_estoque($produto_id, $dados_padrao['preco'], $dados_padrao['estoque']);
-      }
+        $dados = $this->model->create($dados);
+        // print_r($dados);
+        $produto_id = (isset($dados->id)) ? $dados->id : 0;
 
-      return $data;
-   }
+        if ($produto_id > 0 && $dados['estoque'] > 0) {
+            $this->entra_estoque($produto_id, $dados['preco'], $dados['estoque']);
+        }
 
-   public function getSingle(int $id)
-   {
-      $post = $this->model->find($id);
+        return $dados;
+    }
 
-      $dados_padrao = $this->return_padrao($post);
+    public function getSingle(int $id)
+    {
+        $dados = $this->model->find($id);
 
-      return $dados_padrao;
-   }
+        if (!empty($dados->foto)) {
+            $dados->foto_atual = $dados->foto;
+            $dados->foto_url = $this->set_foto($dados->foto);
+        }
 
-   public function editar($post, int $id)
-   {
-      $dados_padrao = $this->post_padrao($post);
+        return $dados;
+    }
 
-      $model = $this->model->find($id);
-      $model->fill($dados_padrao);
+    public function editar($data, int $id)
+    {
+        if (isset($data['foto']) && isset($data['photo_name'])) {
+            $data['foto'] = $this->parse_foto($data);
+        }
 
-      return $model->save();
-   }
+        $model = $this->model->find($id);
+        $model->fill($data);
 
-   public function delete(int $id)
-   {
-      $dados = $this->model->find($id);
-      return $dados->delete();
-   }
+        return $model->save();
+    }
 
-   private function return_padrao(object $dados)
-   {
-      $dados_return = [
-         'id'           => $dados->id,
-         'empresa_id' => $dados->empresa_id,
-         'codigo_barras' => $dados->codigo_barras,
-         'referencia' => $dados->referencia,
-         'descricao' => $dados->descricao,
-         'custo' => $dados->custo,
-         'margem' => $dados->margem,
-         'preco' => $dados->preco,
-         'estoque' => $dados->estoque,
-         'medida' => $dados->medida,
-         'origin' => $dados->origin,
-         'ncm' => $dados->ncm,
-         'cfop' => $dados->cfop,
-         'cst' => $dados->cst,
-         'foto_atual' => $dados->foto,
-         'foto_url' => $this->set_foto($dados->foto),
-      ];
+    public function delete(int $id)
+    {
+        $dados = $this->model->find($id);
+        return $dados->delete();
+    }
 
-      return $dados_return;
-   }
-   private function post_padrao(array $post)
-   {
-      $dados_padrao = [
-         'empresa_id'      => $this->user->empresa_id,
-         'codigo_barras'   => (isset($post['codigo_barras'])) ? $post['codigo_barras'] : null,
-         'referencia'      => (isset($post['referencia'])) ? $post['referencia'] : null,
-         'descricao'       => (isset($post['descricao'])) ? $post['descricao'] : null,
-         'custo'           => (isset($post['custo'])) ? $post['custo'] : 0,
-         'margem'          => (isset($post['margem'])) ? $post['margem'] : 0,
-         'preco'           => (isset($post['preco'])) ? $post['preco'] : 0,
-         'estoque'         => (isset($post['estoque'])) ? $post['estoque'] : 0,
-         'medida'          => (isset($post['medida'])) ? $post['medida'] : 'UN',
-         'origin'          => (isset($post['origin'])) ? $post['origin'] : 0,
-         'ncm'             => (isset($post['ncm'])) ? $post['ncm'] : null,
-         'cfop'            => (isset($post['cfop'])) ? $post['cfop'] : null,
-         'cst'             => (isset($post['cst'])) ? $post['cst'] : null,
-      ];
+    //movimento do estoque
+    private function entra_estoque(int $produto_id, $valor, $quantidade, $nota = null)
+    {
+        $entrada = new EstoqueEntrada();
+        $entrada->produto_id = $produto_id;
+        $entrada->valor_unitario = $valor;
+        $entrada->quantidade = $quantidade;
+        $entrada->nota = $nota;
+        return $entrada->save();
+    }
 
-      if (isset($post['foto']) && $post['foto'] != "") {
-         $dados_padrao['foto'] = $this->parse_foto($post);
-      }
+    public function estoque_mov($data)
+    {
+        if ($data['tipo'] == 1) {
+            $model = new EstoqueEntrada();
+        } else {
+            $model = new EstoqueSaida();
+        }
 
-      return $dados_padrao;
-   }
+        $model->produto_id = $data['produto_id'];
+        $model->valor_unitario = $data['valor_unitario'];
+        $model->quantidade = $data['quantidade'];
+        // $model->nota = $nota;
+        $resp = $model->save();
 
+        if ($resp) {
+            $produto = $this->model->find($data['produto_id']);
 
-   //movimento do estoque
-   private function entra_estoque(int $produto_id, $valor, $quantidade, $nota = null)
-   {
-      $entrada = new EstoqueEntrada();
-      $entrada->produto_id = $produto_id;
-      $entrada->valor_unitario = $valor;
-      $entrada->quantidade = $quantidade;
-      $entrada->nota = $nota;
-      return $entrada->save();
-   }
+            if ($data['tipo'] == 1) {
+                $produto->estoque += $data['quantidade'];
+            } else {
+                $produto->estoque -= $data['quantidade'];
+            }
+
+            $produto->save();
+        }
+
+        return $resp;
+    }
 
 
 
-   // utilidades
-   private function parse_foto($data)
-   {
-      if (isset($data['foto']) && $data['foto'] != '') {
+    // utilidades
+    private function parse_foto($data)
+    {
+        if (isset($data['foto']) && isset($data['photo_name'])) {
 
-         $this->_deletePhotoIfExists($data);
+            $this->_deletePhotoIfExists($data);
 
-         $content = base64_decode($data['foto'][0]);
-         $file = fopen('php://temp', 'r+');
-         fwrite($file, $content);
-         $photo_name = md5(
-            uniqid(
-               microtime(),
-               true
-            )
-         ) . '.' . pathinfo($data['photo_name'], PATHINFO_EXTENSION);
+            $content = base64_decode($data['foto'][0]);
+            $file = fopen('php://temp', 'r+');
+            fwrite($file, $content);
+            $photo_name = md5(
+                uniqid(
+                    microtime(),
+                    true
+                )
+            ) . '.' . pathinfo($data['photo_name'], PATHINFO_EXTENSION);
 
-         Storage::disk('public')
-            ->put('fotos/' . $photo_name, $file);
-         return $photo_name;
-      }
-   }
-   private function _deletePhotoIfExists(array $data): void
-   {
-      if (array_key_exists('foto_atual', $data) && $data['foto_atual'] != null) {
-         Storage::disk('public')
-            ->delete('fotos/' . $data['foto_atual']);
-      }
-   }
-   private function set_foto($foto)
-   {
-      return Storage::url('fotos/' . $foto);
-   }
+            Storage::disk('public')
+                ->put("{$this->user->cnpj}/fotos/" . $photo_name, $file);
+            return $photo_name;
+        }
+    }
+    private function _deletePhotoIfExists(array $data): void
+    {
+        if (array_key_exists('foto_atual', $data) && $data['foto_atual'] != null) {
+            Storage::disk('public')
+                ->delete("{$this->user->cnpj}/fotos/" . $data['foto_atual']);
+        }
+    }
+    private function set_foto($foto)
+    {
+        return Storage::url("{$this->user->cnpj}/fotos/" . $foto);
+    }
 }

@@ -1,13 +1,10 @@
 import { Observable } from 'rxjs';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { AppState } from '../reducers';
+import { currentUser } from '../auth';
 
 export class MenuConfig {
 
-
-   constructor(private store: Store<AppState>) {
-
-   }
 
    public defaults: any = {
       header: {
@@ -28,17 +25,20 @@ export class MenuConfig {
                   {
                      title: 'Clientes',
                      icon: 'fas fa-users',
-                     page: '/clientes'
+                     page: '/clientes',
+                     show$: this.getPermissions('clients')
                   },
                   {
                      title: 'Produtos',
                      icon: 'fas fa-box-open',
-                     page: '/produtos'
+                     page: '/produtos',
+                     show$: this.getPermissions('products')
                   },
                   {
                      title: 'Usuários',
                      icon: 'fas fa-user',
-                     page: '/users'
+                     page: '/users',
+                     show$: this.getPermissions('users')
                   },
 
                ]
@@ -48,21 +48,22 @@ export class MenuConfig {
                root: true,
                // icon: 'flaticon2-browser-2',
                submenu: [
-                  {
-                     title: 'Orçamentos',
-                     icon: 'fas fa-clipboard',
-                     // page: '/venda_standart'
-                     page: '/orcamentos'
-                  },
-                  {
-                     title: 'PDV - Frente de Caixa',
-                     icon: 'fas fa-desktop',
-                     page: '/venda_front'
-                  },
+                  // {
+                  //    title: 'Orçamentos',
+                  //    icon: 'fas fa-clipboard',
+                  //    // page: '/venda_standart'
+                  //    page: '/orcamentos'
+                  // },
+                  // {
+                  //    title: 'PDV - Frente de Caixa',
+                  //    icon: 'fas fa-desktop',
+                  //    page: '/venda_front'
+                  // },
                   {
                      title: 'Vendas',
                      icon: 'fas fa-shopping-basket',
-                     page: '/vendas'
+                     page: '/vendas',
+                     show$: this.getPermissions('vendas')
                   }
                ]
             },
@@ -74,17 +75,20 @@ export class MenuConfig {
                   {
                      title: 'NFe',
                      icon: 'fas fa-file-alt',
-                     page: '/nfe'
+                     page: '/nfe',
+                     show$: this.getPermissions('nfe')
                   },
                   {
                      title: 'NFCe',
                      icon: 'fas fa-receipt',
-                     page: '/nfce'
+                     page: '/nfce',
+                     show$: this.getPermissions('nfce')
                   },
                   {
                      title: 'Emitentes',
                      icon: 'fas fa-building',
-                     page: '/emitentes'
+                     page: '/emitentes',
+                     show$: this.getPermissions('emitentes')
                   }
                ]
             },
@@ -96,10 +100,11 @@ export class MenuConfig {
                   {
                      title: 'Caixa',
                      icon: 'fas fa-cash-register',
-                     page: '/caixa'
+                     page: '/caixa',
+                     show$: this.getPermissions('caixa')
                   }
                ]
-            },
+            }
          ]
       },
 
@@ -140,9 +145,42 @@ export class MenuConfig {
       return this.defaults;
    }
 
-   getPermissions(item) {
+   constructor(private store: Store<AppState>) {
+
+   }
+
+   getPermissions(nivel) {
       return new Observable<boolean>(observer => {
-         observer.next(true);
-      });
+         observer.next(false);
+         this.store.pipe(select(currentUser))
+            .subscribe(res => {
+               if (res) {
+                  if (nivel == "clients") {
+                     observer.next(res.permissions.clients);
+                  }
+                  if (nivel == "products") {
+                     observer.next(res.permissions.products);
+                  }
+                  if (nivel == "users") {
+                     observer.next(res.permissions.users);
+                  }
+                  if (nivel == "vendas") {
+                     observer.next(res.permissions.vendas);
+                  }
+                  if (nivel == "nfe") {
+                     observer.next(res.permissions.nfe);
+                  }
+                  if (nivel == "nfce") {
+                     observer.next(res.permissions.nfce);
+                  }
+                  if (nivel == "emitentes") {
+                     observer.next(res.permissions.emitentes);
+                  }
+                  if (nivel == "caixa") {
+                     observer.next(res.permissions.caixa);
+                  }
+               }
+            });
+      })
    }
 }

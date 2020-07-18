@@ -5,6 +5,9 @@ import { ClientService } from '../../../services/client.service';
 
 import { ClienteFormComponent } from './cliente-form/cliente-form.component';
 import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import { AppState } from '../../../core/reducers';
+import { currentUser } from '../../../core/auth';
 
 
 @Component({
@@ -18,22 +21,35 @@ export class ClientesComponent implements OnInit {
 
    dataSource = [];
 
+   filters: any = {};
+   permissions: any = {};
+
    constructor(
       private ref: ChangeDetectorRef,
       private message: MessageService,
       private service: ClientService,
-      private modalCtrl: NgbModal
-
+      private modalCtrl: NgbModal,
+      private store: Store<AppState>,
    ) {
       this.load_list();
    }
 
    ngOnInit() {
+      this.getPermissions();
+   }
+
+   getPermissions() {
+      this.store.pipe(select(currentUser)).subscribe((resp: any) => {
+         if (resp) {
+            console.log(resp.permissions);
+            this.permissions = resp.permissions;
+         }
+      });
    }
 
    load_list() {
       this.loading = true;
-      this.service.getList({}).subscribe(resp => {
+      this.service.getList(this.filters).subscribe(resp => {
          this.loading = false;
          this.dataSource = resp;
          this.ref.detectChanges();
@@ -89,6 +105,10 @@ export class ClientesComponent implements OnInit {
       }, erro => {
          this.loading = false;
       });
+   }
+
+   open_filters(content) {
+      this.modalCtrl.open(content, { size: 'md', backdrop: 'static' });
    }
 
 }

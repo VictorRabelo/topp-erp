@@ -37,6 +37,9 @@ export class NFeService {
    emitir(data: any): Observable<any[]> {
       return this.http.post<any[]>(`${this.url}/nfe/emitir`, data);
    }
+   cancelar(data: any): Observable<any[]> {
+      return this.http.post<any[]>(`${this.url}/nfe/cancelar`, data);
+   }
    print(id: number): Observable<any[]> {
       return this.http.get<any[]>(`${this.url}/nfe/print/${id}`);
    }

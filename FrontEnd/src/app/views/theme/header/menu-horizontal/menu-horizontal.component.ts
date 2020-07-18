@@ -93,7 +93,11 @@ export class MenuHorizontalComponent implements OnInit, AfterViewInit {
 	 * After view init
 	 */
 	ngAfterViewInit(): void {
-	}
+   }
+   
+   view(item) {
+      console.log(item);
+   }
 
 	/**
 	 * On init

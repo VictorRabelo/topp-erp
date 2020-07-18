@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MessageService } from '../../../../services/message.service';
 import { ProductService } from '../../../../services/product.service';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ProdutoMovStockComponent } from '../produto-mov-stock/produto-mov-stock.component';
 
 @Component({
    selector: 'kt-produto-form',
@@ -23,6 +24,7 @@ export class ProdutoFormComponent implements OnInit {
       private message: MessageService,
       private service: ProductService,
       private activeModal: NgbActiveModal,
+      private modalCtrl: NgbModal
    ) { }
 
    ngOnInit() {
@@ -140,6 +142,15 @@ export class ProdutoFormComponent implements OnInit {
       this.dados.custo = custo;
       this.dados.margem = margem;
       this.dados.preco = preco;
+   }
+
+
+   openMovEstoque() {
+      const modalRef = this.modalCtrl.open(ProdutoMovStockComponent, {size: 'md', backdrop: 'static'});
+      modalRef.componentInstance.data = this.dados;
+      // modalRef.result.then(resp => {
+         
+      // })
    }
 
 }

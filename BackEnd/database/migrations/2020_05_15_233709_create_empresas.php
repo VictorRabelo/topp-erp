@@ -21,8 +21,8 @@ class CreateEmpresas extends Migration
             $table->string('razao')->nullable();
             $table->string('fantasia')->nullable();
             $table->string('cnpj', 20)->nullable();
-            $table->string('inscricao_estadual', 20)->nullable();
-            $table->string('inscricao_municipal', 20)->nullable();
+            // $table->string('inscricao_estadual', 20)->nullable();
+            // $table->string('inscricao_municipal', 20)->nullable();
             $table->string('telefone', 20)->nullable();
             $table->string('celular', 20)->nullable();
             $table->text('email')->nullable();

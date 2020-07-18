@@ -25,10 +25,20 @@
             [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">
             <i class="fas fa-receipt"></i> Gerar NFC-e
          </button>
+         <button class="btn btn-sm btn-info" *ngIf="vendaCurrent.status == 10 && !vendaCurrent.nfe" [disabled]="loading"
+            (click)="gen_nfe()"
+            [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">
+            <i class="fas fa-file-alt"></i> Gerar NF-e
+         </button>
          <button class="btn btn-sm btn-info" *ngIf="vendaCurrent.status == 10 && vendaCurrent.nfce" [disabled]="loading"
             (click)="print_nota(65)"
             [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">
             <i class="fas fa-receipt"></i> Imprimir NFC-e
+         </button>
+         <button class="btn btn-sm btn-info" *ngIf="vendaCurrent.status == 10 && vendaCurrent.nfe" [disabled]="loading"
+            (click)="printNFe()"
+            [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">
+            <i class="fas fa-file-alt"></i> Imprimir NF-e
          </button>
          <button class="btn btn-sm btn-info" *ngIf="vendaCurrent.status == 10">
             <i class="fas fa-print"></i>

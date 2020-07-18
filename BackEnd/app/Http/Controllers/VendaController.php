@@ -66,4 +66,13 @@ class VendaController extends Controller
 
       return response()->json(['message' => "Cliente adicionado com sucesso!"], 200);
    }
+
+
+   public function geraNFe(Request $request)
+   {
+      $data = $request->only('id');
+      $resp = $this->repo->geraNFe($data);
+
+      return response()->json($resp, 200);
+   }
 }

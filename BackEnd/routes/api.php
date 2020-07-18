@@ -51,6 +51,7 @@ Route::group([
    ], function () {
       Route::get('', 'ProductController@index');
       Route::post('', 'ProductController@create');
+      Route::post('mov_estoque', 'ProductController@mov_estoque');
       Route::get('{id}', 'ProductController@show');
       Route::put('{id}', 'ProductController@update');
       Route::delete('{id}', 'ProductController@destroy');
@@ -61,6 +62,7 @@ Route::group([
    ], function () {
       Route::get('', 'VendaController@index');
       Route::post('', 'VendaController@create');
+      Route::post('gera_nfe', 'VendaController@geraNFe');
       Route::put('set-client/{venda_id}', 'VendaController@setClient');
       Route::get('{id}', 'VendaController@show');
       Route::put('{id}', 'VendaController@update');
@@ -107,6 +109,7 @@ Route::group([
       Route::post('', 'NFeController@create');
 
       Route::post('emitir', 'NFeController@transmitir');
+      Route::post('cancelar', 'NFeController@cancelar');
 
       Route::get('itens', 'NFeController@index_item');
       Route::post('itens', 'NFeController@create_item');
@@ -131,5 +134,11 @@ Route::group([
       Route::get('{id}', 'NFCeController@show');
       Route::put('{id}', 'NFCeController@update');
       Route::post('{id}', 'NFCeController@destroy');
+   });
+
+   Route::group([
+      'prefix' => 'financeiro'
+   ], function () {
+      Route::get('caixa', 'FinanceiroController@resumoCaixa');
    });
 });

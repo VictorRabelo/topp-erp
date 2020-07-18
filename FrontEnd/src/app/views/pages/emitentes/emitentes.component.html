@@ -5,7 +5,8 @@
       </div>
 
       <div class="kt-portlet__head-toolbar">
-         <button class="btn btn-sm btn-primary" (click)="add()" matTooltip="Cria um novo Emitente">
+         <button class="btn btn-sm btn-primary" (click)="add()" matTooltip="Cria um novo Emitente"
+            *ngIf="dataSource.length < plano && permissions.create_emitente">
             <i class="fas fa-plus-square"></i> Novo Emitente
          </button>
          <button class="btn btn-sm btn-success" (click)="add()" matTooltip="Filtra os dados">
@@ -47,7 +48,8 @@
                            matTooltip="Detalhes do Cadastro">
                            <i class="fas fa-id-card"></i>
                         </button> -->
-                        <button mat-icon-button color="primary" matTooltip="Alterar Cadastro" (click)="edit(item)">
+                        <button mat-icon-button color="primary" matTooltip="Alterar Cadastro" (click)="edit(item)"
+                           *ngIf="permissions.edit_emitente">
                            <i class="fas fa-pen"></i>
                         </button>
                         <!-- <button mat-icon-button color="warn" matTooltip="Deletar Cadastro" (click)="delete_item(item)">

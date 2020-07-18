@@ -14,7 +14,15 @@
          <div [ngClass]="{'col-sm-10': dados.foto_url, 'col-sm-12': !dados.foto_url}">
 
             <div class="row">
-               <div class="col-sm-6 form-group"
+               <div class="col-sm-4 form-group">
+                  <strong>Tipo:</strong>
+                  <select class="form-control" [(ngModel)]="dados.tipo" name="tipo">
+                     <option value="1">1 - Produto Simples</option>
+                     <!-- <option value="2">2 - Produto Variável</option> -->
+                  </select>
+               </div>
+
+               <div class="col-sm-8 form-group"
                   [ngClass]="{'is-invalid': !nome.valid && (nome.touched || form.submitted)}">
                   <strong>Descrição:</strong>
                   <input type="text" class="form-control" [(ngModel)]="dados.descricao" required name="descricao"
@@ -35,9 +43,7 @@
                   <span>Referência:</span>
                   <input type="text" class="form-control" [(ngModel)]="dados.referencia" name="referencia">
                </div>
-            </div>
 
-            <div class="row">
                <div class="col-sm-3 form-group">
                   <span>Valor de Custo:</span>
                   <input type="text" class="form-control" debounce [delay]="600" (func)="calc_margem()"
@@ -66,42 +72,52 @@
                   <span>Medida:</span>
                   <input type="text" class="form-control" [(ngModel)]="dados.medida" name="medida" mask="SS">
                </div>
-               <div class="col-sm-10 form-group">
-                  <span>Origem:</span>
-                  <select class="form-control" [(ngModel)]="dados.origin" name="origin">
-                     <option value="0">0 - Nacional, exceto as indicadas nos códigos 3 a 5</option>
-                     <option value="1">1 - Estrangeira - Importação direta, exceto a indicada no código 6</option>
-                     <option value="2">2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no código 7
-                     </option>
-                     <option value="3">3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40%
-                     </option>
-                     <option value="4">4 - Nacional, cuja produção tenha sido feita em conformidade</option>
-                     <option value="5">5 - Nacional, mercadoria ou bem com Conteúdo de Importação</option>
-                     <option value="6">6 - Estrangeira - Importação direta, sem similar nacional</option>
-                     <option value="7">7 - Estrangeira - Adquirida no mercado interno, sem similar nacional</option>
-                  </select>
-               </div>
-            </div>
-
-            <div class="row">
-
-               <div class="col-sm-3 form-group">
-                  <span>NCM:</span>
-                  <input type="text" mask="00000000" class="form-control" [(ngModel)]="dados.ncm" name="ncm">
-               </div>
-               <div class="col-sm-3 form-group">
-                  <span>CFOP:</span>
-                  <input type="text" mask="0000" class="form-control" [(ngModel)]="dados.cfop" name="cfop">
-               </div>
-               <div class="col-sm-3 form-group">
-                  <span>CST:</span>
-                  <input type="text" mask="0009" class="form-control" [(ngModel)]="dados.cst" name="cst">
-               </div>
                <div class="col-sm-3 form-group">
                   <span>Foto:</span>
                   <input type="file" class="form-control" (change)="onFileSelected($event)">
                </div>
             </div>
+
+            <mat-tab-group mat-align-tabs="center">
+               <mat-tab label="FISCAL">
+                  <div class="row">
+
+                     <div class="col-sm-10 form-group">
+                        <span>Origem:</span>
+                        <select class="form-control" [(ngModel)]="dados.origin" name="origin">
+                           <option value="0">0 - Nacional, exceto as indicadas nos códigos 3 a 5</option>
+                           <option value="1">1 - Estrangeira - Importação direta, exceto a indicada no código 6</option>
+                           <option value="2">2 - Estrangeira - Adquirida no mercado interno, exceto a indicada no código
+                              7
+                           </option>
+                           <option value="3">3 - Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40%
+                           </option>
+                           <option value="4">4 - Nacional, cuja produção tenha sido feita em conformidade</option>
+                           <option value="5">5 - Nacional, mercadoria ou bem com Conteúdo de Importação</option>
+                           <option value="6">6 - Estrangeira - Importação direta, sem similar nacional</option>
+                           <option value="7">7 - Estrangeira - Adquirida no mercado interno, sem similar nacional
+                           </option>
+                        </select>
+                     </div>
+
+                     <div class="col-sm-3 form-group">
+                        <span>NCM:</span>
+                        <input type="text" mask="00000000" class="form-control" [(ngModel)]="dados.ncm" name="ncm">
+                     </div>
+                     <div class="col-sm-3 form-group">
+                        <span>CFOP:</span>
+                        <input type="text" mask="0000" class="form-control" [(ngModel)]="dados.cfop" name="cfop">
+                     </div>
+                     <div class="col-sm-3 form-group">
+                        <span>CST:</span>
+                        <input type="text" mask="0009" class="form-control" [(ngModel)]="dados.cst" name="cst">
+                     </div>
+                  </div>
+               </mat-tab>
+               <mat-tab label="VARIAÇÕES" *ngIf="dados.tipo == 2 && dados.id">
+
+               </mat-tab>
+            </mat-tab-group>
 
          </div>
 
@@ -116,7 +132,11 @@
    </div>
 
    <div class="modal-footer">
-      <button type="button" class="btn btn-sm btn-outline-dark" (click)="close()">Voltar</button>
+      <button type="button" class="btn btn-sm btn-outline-dark" [disabled]="submited" (click)="close()">Voltar</button>
+      <button type="button" class="btn btn-sm btn-info" [disabled]="submited" (click)="openMovEstoque()"
+         *ngIf="dados.id">
+         <i class="fas fa-dolly"></i> Movimentar Estoque
+      </button>
       <button type="submit" class="btn btn-sm btn-success" [disabled]="submited"
          [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': submited }">
          <i class="fas fa-check"></i> Salvar

@@ -60,4 +60,12 @@ class ProductController extends Controller
 
       return response()->json(['message' => "Cadastro deletado com sucesso!"], 201);
    }
+
+   public function mov_estoque(Request $request)
+   {
+      $data = $request->all('produto_id', 'tipo', 'valor_unitario', 'quantidade');
+      $resp = $this->repo->estoque_mov($data);
+
+      return response()->json(['message' => "Movimentação realizado com sucesso!"], 201);
+   }
 }

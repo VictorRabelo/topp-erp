@@ -8,13 +8,15 @@
       </div>
 
       <div class="kt-portlet__head-toolbar">
-         <button class="btn btn-sm btn-primary" (click)="open()" matTooltip="Cria um novo usuário">
+         <button class="btn btn-sm btn-primary" (click)="open()" matTooltip="Cria um novo usuário"
+            *ngIf="permissions.create_user">
             <i class="fas fa-user-plus"></i> Novo Usuário
          </button>
-         <button class="btn btn-sm btn-primary" (click)="open_nivel()" matTooltip="Cria um novo nível">
+         <button class="btn btn-sm btn-primary" (click)="open_nivel()" matTooltip="Cria um novo nível"
+            *ngIf="permissions.nivel_user">
             <i class="fas fa-lock"></i> Novo Nível
          </button>
-         <button class="btn btn-sm btn-success" (click)="filter()" matTooltip="Filtra os dados">
+         <button class="btn btn-sm btn-success" (click)="open_filters(filtros)" matTooltip="Filtra os dados">
             <i class="fas fa-sliders-h"></i> Filtros
          </button>
          <button class="btn btn-label-brand btn-bold btn-sm" (click)="load_list()" matTooltip="Atualiza a lista">
@@ -52,7 +54,7 @@
                      <td width="15%">
                         {{ item.nivel }}
                         <button mat-icon-button color="primary" matTooltip="Editar" (click)="open_nivel(item)"
-                           *ngIf="item.permissions > 0">
+                           *ngIf="item.permissions > 0 && permissions.nivel_user">
                            <i class="fas fa-pen"></i>
                         </button>
                      </td>
@@ -63,10 +65,12 @@
 
 
                      <td width="10%" class="text-right">
-                        <button mat-icon-button color="primary" matTooltip="Editar" (click)="open(item)">
+                        <button mat-icon-button color="primary" matTooltip="Editar" (click)="open(item)"
+                           *ngIf="permissions.edit_user">
                            <i class="fas fa-pen"></i>
                         </button>
-                        <button mat-icon-button color="warn" matTooltip="Deletar" (click)="delete_confirm(item)">
+                        <button mat-icon-button color="warn" matTooltip="Deletar" (click)="delete_confirm(item)"
+                           *ngIf="permissions.delete_user">
                            <i class="fas fa-trash"></i>
                         </button>
                      </td>
@@ -80,3 +84,24 @@
 
    </div>
 </div>
+
+
+<ng-template #filtros let-modal>
+   <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Filtros</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+         <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <div class="row">
+         <div class="col-sm-12">
+            <span>Pesquisa:</span>
+            <input type="text" class="form-control" [(ngModel)]="filters.termo">
+         </div>
+      </div>
+   </div>
+   <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="modal.close('close click');load_list();">Confirmar</button>
+   </div>
+</ng-template>

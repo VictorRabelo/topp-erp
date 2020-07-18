@@ -5,10 +5,11 @@
       </div>
 
       <div class="kt-portlet__head-toolbar">
-         <button class="btn btn-sm btn-primary" (click)="add()" matTooltip="Cria um novo cliente">
+         <button class="btn btn-sm btn-primary" (click)="add()" matTooltip="Cria um novo cliente"
+            *ngIf="permissions.create_client">
             <i class="fas fa-plus-square"></i> Novo Cliente
          </button>
-         <button class="btn btn-sm btn-success" (click)="add()" matTooltip="Filtra os dados">
+         <button class="btn btn-sm btn-success" (click)="open_filters(filtros)" matTooltip="Filtra os dados">
             <i class="fas fa-sliders-h"></i> Filtros
          </button>
          <button class="btn btn-label-brand btn-bold btn-sm" (click)="load_list()" matTooltip="Atualiza a lista">
@@ -52,10 +53,12 @@
                            matTooltip="Detalhes do Cadastro">
                            <i class="fas fa-id-card"></i>
                         </button> -->
-                        <button mat-icon-button color="primary" matTooltip="Alterar Cadastro" (click)="edit(item)">
+                        <button mat-icon-button color="primary" matTooltip="Alterar Cadastro" (click)="edit(item)"
+                           *ngIf="permissions.edit_client">
                            <i class="fas fa-pen"></i>
                         </button>
-                        <button mat-icon-button color="warn" matTooltip="Deletar Cadastro" (click)="delete_item(item)">
+                        <button mat-icon-button color="warn" matTooltip="Deletar Cadastro" (click)="delete_item(item)"
+                           *ngIf="permissions.delete_client">
                            <i class="fas fa-trash"></i>
                         </button>
                      </td>
@@ -68,3 +71,23 @@
 
    </div>
 </div>
+
+<ng-template #filtros let-modal>
+   <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Filtros</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+         <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <div class="row">
+         <div class="col-sm-12">
+            <span>Pesquisa:</span>
+            <input type="text" class="form-control" [(ngModel)]="filters.termo">
+         </div>
+      </div>
+   </div>
+   <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="modal.close('close click');load_list();">Confirmar</button>
+   </div>
+</ng-template>

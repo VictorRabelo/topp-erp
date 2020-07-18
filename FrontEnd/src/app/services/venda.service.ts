@@ -56,4 +56,11 @@ export class VendaService {
    setClient(data: any, venda_id: number): Observable<any[]> {
       return this.http.put<any[]>(`${this.url}/venda/set-client/${venda_id}`, data);
    }
+
+
+   //gera nota NFe
+   geraNFe(data: any): Observable<any[]> {
+      return this.http.post<any[]>(`${this.url}/venda/gera_nfe`, data);
+   }
+
 }

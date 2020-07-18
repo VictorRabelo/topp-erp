@@ -126,4 +126,17 @@ class NFeController extends Controller
          return response()->json($resp, 200);
       }
    }
+   public function cancelar(Request $request)
+   {
+      $data = $request->only('emitente_id', 'id', 'xjust');
+      $resp = $this->repo->cancelar_nota($data);
+
+      if (isset($resp['erros'])) {
+         foreach ($resp['erros'] as $erro) {
+            echo "$erro </br></br>";
+         }
+      } else {
+         return response()->json($resp, 200);
+      }
+   }
 }

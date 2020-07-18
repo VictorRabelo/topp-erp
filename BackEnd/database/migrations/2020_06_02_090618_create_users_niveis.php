@@ -25,6 +25,7 @@ class CreateUsersNiveis extends Migration
          $table->integer('create_user')->default(0);
          $table->integer('edit_user')->default(0);
          $table->integer('delete_user')->default(0);
+         $table->integer('nivel_user')->default(0);
 
          //produtos
          $table->integer('products')->default(0);
@@ -45,6 +46,31 @@ class CreateUsersNiveis extends Migration
          $table->integer('delete_venda')->default(0);
          $table->integer('cancel_venda')->default(0);
          $table->integer('finalizar_venda')->default(0);
+         $table->integer('desconto_venda')->default(0);
+
+         //nfe
+         $table->integer('nfe')->default(0);
+         $table->integer('create_nfe')->default(0);
+         $table->integer('edit_nfe')->default(0);
+         $table->integer('delete_nfe')->default(0);
+
+         //nfce
+         $table->integer('nfce')->default(0);
+         $table->integer('create_nfce')->default(0);
+         $table->integer('edit_nfce')->default(0);
+         $table->integer('delete_nfce')->default(0);
+
+         //nfe
+         $table->integer('emitentes')->default(0);
+         $table->integer('create_emitente')->default(0);
+         $table->integer('edit_emitente')->default(0);
+         $table->integer('delete_emitente')->default(0);
+
+         //financeiro
+         $table->integer('caixa')->default(0);
+         $table->integer('create_caixa')->default(0);
+         $table->integer('edit_caixa')->default(0);
+         $table->integer('delete_caixa')->default(0);
 
          $table->timestamps();
       });

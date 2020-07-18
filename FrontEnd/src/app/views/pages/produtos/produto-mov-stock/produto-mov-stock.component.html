@@ -1,0 +1,63 @@
+<div class="kt-portlet no-margin"
+   [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+
+   <form #form="ngForm" (ngSubmit)="submit(form)">
+
+      <div class="kt-portlet__head kt-portlet__head__custom">
+         <div class="kt-portlet__head-label">
+            <h3 class="kt-portlet__head-title">
+               <span>Movimentar Estoque: </span>
+            </h3>
+         </div>
+
+         <div class="kt-portlet__head-toolbar">
+
+            <button type="button" class="close" aria-label="Close" (click)="close()">
+               <span aria-hidden="true">&times;</span>
+            </button>
+
+         </div>
+
+      </div>
+      <div class="kt-form kt-portlet__body">
+
+         <h5>Produto: {{produto.descricao}}</h5>
+         <hr>
+
+         <div class="row">
+            <div class="col-sm-6 form-group"
+               [ngClass]="{'is-invalid': !tipo.valid && (tipo.touched || form.submitted)}">
+               <strong>Tipo:</strong>
+               <select class="form-control" name="tipo" #tipo="ngModel" required ngModel>
+                  <option value="1">Entrada</option>
+                  <option value="2">Saída</option>
+               </select>
+
+               <div *ngIf="!tipo.valid && (tipo.touched || form.submitted)"
+                  class="invalid-feedback animated fadeInDown">
+                  Campo obrigatório
+               </div>
+            </div>
+            <div class="col-sm-6 form-group"
+               [ngClass]="{'is-invalid': !quantidade.valid && (quantidade.touched || form.submitted)}">
+               <strong>Quantidade:</strong>
+               <input type="number" step="any" class="form-control" name="quantidade" #quantidade="ngModel" required
+                  ngModel />
+
+               <div *ngIf="!quantidade.valid && (quantidade.touched || form.submitted)"
+                  class="invalid-feedback animated fadeInDown">
+                  Campo obrigatório
+               </div>
+            </div>
+         </div>
+
+      </div>
+      <div class="kt-portlet__footer" align="right">
+         <button type="button" class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+         <button type="submit" class="btn btn-sm btn-success" [disabled]="loading"
+            [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+            Movimentar
+         </button>
+      </div>
+   </form>
+</div>
