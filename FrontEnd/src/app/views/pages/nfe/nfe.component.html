@@ -1,98 +1,100 @@
 <div class="kt-portlet" [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
-   <div class="kt-portlet__head kt-portlet__head__custom">
-      <div class="kt-portlet__head-label">
-         <h3 class="kt-portlet__head-title">Lista de NFe</h3>
-      </div>
+	<div class="kt-portlet__head kt-portlet__head__custom">
+		<div class="kt-portlet__head-label">
+			<h3 class="kt-portlet__head-title">Lista de NFe</h3>
+		</div>
 
-      <div class="kt-portlet__head-toolbar">
-         <button class="btn btn-sm btn-primary" (click)="add()" matTooltip="Cria uma nova nota"
-            *ngIf="permissions.create_nfe">
-            <i class="fas fa-plus"></i> Nova NFe
-         </button>
-         <button class="btn btn-sm btn-success" (click)="open_filters(filtros)" matTooltip="Filtra os dados">
-            <i class="fas fa-sliders-h"></i> Filtros
-         </button>
-         <button class="btn btn-label-brand btn-bold btn-sm" (click)="load_list()" matTooltip="Atualiza a lista">
-            <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
-         </button>
-      </div>
-   </div>
-   <div class="kt-form kt-portlet__body">
+		<div class="kt-portlet__head-toolbar">
+			<button class="btn btn-sm btn-primary" (click)="add()" matTooltip="Cria uma nova nota"
+				*ngIf="permissions.create_nfe">
+				<i class="fas fa-plus"></i> Nova NFe
+			</button>
+			<button class="btn btn-sm btn-success" (click)="open_filters(filtros)" matTooltip="Filtra os dados">
+				<i class="fas fa-sliders-h"></i> Filtros
+			</button>
+			<button class="btn btn-label-brand btn-bold btn-sm" (click)="load_list()" matTooltip="Atualiza a lista">
+				<i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+			</button>
+		</div>
+	</div>
+	<div class="kt-form kt-portlet__body">
 
-      <div class="kt-portlet__body-progress">
-         <mat-spinner [diameter]="40"></mat-spinner>
-      </div>
+		<div class="kt-portlet__body-progress">
+			<mat-spinner [diameter]="40"></mat-spinner>
+		</div>
 
-      <div class="table-responsive">
-         <table class="table  mb-0">
-            <thead class="">
-               <th width="10%">ID</th>
-               <th width="10%">Número</th>
-               <th width="30%">Cliente</th>
-               <th width="15%">Valor R$</th>
-               <th width="10%">Ambiente</th>
-               <th width="15%">status</th>
-               <th width="10%"></th>
-            </thead>
-         </table>
-         <div>
-            <table class="table table-hover mb-0">
-               <tbody>
-                  <tr *ngFor="let item of dataSource">
-                     <td width="10%">{{item.id}}</td>
-                     <td width="10%">{{item.sequencia}}</td>
-                     <td width="30%">{{item.razao | titlecase}}</td>
-                     <th width="15%">{{ item.total | currency:'R$' }}</th>
-                     <td width="10%">
-                        <span>{{(item.tpamb == 1) ? 'Produção' : 'Teste'}}</span>
-                     </td>
-                     <td width="15%">
-                        <span class="badge badge-secondary" *ngIf="item.cstatus == 1">
-                           {{item.status}}
-                        </span>
-                        <span class="badge badge-warning"
-                           *ngIf="item.cstatus != 1 && item.cstatus != 100 && item.cstatus != 101 && item.cstatus != 135 && item.cstatus != 155">
-                           {{item.status | slice:0:20}}
-                        </span>
-                        <span class="badge badge-alt-success" *ngIf="item.cstatus == 100">
-                           {{item.status}}
-                        </span>
-                        <span class="badge badge-alt-danger"
-                           *ngIf="item.cstatus == 101 || item.cstatus == 135 || item.cstatus == 155">
-                           {{item.status | slice:0:20}}
-                        </span>
-                     </td>
-                     <td width="10%">
-                        <button mat-icon-button color="primary" matTooltip="Detalhes" (click)="open_nota(item.id)">
-                           <i class="fas fa-file"></i>
-                        </button>
-                     </td>
-                  </tr>
-               </tbody>
-            </table>
-         </div>
-      </div>
+		<div class="table-responsive">
+			<table class="table  mb-0">
+				<thead class="">
+					<th width="10%">ID</th>
+					<th width="10%">Número</th>
+					<th width="30%">Cliente</th>
+					<th width="15%">Valor R$</th>
+					<th width="10%">Ambiente</th>
+					<th width="15%">status</th>
+					<th width="10%"></th>
+				</thead>
+			</table>
+			<div>
+				<table class="table table-hover mb-0">
+					<tbody>
+						<tr *ngFor="let item of dataSource">
+							<td width="10%">{{item.id}}</td>
+							<td width="10%">{{item.sequencia}}</td>
+							<td width="30%">{{item.razao | titlecase}}</td>
+							<th width="15%">{{ item.total | currency:'R$' }}</th>
+							<td width="10%">
+								<span>{{(item.tpamb == 1) ? 'Produção' : 'Teste'}}</span>
+							</td>
+							<td width="15%">
+								<span class="badge badge-secondary" *ngIf="item.cstatus == 1">
+									{{item.status}}
+								</span>
+								<span class="badge badge-warning"
+									*ngIf="item.cstatus != 1 && item.cstatus != 100 && item.cstatus != 101 && item.cstatus != 135 && item.cstatus != 155">
+									{{item.status | slice:0:20}}
+								</span>
+								<span class="badge badge-alt-success" *ngIf="item.cstatus == 100">
+									{{item.status}}
+								</span>
+								<span class="badge badge-alt-danger"
+									*ngIf="item.cstatus == 101 || item.cstatus == 135 || item.cstatus == 155">
+									{{item.status | slice:0:20}}
+								</span>
+							</td>
+							<td width="10%">
+								<button mat-icon-button color="primary" matTooltip="Detalhes"
+									(click)="open_nota(item.id)">
+									<i class="fas fa-file"></i>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 
 
-   </div>
+	</div>
 </div>
 
 <ng-template #filtros let-modal>
-   <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">Filtros</h4>
-      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-         <span aria-hidden="true">&times;</span>
-      </button>
-   </div>
-   <div class="modal-body">
-      <div class="row">
-         <div class="col-sm-12">
-            <span>Pesquisa:</span>
-            <input type="text" class="form-control" [(ngModel)]="filters.termo">
-         </div>
-      </div>
-   </div>
-   <div class="modal-footer">
-      <button type="button" class="btn btn-primary" (click)="modal.close('close click');load_list();">Confirmar</button>
-   </div>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">Filtros</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<div class="row">
+			<div class="col-sm-12">
+				<span>Pesquisa:</span>
+				<input type="text" class="form-control" [(ngModel)]="filters.termo">
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary"
+			(click)="modal.close('close click');load_list();">Confirmar</button>
+	</div>
 </ng-template>

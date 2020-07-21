@@ -65,6 +65,12 @@ class NFeXML
             $this->tpamb = $this->business->config->tpamb;
             $this->mesPath = date('Y-m', strtotime($dados->updated_at));
             $this->tpambPath = ($this->tpamb == 1) ? "producao" : "homologacao";
+            $this->pathRoot = md5($business->empresa_id);
+
+            $this->pathGerados = "{$this->pathRoot}/xml/{$this->business->cnpj}/nfe/{$this->tpambPath}/{$this->mesPath}/gerados";
+            $this->pathAutorizados = "{$this->pathRoot}/xml/{$this->business->cnpj}/nfe/{$this->tpambPath}/{$this->mesPath}/autorizados";
+            $this->pathCancelados = "{$this->pathRoot}/xml/{$this->business->cnpj}/nfe/{$this->tpambPath}/{$this->mesPath}/cancelados";
+            $this->pathPDF = "{$this->pathRoot}/pdf/{$this->business->cnpj}/nfe/{$this->tpambPath}/{$this->mesPath}";
 
             $this->numero = ($this->tpamb == 1) ? $this->business->config->seq : $this->business->config->seqHomolog;
             $this->serie = ($this->tpamb == 1) ? $this->business->config->serie : $this->business->config->serieHomolog;
@@ -91,7 +97,7 @@ class NFeXML
 
             $this->configJson = json_encode($this->config);
 
-            $this->certificate = Storage::disk('public')->get("{$business->cnpj}/certificates/{$business->file_pfx}");
+            $this->certificate = Storage::disk('public')->get("{$this->pathRoot}/certificates/{$business->cnpj}/{$business->file_pfx}");
 
             $this->tools = new Tools($this->configJson, Certificate::readPfx($this->certificate, $business->senha_pfx));
             $this->tools->model(55);
@@ -136,8 +142,7 @@ class NFeXML
 
             file_put_contents('./nfe.xml', $this->xml);
 
-            $this->pathGerados = "{$this->business->cnpj}/xml/nfe/gerados/{$this->mesPath}/{$this->tpambPath}/{$this->chave}.xml";
-            Storage::disk('public')->put($this->pathGerados, $this->xml);
+            Storage::disk('public')->put("{$this->pathGerados}/{$this->chave}.xml", $this->xml);
 
             return $this->sign_nota();
 
@@ -173,7 +178,7 @@ class NFeXML
         $std->indFinal = $this->dados->ind_final;
         $std->indPres = $this->dados->ind_pres;
         $std->procEmi = 0;
-        $std->verProc = '1.0.0';
+        $std->verProc = 'TOPP-ERP-1.0.0';
 
         // Monta Chave da NF-e
         $this->chave = Keys::build(
@@ -428,8 +433,8 @@ class NFeXML
 
             file_put_contents("nfe.xml", $this->xml);
 
-            $path = "{$this->business->cnpj}/xml/nfe/gerados/{$this->mesPath}/{$this->tpambPath}/{$this->chave}.xml";
-            Storage::disk('public')->put($path, $this->xml);
+            // $path = "xml/{$this->business->cnpj}/nfe/gerados/{$this->mesPath}/{$this->tpambPath}/{$this->chave}.xml";
+            Storage::disk('public')->put("{$this->pathGerados}/{$this->chave}.xml", $this->xml);
 
             $nota = $this->send_nota();
 
@@ -483,7 +488,7 @@ class NFeXML
                 $xMotivo = $std->protNFe->infProt->xMotivo;
                 $protocolo = $std->protNFe->infProt->nProt;
 
-                $path = "{$this->business->cnpj}/xml/nfe/autorizados/{$this->mesPath}/{$this->tpambPath}/{$this->chave}.xml";
+                $path = "{$this->pathAutorizados}/{$this->chave}.xml";
 
                 Storage::disk('public')->put($path, $xml);
 
@@ -511,41 +516,41 @@ class NFeXML
         }
     }
 
-    public function consultarChave($nota, $business)
+    public function consultarChave($nota)
     {
-        $mesPath = date('Y-m', strtotime($nota->created_at));
-        $tpambPath = ($nota->tpamb == 1) ? "producao" : "homologacao";
+        // $mesPath = date('Y-m', strtotime($nota->created_at));
+        // $tpambPath = ($nota->tpamb == 1) ? "producao" : "homologacao";
 
-        $this->config  = [
-            "atualizacao" => date('Y-m-d h:i:s'),
-            "tpAmb" => $nota->tpamb,
-            "razaosocial" => $business->razao,
-            "cnpj" => $business->cnpj, // PRECISA SER VÁLIDO
-            "ie" => $business->inscricao_estadual, // PRECISA SER VÁLIDO
-            "siglaUF" => $business->uf,
-            "schemes" => "PL_009_V4",
-            "versao" => self::VERSION,
-            "tokenIBPT" => "AAAAAAA",
-            "CSC" => ($nota->tpamb == 1) ? $business->config->csc : $business->config->cscHomolog,
-            "CSCid" => ($nota->tpamb == 1) ? $business->config->cscid : $business->config->cscidHomolog,
-            "aProxyConf" => [
-                "proxyIp" => "",
-                "proxyPort" => "",
-                "proxyUser" => "",
-                "proxyPass" => ""
-            ]
-        ];
+        // $this->config  = [
+        //     "atualizacao" => date('Y-m-d h:i:s'),
+        //     "tpAmb" => $nota->tpamb,
+        //     "razaosocial" => $business->razao,
+        //     "cnpj" => $business->cnpj, // PRECISA SER VÁLIDO
+        //     "ie" => $business->inscricao_estadual, // PRECISA SER VÁLIDO
+        //     "siglaUF" => $business->uf,
+        //     "schemes" => "PL_009_V4",
+        //     "versao" => self::VERSION,
+        //     "tokenIBPT" => "AAAAAAA",
+        //     "CSC" => ($nota->tpamb == 1) ? $business->config->csc : $business->config->cscHomolog,
+        //     "CSCid" => ($nota->tpamb == 1) ? $business->config->cscid : $business->config->cscidHomolog,
+        //     "aProxyConf" => [
+        //         "proxyIp" => "",
+        //         "proxyPort" => "",
+        //         "proxyUser" => "",
+        //         "proxyPass" => ""
+        //     ]
+        // ];
 
-        $configJson = json_encode($this->config);
+        // $configJson = json_encode($this->config);
 
-        $certificate = Storage::disk('public')->get("{$business->cnpj}/certificates/{$business->file_pfx}");
+        // $certificate = Storage::disk('public')->get("{$business->cnpj}/certificates/{$business->file_pfx}");
 
-        // try {
-        $tools = new Tools($configJson, Certificate::readPfx($certificate, $business->senha_pfx));
-        $tools->model('55');
+        // // try {
+        // $tools = new Tools($configJson, Certificate::readPfx($certificate, $business->senha_pfx));
+        // $tools->model('55');
 
         $chave = $nota->chave;
-        $response = $tools->sefazConsultaChave($chave);
+        $response = $this->tools->sefazConsultaChave($chave);
 
         $stdCl = new Standardize($response);
         $std = $stdCl->toStd();
@@ -566,43 +571,43 @@ class NFeXML
         // return $std;
     }
 
-    public function cancelarNFe($nota, $business)
+    public function cancelarNFe($nota)
     {
-        $mesPath = date('Y-m', strtotime($nota->created_at));
-        $tpambPath = ($nota->tpamb == 1) ? "producao" : "homologacao";
+        // $mesPath = date('Y-m', strtotime($nota->created_at));
+        // $tpambPath = ($nota->tpamb == 1) ? "producao" : "homologacao";
 
-        $this->config  = [
-            "atualizacao" => date('Y-m-d h:i:s'),
-            "tpAmb" => $nota->tpamb,
-            "razaosocial" => $business->razao,
-            "cnpj" => $business->cnpj, // PRECISA SER VÁLIDO
-            "ie" => $business->inscricao_estadual, // PRECISA SER VÁLIDO
-            "siglaUF" => $business->uf,
-            "schemes" => "PL_009_V4",
-            "versao" => self::VERSION,
-            "tokenIBPT" => "AAAAAAA",
-            "CSC" => ($nota->tpamb == 1) ? $business->config->csc : $business->config->cscHomolog,
-            "CSCid" => ($nota->tpamb == 1) ? $business->config->cscid : $business->config->cscidHomolog,
-            "aProxyConf" => [
-                "proxyIp" => "",
-                "proxyPort" => "",
-                "proxyUser" => "",
-                "proxyPass" => ""
-            ]
-        ];
+        // $this->config  = [
+        //     "atualizacao" => date('Y-m-d h:i:s'),
+        //     "tpAmb" => $nota->tpamb,
+        //     "razaosocial" => $business->razao,
+        //     "cnpj" => $business->cnpj, // PRECISA SER VÁLIDO
+        //     "ie" => $business->inscricao_estadual, // PRECISA SER VÁLIDO
+        //     "siglaUF" => $business->uf,
+        //     "schemes" => "PL_009_V4",
+        //     "versao" => self::VERSION,
+        //     "tokenIBPT" => "AAAAAAA",
+        //     "CSC" => ($nota->tpamb == 1) ? $business->config->csc : $business->config->cscHomolog,
+        //     "CSCid" => ($nota->tpamb == 1) ? $business->config->cscid : $business->config->cscidHomolog,
+        //     "aProxyConf" => [
+        //         "proxyIp" => "",
+        //         "proxyPort" => "",
+        //         "proxyUser" => "",
+        //         "proxyPass" => ""
+        //     ]
+        // ];
 
-        $configJson = json_encode($this->config);
+        // $configJson = json_encode($this->config);
 
-        $certificate = Storage::disk('public')->get("{$business->cnpj}/certificates/{$business->file_pfx}");
+        // $certificate = Storage::disk('public')->get("{$business->cnpj}/certificates/{$business->file_pfx}");
 
-        // try {
-        $tools = new Tools($configJson, Certificate::readPfx($certificate, $business->senha_pfx));
-        $tools->model('55');
+        // // try {
+        // $tools = new Tools($configJson, Certificate::readPfx($certificate, $business->senha_pfx));
+        // $tools->model('55');
 
         $chave = $nota->chave;
         $xJust = $nota->xjust;
         $nProt = $nota->protocolo;
-        $response = $tools->sefazCancela($chave, $xJust, $nProt);
+        $response = $this->tools->sefazCancela($chave, $xJust, $nProt);
 
         $stdCl = new Standardize($response);
         $std = $stdCl->toStd();
@@ -615,17 +620,17 @@ class NFeXML
             $cStat = $std->retEvento->infEvento->cStat;
             if ($cStat == '101' || $cStat == '135' || $cStat == '155') {
 
-                $pathXML = "{$business->cnpj}/xml/nfe/autorizados/{$mesPath}/{$tpambPath}/{$nota->chave}.xml";
+                // $pathXML = "{$this->pathRoot}/{$business->cnpj}/xml/nfe/autorizados/{$mesPath}/{$tpambPath}/{$nota->chave}.xml";
 
-                $docxml = Storage::disk('public')->get($pathXML);
+                $xmlAutorizado = Storage::disk('public')->get("{$this->pathAutorizados}/{$chave}.xml");
 
                 //SUCESSO PROTOCOLAR A SOLICITAÇÂO ANTES DE GUARDAR
-                $xml = Complements::cancelRegister($docxml, $response);
+                $xml = Complements::cancelRegister($xmlAutorizado, $response);
 
                 //grave o XML protocolado
-                $path = "{$business->cnpj}/xml/nfe/cancelados/{$mesPath}/{$tpambPath}/{$nota->chave}.xml";
+                // $path = "{$business->cnpj}/xml/nfe/cancelados/{$mesPath}/{$tpambPath}/{$nota->chave}.xml";
 
-                Storage::disk('public')->put($path, $xml);
+                Storage::disk('public')->put("{$this->pathCancelados}/{$chave}.xml", $xml);
 
                 $nota->cstatus = $std->retEvento->infEvento->cStat;
                 $nota->status = $std->retEvento->infEvento->xMotivo;
@@ -644,36 +649,33 @@ class NFeXML
         // }
     }
 
-    public function getPDF(object $dados, object $business)
+    public function getPDF(object $dados)
     {
 
-        $mesPath = date('Y-m', strtotime($dados->updated_at));
-        $tpambPath = ($dados->tpamb == 1) ? "producao" : "homologacao";
+        // if ($dados->cstatus == 100) {
+        //     $pathPDF = "pdf/{$business->cnpj}/nfe/autorizados/{$mesPath}/{$tpambPath}/{$dados->chave}.pdf";
+        // } else {
+        //     $pathPDF = "pdf/{$business->cnpj}/nfe/cancelados/{$mesPath}/{$tpambPath}/{$dados->chave}.pdf";
+        // }
 
-        if ($dados->cstatus == 100) {
-            $pathPDF = "{$business->cnpj}/pdf/nfe/autorizados/{$mesPath}/{$tpambPath}/{$dados->chave}.pdf";
-        } else {
-            $pathPDF = "{$business->cnpj}/pdf/nfe/cancelados/{$mesPath}/{$tpambPath}/{$dados->chave}.pdf";
-        }
+        $pathPDF = "{$this->pathPDF}/{$dados->chave}.pdf";
 
         $existe = Storage::disk('public')->exists($pathPDF);
 
         if (!$existe) {
-            return $this->geraPDF($dados, $business);
+            return $this->geraPDF($dados);
         }
 
         return Storage::url($pathPDF);
     }
 
-    private function geraPDF(object $dados, object $business)
+    private function geraPDF(object $dados)
     {
-        $mesPath = date('Y-m', strtotime($dados->updated_at));
-        $tpambPath = ($dados->tpamb == 1) ? "producao" : "homologacao";
 
         if ($dados->cstatus == 100) {
-            $pathXML = "{$business->cnpj}/xml/nfe/autorizados/{$mesPath}/{$tpambPath}/{$dados->chave}.xml";
+            $pathXML = "{$this->pathAutorizados}/{$dados->chave}.xml";
         } else {
-            $pathXML = "{$business->cnpj}/xml/nfe/cancelados/{$mesPath}/{$tpambPath}/{$dados->chave}.xml";
+            $pathXML = "{$this->pathCancelados}/{$dados->chave}.xml";
         }
 
         $docxml = Storage::disk('public')->get($pathXML);
@@ -688,11 +690,11 @@ class NFeXML
             //Gera o PDF
             $pdf = $danfe->render($logo);
 
-            if ($dados->cstatus == 100) {
-                $pathPDF = "{$business->cnpj}/pdf/nfe/autorizados/{$mesPath}/{$tpambPath}/{$dados->chave}.pdf";
-            } else {
-                $pathPDF = "{$business->cnpj}/pdf/nfe/cancelados/{$mesPath}/{$tpambPath}/{$dados->chave}.pdf";
-            }
+            // if ($dados->cstatus == 100) {
+            //     $pathPDF = "pdf/{$business->cnpj}/nfe/autorizados/{$mesPath}/{$tpambPath}/{$dados->chave}.pdf";
+            // } else {
+            $pathPDF = "{$this->pathPDF}/{$dados->chave}.pdf";
+            // }
 
             Storage::disk('public')->put($pathPDF, $pdf);
 

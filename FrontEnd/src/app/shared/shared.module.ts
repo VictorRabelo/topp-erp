@@ -24,6 +24,7 @@ import { PartialsModule } from '../views/partials/partials.module';
 import { CoreModule } from '../core/core.module';
 import { DebounceModule } from 'ngx-debounce';
 import { MatButtonModule, MatTooltipModule, MatTabsModule, MatIconModule, MatProgressSpinnerModule, MatCheckboxModule } from '@angular/material';
+import { FiscalSendXmlComponent } from '../views/pages/modais/fiscal-send-xml/fiscal-send-xml.component';
 
 export const customCurrencyMaskConfig = {
 	align: "right",
@@ -56,7 +57,8 @@ export const customCurrencyMaskConfig = {
 		EmitenteCertificateComponent,
 		GeraNotaComponent,
 		// NfeFormComponent,
-		ProdutoMovStockComponent
+		ProdutoMovStockComponent,
+		FiscalSendXmlComponent
 	],
 	imports: [
 		CommonModule,
@@ -93,7 +95,8 @@ export const customCurrencyMaskConfig = {
 		EmitenteCertificateComponent,
 		GeraNotaComponent,
 		// NfeFormComponent,
-		ProdutoMovStockComponent
+		ProdutoMovStockComponent,
+		FiscalSendXmlComponent
 	]
 })
 export class SharedModule { }

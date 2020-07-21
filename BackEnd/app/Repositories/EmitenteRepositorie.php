@@ -10,139 +10,147 @@ use Illuminate\Support\Facades\Storage;
 
 class EmitenteRepositorie
 {
-   function __construct()
-   {
-      $this->model = new Emitente();
-      $this->user = Auth::guard('api')->user();
-   }
+    function __construct()
+    {
+        $this->model = new Emitente();
+        $this->user = Auth::guard('api')->user();
+    }
 
-   public function list($params)
-   {
-      $query = $this->model->where('empresa_id', $this->user->empresa_id)->get();
-      return $query;
-   }
+    public function list($params)
+    {
+        $query = $this->model->where('empresa_id', $this->user->empresa_id)->get();
+        return $query;
+    }
 
-   public function create($data)
-   {
-      $data['empresa_id'] = $this->user->empresa_id;
-      $create = $this->model->create($data);
+    public function create($data)
+    {
+        $data['empresa_id'] = $this->user->empresa_id;
+        $create = $this->model->create($data);
 
-      if ($create->id) {
-         $configNFe = EmitenteConfig::create(['emitente_id' => $create->id, 'modelo' => 55]);
-         $configNFCe = EmitenteConfig::create(['emitente_id' => $create->id, 'modelo' => 65]);
-         if (isset($data['file']) && $data['file'] != "") {
-            $folder = $data['cnpj'] . "/fotos";
+        if ($create->id) {
+            $configNFe = EmitenteConfig::create(['emitente_id' => $create->id, 'modelo' => 55]);
+            $configNFCe = EmitenteConfig::create(['emitente_id' => $create->id, 'modelo' => 65]);
 
-            $create->logo = $this->parse_file($data, $folder);
-            $create->save();
-         }
-      }
+            if (isset($data['file']) && $data['file'] != "") {
+                $folder = md5($this->user->empresa_id) . "/fotos/logos";
 
-      return $create;
-   }
+                $create->logo = $this->parse_file($data, $folder, "");
+                $create->save();
+            }
+        }
 
-   public function getById(int $id)
-   {
-      $dados = $this->model->find($id);
+        return $create;
+    }
 
-      $configNFe = EmitenteConfig::where('emitente_id', $dados['id'])->where('modelo', 55)->first();
-      $configNFCe = EmitenteConfig::where('emitente_id', $dados['id'])->where('modelo', 65)->first();
+    public function getById(int $id)
+    {
+        $dados = $this->model->find($id);
 
-      if (!empty($dados->file_pfx)) {
-         $dados['certificate_url'] = $this->set_file($dados->file_pfx, "{$dados->cnpj}/certificates");
-      }
-      if (!empty($dados->logo)) {
-         $dados['logo_url'] = $this->set_file($dados->logo, "{$dados->cnpj}/fotos");
-      }
+        $configNFe = EmitenteConfig::where('emitente_id', $dados['id'])->where('modelo', 55)->first();
+        $configNFCe = EmitenteConfig::where('emitente_id', $dados['id'])->where('modelo', 65)->first();
 
-      $return = array('dados' => $dados, 'nfe' => $configNFe, 'nfce' => $configNFCe);
+        if (!empty($dados->file_pfx)) {
+            $dados['certificate_url'] = $this->set_file($dados->file_pfx, md5($this->user->empresa_id) . "/certificates/{$dados->cnpj}");
+        }
+        if (!empty($dados->logo)) {
+            $dados['logo_url'] = $this->set_file($dados->logo, md5($this->user->empresa_id) . "/fotos/logos");
+        }
 
-      return $return;
-   }
+        $return = array('dados' => $dados, 'nfe' => $configNFe, 'nfce' => $configNFCe);
 
-   public function update(array $data, $id)
-   {
-      $dados = $this->model->find($id);
-      $dados->fill($data);
+        return $return;
+    }
 
-      if (isset($data['file']) && $data['file'] != "") {
-         $folder = $data['cnpj'] . "/fotos";
+    public function update(array $data, $id)
+    {
+        $dados = $this->model->find($id);
+        $dados->fill($data);
 
-         $dados->logo = $this->parse_file($data, $folder);
-      }
-      return $dados->save();
-   }
+        if (isset($data['file']) && $data['file'] != "") {
+            $folder = md5($this->user->empresa_id) . "/fotos/logos";
+            $folderOld = md5($this->user->empresa_id) . "/fotos/logos/{$data['logo']}";
 
-   public function delete(int $id)
-   {
-      $resp = $this->model->find($id);
-      return $resp->delete();
-   }
+            $dados->logo = $this->parse_file($data, $folder, $folderOld);
+        }
+        return $dados->save();
+    }
 
-   //configurações
-   public function getByIdConfig(int $id)
-   {
-      $dados = EmitenteConfig::find($id);
-      return $dados;
-   }
-   public function updateConfig($data, $id)
-   {
-      $dados = EmitenteConfig::find($id);
-      $dados->fill($data);
-      return $dados->save();
-   }
+    public function delete(int $id)
+    {
+        $resp = $this->model->find($id);
+        return $resp->delete();
+    }
 
-   //certificados
-   public function updateCertificate($data, int $id)
-   {
-      $dados = $this->model->find($id);
+    //configurações
+    public function getByIdConfig(int $id)
+    {
+        $dados = EmitenteConfig::find($id);
+        return $dados;
+    }
+    public function updateConfig($data, $id)
+    {
+        $dados = EmitenteConfig::find($id);
+        $dados->fill($data);
+        return $dados->save();
+    }
 
-      if (isset($data['file']) && $data['file'] != "") {
-         $folder = $data['cnpj'] . "/certificates";
+    //certificados
+    public function updateCertificate($data, int $id)
+    {
+        $dados = $this->model->find($id);
 
-         $dados->file_pfx = $this->parse_file($data, $folder);
-      }
+        if (isset($data['file']) && $data['file'] != "") {
+            $folder = md5($this->user->empresa_id) . "/certificates/" . $data['cnpj'];
+            $folderOld = "";
 
-      $dados->senha_pfx = $data['senha_pfx'];
+            $dados->file_pfx = $this->parse_file($data, $folder, $folderOld);
+        }
 
-      return $dados->save();
-   }
+        $dados->senha_pfx = $data['senha_pfx'];
 
-   // utilidades
-   private function parse_file($data, $folder)
-   {
-      if (isset($data['file']) && $data['file'] != '') {
+        return $dados->save();
+    }
 
-         $this->_deleteFileIfExists($data, $folder);
+    // utilidades
+    private function parse_file($data, $folder, $folderOld)
+    {
+        if (isset($data['file']) && $data['file'] != '') {
 
-         $content = base64_decode($data['file'][0]);
-         $file = fopen('php://temp', 'r+');
-         fwrite($file, $content);
-         $file_name = md5(
-            uniqid(
-               microtime(),
-               true
-            )
-         ) . '.' . pathinfo($data['file_name'], PATHINFO_EXTENSION);
+            $this->_deleteFileIfExists($data, $folderOld);
 
-         Storage::disk('public')
-            ->put("{$folder}/" . $file_name, $file);
-         return $file_name;
-      }
-   }
-   private function _deleteFileIfExists(array $data, $folder): void
-   {
-      if (array_key_exists('file_pfx', $data) && $data['file_pfx'] != null) {
-         Storage::disk('public')
-            ->delete("{$folder}/" . $data['file_pfx']);
-      }
-   }
-   private function set_file($file, $folder)
-   {
-      $exists = Storage::disk('public')->exists("{$folder}/" . $file);
-      if (!$exists) {
-         return null;
-      }
-      return Storage::url("{$folder}/" . $file);
-   }
+            $content = base64_decode($data['file'][0]);
+            $file = fopen('php://temp', 'r+');
+            fwrite($file, $content);
+            $file_name = md5(
+                uniqid(
+                    microtime(),
+                    true
+                )
+            ) . '.' . pathinfo($data['file_name'], PATHINFO_EXTENSION);
+
+            Storage::disk('public')
+                ->put("{$folder}/" . $file_name, $file);
+            return $file_name;
+        }
+    }
+    private function _deleteFileIfExists(array $data, $folder): void
+    {
+        if (array_key_exists('file_pfx', $data) && $data['file_pfx'] != null) {
+            Storage::disk('public')
+                ->delete("{$folder}/" . $data['file_pfx']);
+        }
+
+        if (array_key_exists('logo', $data) && $data['logo'] != null) {
+            Storage::disk('public')
+                ->delete("{$folder}/" . $data['logo']);
+        }
+    }
+    private function set_file($file, $folder)
+    {
+        $exists = Storage::disk('public')->exists("{$folder}/" . $file);
+        if (!$exists) {
+            return null;
+        }
+        return Storage::url("{$folder}/" . $file);
+    }
 }

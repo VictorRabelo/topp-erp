@@ -8,6 +8,7 @@ import { EmitenteFormComponent } from './emitente-form/emitente-form.component';
 
 import { AppState } from '../../../core/reducers';
 import { currentUser } from '../../../core/auth';
+import { FiscalSendXmlComponent } from '../modais/fiscal-send-xml/fiscal-send-xml.component';
 
 
 
@@ -109,6 +110,11 @@ export class EmitentesComponent implements OnInit {
 		}, erro => {
 			this.loading = false;
 		});
+	}
+
+	sendXML(item) {
+		const modalRef = this.modalCtrl.open(FiscalSendXmlComponent, { size: 'md', backdrop: 'static' });
+		modalRef.componentInstance.emitente = item;
 	}
 
 }

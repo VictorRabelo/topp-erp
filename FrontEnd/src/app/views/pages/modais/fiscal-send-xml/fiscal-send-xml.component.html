@@ -1,0 +1,59 @@
+<div class="kt-portlet no-margin"
+	[ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+
+	<div class="kt-portlet__head kt-portlet__head__custom">
+		<div class="kt-portlet__head-label">
+			<h3 class="kt-portlet__head-title">
+				<span>Envio de XML para contabilidade </span>
+			</h3>
+		</div>
+
+	</div>
+	<div class="kt-form kt-portlet__body">
+
+		<div class="kt-portlet__body-progress">
+			<mat-spinner [diameter]="40"></mat-spinner>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-12 form-group">
+				<span>Emitente:</span>
+				<input type="text" readonly class="form-control" [(ngModel)]="emitente.razao">
+			</div>
+
+			<div class="col-sm-4 form-group">
+				<span>Mes/Ano:</span>
+				<select class="form-control" [(ngModel)]="dados.mes">
+					<option *ngFor="let item of dataSource" [value]="item.mes">{{item.mes}}</option>
+				</select>
+			</div>
+
+			<div class="col-sm-4 form-group">
+				<span>Modelo:</span>
+				<select class="form-control" [(ngModel)]="dados.modelo">
+					<option value="55">NF-e</option>
+					<option value="65">NFC-e</option>
+					<option value="10">Todas</option>
+				</select>
+			</div>
+
+			<!-- <div class="col-sm-4 form-group">
+				<span>Ambiente:</span>
+				<select class="form-control" [(ngModel)]="dados.tpamb">
+					<option value="1">Produção</option>
+					<option value="2">Homologação(TESTEs)</option>
+					<option value="10">Todas</option>
+				</select>
+			</div> -->
+		</div>
+
+
+	</div>
+	<div class="kt-portlet__footer" align="right">
+		<button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+		<button class="btn btn-sm btn-success" [disabled]="loading" (click)="send()"
+			[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+			Enviar
+		</button>
+	</div>
+</div>

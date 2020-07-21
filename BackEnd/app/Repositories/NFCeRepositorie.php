@@ -14,190 +14,157 @@ use Illuminate\Support\Facades\DB;
 
 class NFCeRepositorie
 {
-   function __construct()
-   {
-      $this->model = new NFCe();
-      $this->user = Auth::guard('api')->user();
-      $this->nfce = new NFCeXML();
-      // $this->hashids = new Hashids();
-   }
+    function __construct()
+    {
+        $this->model = new NFCe();
+        $this->user = Auth::guard('api')->user();
+        //   $this->nfce = new NFCeXML();
+        // $this->hashids = new Hashids();
+    }
 
-   public function list($params)
-   {
-      $query = $this->model->with(['emitente', 'venda'])->where('empresa_id', $this->user->empresa_id)->get();
+    public function list($params)
+    {
+        $query = $this->model->with(['emitente', 'venda'])->where('empresa_id', $this->user->empresa_id)->get();
 
-      return $query;
-   }
+        return $query;
+    }
 
-   public function getSingle(int $id)
-   {
-      $dados = $this->model->find($id);
+    public function getSingle(int $id)
+    {
+        $dados = $this->model->find($id);
 
-      return $dados;
-   }
-
-
-   public function emitir($data)
-   {
-      //dados do emitente
-      $emitente_id = $data['emitente_id'];
-      $emitente = Emitente::find($emitente_id);
-      $emitente->config = EmitenteConfig::where('emitente_id', $emitente_id)->where('modelo', 65)->first();
-
-      //dados da venda
-      $venda_id = $data['venda_id'];
-      $venda = Venda::find($venda_id);
-
-      //dados do cliente
-      if ($venda->cliente_id > 0) {
-         $cliente = Client::find($venda->cliente_id);
-      } elseif (!empty($venda->cpf)) {
-         $cliente = (object) ['cliente' => $venda->cliente, 'cpf' => $venda->cpf];
-      } else {
-         $cliente = (object) [];
-      }
-
-      //dados dos itens
-      $itens = VendaItens::with('produto')->where('venda_id', $venda_id)->get();
-      //dados dos pagamentos
-      $payments = DB::table('vendas_payments')->where('venda_id', $venda_id)->get();
+        return $dados;
+    }
 
 
-      //verifica se ha nota emitida com esses dados
-      $verificaNota = $this->model->where('emitente_id', $emitente->id)
-         ->where('tpamb', $emitente->config->tpamb)
-         ->where('venda_id', $venda_id)
-         ->orderBy('id', 'desc')
-         ->first();
+    public function emitir($data)
+    {
+        //dados do emitente
+        $emitente_id = $data['emitente_id'];
+        $emitente = Emitente::find($emitente_id);
+        $emitente->config = EmitenteConfig::where('emitente_id', $emitente_id)->where('modelo', 65)->first();
 
-      if (!empty($verificaNota)) {
-         $verificaNota->cnpj = $emitente->cnpj;
-         $urlPDF = $this->nfce->getPDF($verificaNota);
-         if ($urlPDF == false) {
-            return $this->nfce->geraPDF($verificaNota);
-         }
-         return $urlPDF;
-      }
+        //dados da venda
+        $venda_id = $data['venda_id'];
+        $venda = Venda::find($venda_id);
 
+        //dados do cliente
+        if ($venda->cliente_id > 0) {
+            $venda->client = Client::find($venda->cliente_id);
+        } elseif (strlen($venda->cpf) > 0) {
+            $venda->client = (object) ['razao' => $venda->cliente, 'cnpj' => $venda->cpf];
+        }
 
-      //monta xml, assina e envia para sefaz
-      $response = $this->nfce->make($emitente, $venda, $cliente, $itens, $payments);
+        //dados dos itens
+        $itens = VendaItens::with('produto')->where('venda_id', $venda_id)->get();
 
-      //verifica se tem recibo
-      if (isset($response['protocolo'])) {
+        //dados dos pagamentos
+        $payments = DB::table('vendas_payments')->where('venda_id', $venda_id)->get();
 
-         //verifica se ja existe registro parecido
-         $dados = $this->model->where('emitente_id', $response['emitente_id'])
-            ->where('tpamb', $response['tpamb'])
-            ->where('numero', $response['numero'])
-            ->orderBy('id', 'desc')
-            ->first();
+        $nfce = new NFCeXML($emitente, null, $venda, $itens, $payments);
 
-         if (empty($dados)) {
-            $nota = $this->create($response);
-         } else {
-            $nota = $this->editar($response, $dados->id);
-         }
+        //verifica se ha nota emitida com esses dados
+        // $verificaNota = $this->model->where('emitente_id', $emitente->id)
+        //     ->where('tpamb', $emitente->config->tpamb)
+        //     ->where('venda_id', $venda_id)
+        //     ->orderBy('id', 'desc')
+        //     ->first();
 
-         $nota->cnpj = $emitente->cnpj;
-         $pdf_url = $this->nfce->geraPDF($nota);
+        // if (!empty($verificaNota)) {
+        //     $urlPDF = $nfce->getPDF($verificaNota);
+        //     // if ($urlPDF == false) {
+        //     //     return $nfce->geraPDF($verificaNota);
+        //     // }
+        //     return $urlPDF;
+        // }
 
-         if ($nota->id) {
+        //gera nfce
+        $resp = $nfce->make();
+        if (isset($resp['cstatus']) && $resp['cstatus'] == 100) {
+            $dados = $this->create($resp);
 
-            if ($nota->tpamb == 1) {
-               $emitente->config->seq += 1;
+            if ($resp['tpamb'] == 1) {
+                $emitente->config->seq += 1;
             } else {
-               $emitente->config->seqHomolog += 1;
+                $emitente->config->seqHomolog += 1;
             }
 
+            //atualiza a sequencia da nota
             $emitente->config->save();
-         }
 
-         //retorna os dados
-         return $pdf_url;
-      }
+            //retorna url do PDF
+            // return $this->printNota($dados);
+        }
 
-      //retorna caso não tenha recibo
-      return $response;
-   }
+        return $resp;
+    }
 
-   public function create($data)
-   {
-      $data['empresa_id'] = $this->user->empresa_id;
-      $nfc = $this->model->fill($data);
-      $nfc->save();
+    public function create($data)
+    {
+        $data['empresa_id'] = $this->user->empresa_id;
+        $nfc = $this->model->fill($data);
+        $nfc->save();
 
-      return $nfc;
-   }
+        return $nfc;
+    }
 
-   public function editar($post, int $id)
-   {
-      $nfc = $this->model->find($id);
-      $nfc->fill($post);
-      $nfc->save();
+    public function editar($post, int $id)
+    {
+        $nfc = $this->model->find($id);
+        $nfc->fill($post);
+        $nfc->save();
 
-      return $nfc;
-   }
+        return $nfc;
+    }
 
-   public function cancela($data, int $id)
-   {
-      $nota = $this->model->find($id);
-      $nota->xjust = $data['xjust'];
+    public function cancela($data, int $id)
+    {
+        //dados do emitente
+        $emitente_id = $data['emitente_id'];
+        $emitente = Emitente::find($emitente_id);
+        $emitente->config = EmitenteConfig::where('emitente_id', $emitente_id)->where('modelo', 65)->first();
 
-      $emitente = Emitente::find($nota->emitente_id);
-      $emitente->config = EmitenteConfig::where('emitente_id', $nota->emitente_id)->where('modelo', 65)->first();
+        //dados da nota
+        $dados = NFCe::find($id);
+        $dados->xjust = $data['xjust'];
 
-      $nota->cnpj = $emitente->cnpj;
+        $nfe = new NFCeXML($emitente, $dados);
 
-      if ($nota->cstatus == 101 || $nota->cstatus == 135 || $nota->cstatus == 155) {
-         return $this->consultaNota($nota, $emitente);
-      }
+        $resp = $nfe->cancelarNFe($dados);
 
-      $response = $this->nfce->cancelarNFCe($nota, $emitente);
-      // print_r($response);
+        // return $resp;
 
-      //verifica se tem recibo
-      if (isset($response['protocolo'])) {
+        if (isset($resp->cstatus) && ($resp->cstatus == "101" || $resp->cstatus == "135" || $resp->cstatus == "155" || $resp->cstatus == "573")) {
+            return $this->consultaNota($resp, $emitente);
+        }
 
-         //verifica se ja existe registro parecido
-         // $nota = $this->editar($response, $nota->id);
+        return $resp;
+    }
+    function consultaNota($nota, $emitente)
+    {
+        $nfe = new NFCeXML($emitente, $nota);
+        $consulta = $nfe->consultarChave($nota);
 
-         // $urlPDF = $this->nfce->getPDF($nota);
-         // if ($urlPDF == false) {
-         //    $urlPDF = $this->nfce->geraPDF($nota);
-         // }
+        if (isset($consulta->cstatus)) {
+            return $nota =  $consulta->save();
+        }
 
-         $this->consultaNota($nota, $emitente);
+        return $consulta;
+    }
 
-         unset($nota->cnpj);
-         $nota = $response->save();
+    public function printNota($data)
+    {
+        $dados = $this->model->find($data->id);
+        $emitente = Emitente::find($dados->emitente_id);
+        $emitente->config = EmitenteConfig::where('emitente_id', $dados->emitente_id)->where('modelo', 65)->first();
+        // $dados->cnpj = $emitente->cnpj;
+        $nfe = new NFCeXML($emitente, $dados);
 
-         return $nota;
-      }
+        $urlPDF = $nfe->getPDF($dados);
+        // if ($urlPDF == false) {
+        //    return array('pdf_url' => $this->nfce->geraPDF($nota));
+        // }
 
-      return $response;
-   }
-   function consultaNota($nota, $emitente)
-   {
-      $consulta = $this->nfce->consultarChave($nota, $emitente);
-      if (isset($consulta->cstatus)) {
-         unset($nota->cnpj);
-         return $nota =  $consulta->save();
-      }
-
-      return $consulta;
-   }
-
-   public function printNota(object $nota)
-   {
-      $emitente = Emitente::find($nota->emitente_id);
-      $nota->cnpj = $emitente->cnpj;
-
-      $urlPDF = $this->nfce->getPDF($nota);
-      if ($urlPDF == false) {
-         return array('pdf_url' => $this->nfce->geraPDF($nota));
-      }
-
-      return array('pdf_url' => $urlPDF);
-   }
+        return array('pdf_url' => $urlPDF);
+    }
 }

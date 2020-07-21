@@ -16,7 +16,6 @@ class ProductRepositorie
     {
         $this->model = new Product();
         $this->user = Auth::guard('api')->user();
-        // $this->hashids = new Hashids();
     }
 
     public function list($params)
@@ -166,7 +165,7 @@ class ProductRepositorie
             ) . '.' . pathinfo($data['photo_name'], PATHINFO_EXTENSION);
 
             Storage::disk('public')
-                ->put("{$this->user->cnpj}/fotos/" . $photo_name, $file);
+                ->put(md5($this->user->empresa_id) . "/fotos/produtos/" . $photo_name, $file);
             return $photo_name;
         }
     }
@@ -174,11 +173,11 @@ class ProductRepositorie
     {
         if (array_key_exists('foto_atual', $data) && $data['foto_atual'] != null) {
             Storage::disk('public')
-                ->delete("{$this->user->cnpj}/fotos/" . $data['foto_atual']);
+                ->delete(md5($this->user->empresa_id) . "/fotos/produtos/" . $data['foto_atual']);
         }
     }
     private function set_foto($foto)
     {
-        return Storage::url("{$this->user->cnpj}/fotos/" . $foto);
+        return Storage::url(md5($this->user->empresa_id) . "/fotos/produtos/" . $foto);
     }
 }

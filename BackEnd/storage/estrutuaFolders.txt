@@ -1,0 +1,6 @@
+id_registro/fotos
+id_registro/fotos/produtos
+id_registro/fotos/logos
+id_registro/certificates/cnpj_emitente
+id_registro/xml/cnpj_emitente/tipo_nota/ambiente/mes/status/
+id_registro/pdf/cnpj_emitente/tipo_nota/ambiente/mes/

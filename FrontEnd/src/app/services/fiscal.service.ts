@@ -5,37 +5,46 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
 @Injectable({
-   providedIn: 'root'
+	providedIn: 'root'
 })
 export class FiscalService {
-   public url = environment.url;
+	public url = environment.url;
 
-   constructor(
-      public http: HttpClient
-   ) { }
+	constructor(
+		public http: HttpClient
+	) { }
 
-   createNFCe(data: any): Observable<any[]> {
-      return this.http.post<any[]>(`${this.url}/nfce`, data);
-   }
+	createNFCe(data: any): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/nfce`, data);
+	}
 
-   cancelNFCe(data: any, id: number): Observable<any[]> {
-      return this.http.post<any[]>(`${this.url}/nfce/${id}`, data);
-   }
+	cancelNFCe(data: any, id: number): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/nfce/${id}`, data);
+	}
 
-   printNFCe(data: any): Observable<any[]> {
-      return this.http.post<any[]>(`${this.url}/nfce/print`, data);
-   }
+	printNFCe(data: any): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/nfce/print`, data);
+	}
 
-   createNFe(data: any): Observable<any[]> {
-      return this.http.post<any[]>(`${this.url}/nfe`, data);
-   }
+	createNFe(data: any): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/nfe`, data);
+	}
 
-   cancelNFe(data: any, id: number): Observable<any[]> {
-      return this.http.post<any[]>(`${this.url}/nfe/${id}`, data);
-   }
+	cancelNFe(data: any, id: number): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/nfe/${id}`, data);
+	}
 
-   printNFe(data: any): Observable<any[]> {
-      return this.http.post<any[]>(`${this.url}/nfe/print`, data);
-   }
+	printNFe(data: any): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/nfe/print`, data);
+	}
+
+
+	getMeses(data: any): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/fiscal/getMeses`, data);
+	}
+
+	sendXML(data: any): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/fiscal/sendXML`, data);
+	}
 
 }
