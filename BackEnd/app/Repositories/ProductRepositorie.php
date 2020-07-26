@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\models\EstoqueEntrada;
-use App\models\EstoqueSaida;
-use App\models\Product;
+use App\Models\EstoqueEntrada;
+use App\Models\EstoqueSaida;
+use App\Models\Product;
 // use Hashids\Hashids;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

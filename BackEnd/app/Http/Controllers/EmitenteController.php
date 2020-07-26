@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\models\Emitente;
+use App\Models\Emitente;
 use App\Repositories\EmitenteRepositorie;
 use Illuminate\Http\Request;
 

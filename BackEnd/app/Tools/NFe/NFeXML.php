@@ -160,7 +160,7 @@ class NFeXML
 
         $std = new \stdClass();
         $std->cUF = $this->_getStateCode($this->business->uf);
-        $std->cNF = mt_rand(10000000, 99999999);
+        $std->cNF = STR_PAD($this->numero + 1, 8, '0', STR_PAD_LEFT);
         $std->natOp = self::NATURE_OPERATION;
         // $std->indPag = $payment;
         $std->mod = 55;

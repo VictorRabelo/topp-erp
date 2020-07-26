@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\models\Payment;
+use App\Models\Payment;
 // use Hashids\Hashids;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

@@ -2,18 +2,18 @@
 
 namespace App\Repositories;
 
-use App\models\Caixa;
-use App\models\Client;
-use App\models\EstoqueSaida;
-use App\models\NFCe;
-use App\models\NFe;
-use App\models\NfeItens;
-use App\models\NfePayment;
-use App\models\Payment;
-use App\models\Product;
-use App\models\Venda;
-use App\models\VendaItens;
-use App\models\VendasPayments;
+use App\Models\Caixa;
+use App\Models\Client;
+use App\Models\EstoqueSaida;
+use App\Models\NFCe;
+use App\Models\NFe;
+use App\Models\NfeItens;
+use App\Models\NfePayment;
+use App\Models\Payment;
+use App\Models\Product;
+use App\Models\Venda;
+use App\Models\VendaItens;
+use App\Models\VendasPayments;
 use App\User;
 // use Hashids\Hashids;
 use Illuminate\Support\Facades\Auth;

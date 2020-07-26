@@ -4,8 +4,8 @@ namespace App\Repositories;
 
 use App\Mail\NewUserNotification;
 use App\Mail\sendXMLs;
-use App\models\NFCe;
-use App\models\NFe;
+use App\Models\NFCe;
+use App\Models\NFe;
 use Illuminate\Support\Facades\Mail;
 use ZipArchive;
 

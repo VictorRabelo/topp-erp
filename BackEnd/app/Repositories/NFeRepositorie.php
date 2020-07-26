@@ -2,12 +2,12 @@
 
 namespace App\Repositories;
 
-use App\models\NFe;
-use App\models\Emitente;
-use App\models\EmitenteConfig;
-use App\models\NfeItens;
-use App\models\NfePayment;
-use App\models\Product;
+use App\Models\NFe;
+use App\Models\Emitente;
+use App\Models\EmitenteConfig;
+use App\Models\NfeItens;
+use App\Models\NfePayment;
+use App\Models\Product;
 use App\Tools\NFe\NFeXML;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

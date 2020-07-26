@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\models\Client;
+use App\Models\Client;
 use App\User;
 // use Hashids\Hashids;
 use Illuminate\Support\Facades\Auth;

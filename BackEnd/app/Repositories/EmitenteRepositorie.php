@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\models\Emitente;
-use App\models\EmitenteConfig;
+use App\Models\Emitente;
+use App\Models\EmitenteConfig;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;

@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\models\Venda;
+use App\Models\Venda;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 

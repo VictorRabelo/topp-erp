@@ -2,12 +2,12 @@
 
 namespace App\Repositories;
 
-use App\models\NFCe;
-use App\models\Emitente;
-use App\models\EmitenteConfig;
-use App\models\Client;
-use App\models\Venda;
-use App\models\VendaItens;
+use App\Models\NFCe;
+use App\Models\Emitente;
+use App\Models\EmitenteConfig;
+use App\Models\Client;
+use App\Models\Venda;
+use App\Models\VendaItens;
 use App\Tools\NFCe\NFCeXML;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
