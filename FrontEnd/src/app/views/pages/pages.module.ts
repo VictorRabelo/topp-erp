@@ -23,32 +23,25 @@ import { NgxCurrencyModule, CurrencyMaskInputMode } from "ngx-currency";
 import { DebounceModule } from 'ngx-debounce';
 
 import { ClientesComponent } from './clientes/clientes.component';
-// import { ClienteFormComponent } from './clientes/cliente-form/cliente-form.component';
 import { ProdutosComponent } from './produtos/produtos.component';
-// import { ProdutoFormComponent } from './produtos/produto-form/produto-form.component';
 import { VendaBalcaoComponent } from './vendas/venda-balcao/venda-balcao.component';
 import { VendasComponent } from './vendas/vendas.component';
 import { UsersComponent } from './users/users.component';
-// import { UserFormComponent } from './users/user-form/user-form.component';
-// import { PermissionsFormComponent } from './users/permissions-form/permissions-form.component';
-// import { ProdutoSearchComponent } from './vendas/modais/produto-search/produto-search.component';
-// import { ProdutoDetalheComponent } from './vendas/modais/produto-detalhe/produto-detalhe.component';
-// import { ClienteSearchComponent } from './vendas/modais/cliente-search/cliente-search.component';
-// import { ClienteManualComponent } from './vendas/modais/cliente-manual/cliente-manual.component';
-// import { VendaFinishComponent } from './vendas/modais/venda-finish/venda-finish.component';
-// import { GeraParcelasComponent } from './vendas/modais/gera-parcelas/gera-parcelas.component';
 import { EmitentesComponent } from './emitentes/emitentes.component';
-// import { EmitenteFormComponent } from './emitentes/emitente-form/emitente-form.component';
-// import { EmitenteConfigFormComponent } from './emitentes/emitente-config-form/emitente-config-form.component';
 import { EmitenteDetalheComponent } from './emitentes/emitente-detalhe/emitente-detalhe.component';
-// import { EmitenteCertificateComponent } from './emitentes/emitente-certificate/emitente-certificate.component';
-// import { GeraNotaComponent } from './vendas/modais/gera-nota/gera-nota.component';
 import { NfceComponent } from './nfce/nfce.component';
 import { NfeComponent } from './nfe/nfe.component';
 import { NfeFormComponent } from './nfe/nfe-form/nfe-form.component';
-import { CaixaResumoComponent } from './financeiro/caixa-resumo/caixa-resumo.component';
-// import { ProdutoMovStockComponent } from './produtos/produto-mov-stock/produto-mov-stock.component';
 import { SharedModule } from '../../shared/shared.module';
+import { FormsPaymentsComponent } from './financeiro/forms-payments/forms-payments.component';
+import { PaymentFormComponent } from './financeiro/forms-payments/payment-form/payment-form.component';
+import { CaixaResumoComponent } from './financeiro/caixa-resumo/caixa-resumo.component';
+import { ContasReceberComponent } from './contas-receber/contas-receber.component';
+import { ContasPagarComponent } from './contas-pagar/contas-pagar.component';
+import { ContaPagarFormComponent } from './contas-pagar/conta-pagar-form/conta-pagar-form.component';
+import { ContaPagarPaymentComponent } from './contas-pagar/conta-pagar-payment/conta-pagar-payment.component';
+import { ContaReceberFormComponent } from './contas-receber/conta-receber-form/conta-receber-form.component';
+import { ContaReceberPaymentComponent } from './contas-receber/conta-receber-payment/conta-receber-payment.component';
 
 export const customCurrencyMaskConfig = {
 	align: "right",
@@ -78,6 +71,9 @@ const routes: Routes = [
 	{ path: 'nfe', component: NfeComponent },
 	{ path: 'nfce', component: NfceComponent },
 	{ path: 'caixa', component: CaixaResumoComponent },
+	{ path: 'caixa/payments_forms', component: FormsPaymentsComponent },
+	{ path: 'contas_pagar', component: ContasPagarComponent },
+	{ path: 'contas_receber', component: ContasReceberComponent },
 
 	{ path: 'nfe/:id', component: NfeFormComponent },
 	{ path: 'emitente/:id', component: EmitenteDetalheComponent },
@@ -94,25 +90,20 @@ const routes: Routes = [
 		VendaBalcaoComponent,
 		VendasComponent,
 		UsersComponent,
-		// UserFormComponent,
-		// PermissionsFormComponent,
-		// ProdutoSearchComponent,
-		// ProdutoDetalheComponent,
-		// ClienteSearchComponent,
-		// ClienteManualComponent,
-		// VendaFinishComponent,
-		// GeraParcelasComponent,
 		EmitentesComponent,
-		// EmitenteFormComponent,
-		// EmitenteConfigFormComponent,
 		EmitenteDetalheComponent,
-		// EmitenteCertificateComponent,
-		// GeraNotaComponent,
 		NfceComponent,
 		NfeComponent,
 		NfeFormComponent,
 		CaixaResumoComponent,
-		// ProdutoMovStockComponent
+		FormsPaymentsComponent,
+		PaymentFormComponent,
+		ContasReceberComponent,
+		ContasPagarComponent,
+		ContaPagarFormComponent,
+		ContaPagarPaymentComponent,
+		ContaReceberFormComponent,
+		ContaReceberPaymentComponent,
 	],
 	exports: [],
 	imports: [
@@ -137,21 +128,11 @@ const routes: Routes = [
 		MatCheckboxModule
 	],
 	entryComponents: [
-		// ClienteFormComponent,
-		// ProdutoFormComponent,
-		// PermissionsFormComponent,
-		// UserFormComponent,
-		// ProdutoSearchComponent,
-		// ProdutoDetalheComponent,
-		// ClienteSearchComponent,
-		// VendaFinishComponent,
-		// GeraParcelasComponent,
-		// EmitenteFormComponent,
-		// EmitenteConfigFormComponent,
-		// EmitenteCertificateComponent,
-		// GeraNotaComponent,
-		// NfeFormComponent,
-		// ProdutoMovStockComponent
+		PaymentFormComponent,
+		ContaPagarFormComponent,
+		ContaPagarPaymentComponent,
+		ContaReceberFormComponent,
+		ContaReceberPaymentComponent
 	],
 	providers: []
 })

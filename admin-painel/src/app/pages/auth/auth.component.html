@@ -1,0 +1,31 @@
+<div align="center">
+  <form class="form-signin" #form="ngForm" (ngSubmit)="submit(form)">
+
+    <div align="center">
+      <img class="mb-4" src="assets/medias/logos/logo.png" alt="" width="72" height="72">
+    </div>
+
+    <h1 class="h3 mb-3 font-weight-normal">Acesso Administrativo TOPP ERP</h1>
+
+    <div>
+      <label for="inputEmail" class="sr-only">Usuário:</label>
+      <input type="text" id="inputEmail" class="form-control" placeholder="Usuário" required autofocus ngModel
+        name="usuario">
+
+      <label for="inputPassword" class="sr-only">Senha:</label>
+      <input type="password" id="inputPassword" class="form-control" placeholder="Senha" required ngModel
+        name="password">
+    </div>
+
+    <!-- <div class="checkbox mb-3">
+      <label>
+        <input type="checkbox" value="remember-me"> Remember me
+      </label>
+    </div> -->
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+
+    <p class="mt-5 mb-3 text-muted">&copy; 2017-2020</p>
+  </form>
+
+</div>

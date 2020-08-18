@@ -2,6 +2,7 @@
 
 namespace App\Tools\NFe;
 
+use Exception;
 use Illuminate\Support\Facades\Storage;
 use NFePHP\Common\Certificate;
 use NFePHP\Common\Keys;
@@ -43,8 +44,6 @@ class NFeXML
 
     protected $xml;
 
-    private $_vBC = 0;
-
     private $_statesCode = [
         'RO' => 11, 'AC' => 12, 'AM' => 13, 'RR' => 14, 'PA' => 15, 'AP' => 16,
         'TO' => 17, 'MA' => 21, 'PI' => 22, 'CE' => 23, 'RN' => 24, 'PB' => 25,
@@ -66,6 +65,12 @@ class NFeXML
             $this->mesPath = date('Y-m', strtotime($dados->updated_at));
             $this->tpambPath = ($this->tpamb == 1) ? "producao" : "homologacao";
             $this->pathRoot = md5($business->empresa_id);
+
+            if (!Storage::disk('public')->exists("{$this->pathRoot}/fotos/logos/{$this->business->logo}")) {
+                $this->logoFile = false;
+            } else {
+                $this->logoFile = Storage::disk('public')->get("{$this->pathRoot}/fotos/logos/{$this->business->logo}");
+            }
 
             $this->pathGerados = "{$this->pathRoot}/xml/{$this->business->cnpj}/nfe/{$this->tpambPath}/{$this->mesPath}/gerados";
             $this->pathAutorizados = "{$this->pathRoot}/xml/{$this->business->cnpj}/nfe/{$this->tpambPath}/{$this->mesPath}/autorizados";
@@ -97,9 +102,21 @@ class NFeXML
 
             $this->configJson = json_encode($this->config);
 
-            $this->certificate = Storage::disk('public')->get("{$this->pathRoot}/certificates/{$business->cnpj}/{$business->file_pfx}");
+            $this->pathCertificate = "{$this->pathRoot}/certificates/{$business->cnpj}/{$business->file_pfx}";
 
-            $this->tools = new Tools($this->configJson, Certificate::readPfx($this->certificate, $business->senha_pfx));
+            if (!Storage::disk('public')->exists($this->pathCertificate)) {
+                throw new Exception('Parece que o certificado não foi configurado!', '010');
+            }
+
+            $this->certificate = Storage::disk('public')->get($this->pathCertificate);
+
+            $contentCertificate = Certificate::readPfx($this->certificate, $business->senha_pfx);
+
+            if ($contentCertificate->isExpired()) {
+                throw new Exception('Certificado VENCIDO! Não é possível mais usá-lo!', '010');
+            }
+
+            $this->tools = new Tools($this->configJson, $contentCertificate);
             $this->tools->model(55);
         }
     }
@@ -161,7 +178,7 @@ class NFeXML
         $std = new \stdClass();
         $std->cUF = $this->_getStateCode($this->business->uf);
         $std->cNF = STR_PAD($this->numero + 1, 8, '0', STR_PAD_LEFT);
-        $std->natOp = self::NATURE_OPERATION;
+        $std->natOp = $this->dados->natop;
         // $std->indPag = $payment;
         $std->mod = 55;
         $std->serie = $this->serie;
@@ -196,6 +213,16 @@ class NFeXML
         $std->cDV = substr($this->chave, -1);
 
         $this->nfe->tagide($std);
+
+        //verifica se tem referencias na nota
+        if (isset($this->dados->references) && $this->dados->finalidade_nf != 1) {
+
+            foreach ($this->dados->references as $reference) {
+                $std = new \stdClass();
+                $std->refNFe = $reference->chave_nfe;
+                $this->nfe->tagrefNFe($std);
+            }
+        }
     }
 
     private function get_Emitente()
@@ -254,10 +281,16 @@ class NFeXML
         $this->desconto_venda = $this->dados->desconto;
         $this->total_items = 0;
         $this->total_desconto = 0;
+
+        $this->total_BC = 0;
+        $this->total_ICMS = 0;
+        $this->total_IPI = 0;
+        $this->total_PIS = 0;
+        $this->total_COFINS = 0;
         foreach ($this->items as $i => $item) {
             $cfop = ($this->_getStateCode($this->business->uf) != $this->_getStateCode($this->dados->uf))
-                ? "6" . substr($item['produto']['cfop'], 1)
-                : "5" . substr($item['produto']['cfop'], 1);
+                ? "6" . substr($item['cfop'], 1)
+                : "5" . substr($item['cfop'], 1);
 
             $std = new \stdClass();
             $std->item = $i = $i + 1;
@@ -295,43 +328,62 @@ class NFeXML
 
             if ($this->business->crt == 1) { //simples nacional
 
-                if ($item['produto']['cst'] == '102') {
+                if ($item['cst_icms'] == '102') {
                     $std = new \stdClass();
                     $std->item = $i;
                     $std->orig = $item['produto']['origin'];
-                    $std->CSOSN = $item['produto']['cst'];
+                    $std->CSOSN = '102';
+                    $this->nfe->tagICMSSN($std);
+                } else {
+                    $std = new \stdClass();
+                    $std->item = $i;
+                    $std->orig = $item['produto']['origin'];
+                    $std->CSOSN = $item['cst_icms'];
+                    $std->vBC = $total_item;
+                    $std->pICMS = $item['p_icms'];
+                    $std->vICMS = $std->vBC * ($std->pICMS / 100);
+
+                    $this->total_BC += $total_item;
+                    $this->total_ICMS += $std->vICMS;
+
                     $this->nfe->tagICMSSN($std);
                 }
 
                 $std = new \stdClass();
                 $std->item = $i;
-                $std->cEnq = '999';
-                $std->CST = '53';
-                $std->vIPI = 0;
-                $std->vBC = 0;
-                $std->pIPI = 0;
+                $std->cEnq = ($item['cst_ipi'] == "52" || $item['cst_ipi'] == "53") ? '301' : '999';
+                $std->CST = $item['cst_ipi'];
+                $std->vBC = $total_item;
+                $std->pIPI = $item['p_ipi'];
+                $std->vIPI = $std->vBC * ($std->pIPI / 100);
+
+                $this->total_IPI += $std->vIPI;
                 $this->nfe->tagIPI($std);
 
                 //PIS - Programa de Integração Social]
                 $std = new \stdClass();
                 $std->item = $i; //produtos 1
-                $std->CST = '07';
-                $std->vBC = null;
-                $std->pPIS = null;
-                $std->vPIS = null;
+                $std->CST = $item['cst_pis'];
+                $std->vBC = $total_item;
+                $std->pPIS = $item['p_pis'];
+                $std->vPIS = $std->vBC * ($std->pPIS / 100);
                 $std->qBCProd = null;
                 $std->vAliqProd = null;
+
+                $this->total_PIS += $std->vPIS;
                 $this->nfe->tagPIS($std);
 
                 //COFINS - Contribuição para o Financiamento da Seguridade Social
                 $std = new \stdClass();
                 $std->item = $i; //produtos 1
-                $std->CST = '07';
-                $std->vBC = null;
-                $std->pCOFINS = null;
-                $std->vCOFINS = null;
+                $std->CST = $item['cst_cofins'];
+                $std->vBC = $total_item;
+                $std->pCOFINS = $item['p_cofins'];
+                $std->vCOFINS = $std->vBC * ($std->pCOFINS / 100);
                 $std->qBCProd = null;
                 $std->vAliqProd = null;
+
+                $this->total_COFINS += $std->vCOFINS;
                 $this->nfe->tagCOFINS($std);
             }
         }
@@ -350,10 +402,10 @@ class NFeXML
         $std->vSeg = "0.00";
         $std->vDesc = $this->total_desconto;
         $std->vII = "0.00";
-        $std->vIPI = "0.00";
+        // $std->vIPI = "0.00";
         $std->vIPIDevol = "0.00"; //incluso no layout 4.00
-        $std->vPIS = "0.00";
-        $std->vCOFINS = "0.00";
+        // $std->vPIS = "0.00";
+        // $std->vCOFINS = "0.00";
         $std->vOutro = "0.00";
         $std->vNF = $this->total_items - $this->total_desconto;
         $std->vTotTrib = "0.00";
@@ -394,30 +446,43 @@ class NFeXML
 
     private function gen_payments()
     {
-        $total_pago = 0;
-        foreach ($this->payments as $payment) {
-            $total_pago += floatval($payment->valor);
-        }
 
+        if ($this->dados->finalidade_nf == 1) {
 
-        $std = new \stdClass();
-        $std->vTroco = $total_pago - ($this->total_items - $this->total_desconto);
-
-        $this->nfe->tagpag($std);
-
-        foreach ($this->payments as $payment) {
-            $std = new \stdClass();
-
-            if ($payment->forma == "Dinheiro") {
-                $std->indPag = '1';
-                $std->tPag = '01';
-                $std->vPag = $payment->valor;
-            } else {
-                $std->indPag = '1';
-                $std->tPag = '99';
-                $std->vPag = $payment->valor;
+            $total_pago = 0;
+            foreach ($this->payments as $payment) {
+                $total_pago += floatval($payment->valor);
             }
 
+
+            $std = new \stdClass();
+            $std->vTroco = $total_pago - ($this->total_items - $this->total_desconto);
+
+            $this->nfe->tagpag($std);
+
+            foreach ($this->payments as $payment) {
+                $std = new \stdClass();
+
+                if ($payment->forma == "Dinheiro") {
+                    $std->indPag = '1';
+                    $std->tPag = '01';
+                    $std->vPag = $payment->valor;
+                } else {
+                    $std->indPag = '1';
+                    $std->tPag = '99';
+                    $std->vPag = $payment->valor;
+                }
+
+                $this->nfe->tagdetPag($std);
+            }
+        } else {
+            $std = new \stdClass();
+            $std->vTroco = 0;
+            $this->nfe->tagpag($std);
+
+            $std = new \stdClass();
+            $std->tPag = '90';
+            $std->vPag = 0;
             $this->nfe->tagdetPag($std);
         }
 
@@ -440,10 +505,11 @@ class NFeXML
 
             return $nota;
         } catch (\Exception $e) {
-            return array($e->getMessage());
+            return array('erros' => [$e->getMessage()]);
         }
     }
 
+    //envio do xml
     private function send_nota()
     {
         try {
@@ -471,6 +537,7 @@ class NFeXML
         }
     }
 
+    //consultar recibo
     public function consultarRecibo()
     {
         try {
@@ -516,39 +583,9 @@ class NFeXML
         }
     }
 
+    //consultar chave
     public function consultarChave($nota)
     {
-        // $mesPath = date('Y-m', strtotime($nota->created_at));
-        // $tpambPath = ($nota->tpamb == 1) ? "producao" : "homologacao";
-
-        // $this->config  = [
-        //     "atualizacao" => date('Y-m-d h:i:s'),
-        //     "tpAmb" => $nota->tpamb,
-        //     "razaosocial" => $business->razao,
-        //     "cnpj" => $business->cnpj, // PRECISA SER VÁLIDO
-        //     "ie" => $business->inscricao_estadual, // PRECISA SER VÁLIDO
-        //     "siglaUF" => $business->uf,
-        //     "schemes" => "PL_009_V4",
-        //     "versao" => self::VERSION,
-        //     "tokenIBPT" => "AAAAAAA",
-        //     "CSC" => ($nota->tpamb == 1) ? $business->config->csc : $business->config->cscHomolog,
-        //     "CSCid" => ($nota->tpamb == 1) ? $business->config->cscid : $business->config->cscidHomolog,
-        //     "aProxyConf" => [
-        //         "proxyIp" => "",
-        //         "proxyPort" => "",
-        //         "proxyUser" => "",
-        //         "proxyPass" => ""
-        //     ]
-        // ];
-
-        // $configJson = json_encode($this->config);
-
-        // $certificate = Storage::disk('public')->get("{$business->cnpj}/certificates/{$business->file_pfx}");
-
-        // // try {
-        // $tools = new Tools($configJson, Certificate::readPfx($certificate, $business->senha_pfx));
-        // $tools->model('55');
-
         $chave = $nota->chave;
         $response = $this->tools->sefazConsultaChave($chave);
 
@@ -571,6 +608,24 @@ class NFeXML
         // return $std;
     }
 
+    public function downloadXML($nota)
+    {
+        try {
+            //este serviço somente opera em ambiente de produção
+            $this->tools->setEnvironment(1);
+
+            $chave = $nota->chave;
+            $response = $this->tools->sefazDownload($chave);
+
+            // header('Content-type: text/xml; charset=UTF-8');
+            // echo $response;
+
+        } catch (\Exception $e) {
+            return ['errors' => [str_replace("\n", "<br/>", $e->getMessage())]];
+        }
+    }
+
+    //cancela a nfe
     public function cancelarNFe($nota)
     {
         // $mesPath = date('Y-m', strtotime($nota->created_at));
@@ -649,6 +704,7 @@ class NFeXML
         // }
     }
 
+    //pega o pdf
     public function getPDF(object $dados)
     {
 
@@ -669,6 +725,7 @@ class NFeXML
         return Storage::url($pathPDF);
     }
 
+    //gera o PDf
     private function geraPDF(object $dados)
     {
 
@@ -680,7 +737,7 @@ class NFeXML
 
         $docxml = Storage::disk('public')->get($pathXML);
 
-        $logo = "";
+        $logo = ($this->logoFile != false) ? 'data://text/plain;base64,' . base64_encode($this->logoFile) : "";
 
         try {
             $danfe = new Danfe($docxml);
@@ -704,6 +761,7 @@ class NFeXML
         }
     }
 
+    //associa a uf ao codigo da uf
     /**
      * Pega o código do estado de acordo com a UF.
      *

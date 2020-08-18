@@ -9,9 +9,9 @@
 				*ngIf="dataSource.length < plano && permissions.create_emitente">
 				<i class="fas fa-plus-square"></i> Novo Emitente
 			</button>
-			<button class="btn btn-sm btn-success" (click)="add()" matTooltip="Filtra os dados">
+			<!-- <button class="btn btn-sm btn-success" (click)="add()" matTooltip="Filtra os dados">
 				<i class="fas fa-sliders-h"></i> Filtros
-			</button>
+			</button> -->
 			<button class="btn btn-label-brand btn-bold btn-sm" (click)="load_list()" matTooltip="Atualiza a lista">
 				<i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
 			</button>

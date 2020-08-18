@@ -3,12 +3,16 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 // Layout
 import { LayoutConfigService, ToggleOptions } from '../../../core/_base/layout';
 import { HtmlClassService } from '../html-class.service';
+import { environment } from '../../../../environments/environment';
 
 @Component({
 	selector: 'kt-brand',
 	templateUrl: './brand.component.html',
 })
 export class BrandComponent implements OnInit, AfterViewInit {
+
+	app_name = environment.app_name;
+
 	// Public properties
 	headerLogo: string;
 	headerStickyLogo: string;

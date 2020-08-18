@@ -31,7 +31,9 @@ export class ProdutoSearchComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.filters = this.data;
+		// if (this.data.filters) {
+		// 	this.filters = this.data.filters;
+		// }
 		this.listProdutos();
 	}
 
@@ -53,13 +55,29 @@ export class ProdutoSearchComponent implements OnInit {
 
 	chage(item) {
 
-		const retorno = {
+		let retorno: any = {
 			'produto_id': item.id,
 			'descricao': item.descricao,
 			'quantidade': 1,
 			'valor_unitario': item.preco,
 			'desconto': 0,
 			'foto': item.foto_url
+		}
+
+		if (this.data.nfe) {
+			retorno.cfop = item.cfop;
+
+			retorno.cst_icms = item.cst_icms;
+			retorno.p_icms = item.p_icms;
+
+			retorno.cst_ipi = item.cst_ipi;
+			retorno.p_ipi = item.p_ipi;
+
+			retorno.cst_pis = item.cst_pis;
+			retorno.p_pis = item.p_pis;
+
+			retorno.cst_cofins = item.cst_cofins;
+			retorno.p_cofins = item.p_cofins;
 		}
 
 		this.close(retorno);

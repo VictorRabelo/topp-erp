@@ -46,22 +46,19 @@ class NFeController extends Controller
         return response()->json(['message' => "Dados atualizado com sucesso!"], 201);
     }
 
-    public function destroy(Request $request, int $id)
+    public function destroy(int $id)
     {
-        $params = $request->all();
-        $resp = $this->repo->cancela($params, $id);
+        $resp = $this->repo->deleta($id);
         if (is_array($resp)) {
-            foreach ($resp as $row) {
-                echo "$row </br></br>";
-            }
-        } else {
-
-            return response()->json(['pdf_url' => $resp], 200);
+            return response()->json($resp, 500);
         }
+
+        return response()->json(['message' => "Deletado com sucesso!"], 201);
     }
 
     public function print(int $id)
     {
+        // return storage_path("c4ca4238a0b923820dcc509a6f75849b/fotos/logos/9370f2a83b01631f6bbbb48ada2b98d7.png");
         $resp = $this->repo->printNota($id);
         return response()->json($resp);
     }
@@ -77,7 +74,7 @@ class NFeController extends Controller
 
     public function create_item(Request $request)
     {
-        $data = $request->only('nfe_id', 'produto_id', 'descricao', 'quantidade', 'valor_unitario', 'desconto', 'total');
+        $data = $request->only('nfe_id', 'produto_id', 'descricao', 'quantidade', 'valor_unitario', 'desconto', 'total', 'cfop', 'cst_icms', 'p_icms', 'cst_ipi', 'p_ipi', 'cst_pis', 'p_pis', 'cst_cofins', 'p_cofins',);
         $resp = $this->repo->create_item($data);
 
         return response()->json(['message' => "Item adicionado com sucesso!"], 201);
@@ -85,7 +82,7 @@ class NFeController extends Controller
 
     public function update_item(Request $request, int $id)
     {
-        $data = $request->only('nfe_id', 'produto_id', 'descricao', 'quantidade', 'valor_unitario', 'desconto', 'total');
+        $data = $request->only('nfe_id', 'produto_id', 'descricao', 'quantidade', 'valor_unitario', 'desconto', 'total', 'cfop', 'cst_icms', 'p_icms', 'cst_ipi', 'p_ipi', 'cst_pis', 'p_pis', 'cst_cofins', 'p_cofins',);
         $dados = $this->repo->editar_item($data, $id);
 
         return response()->json(['message' => "Item atualizado com sucesso!"], 201);
@@ -138,5 +135,30 @@ class NFeController extends Controller
         } else {
             return response()->json($resp, 200);
         }
+    }
+
+
+    //referencias
+    public function search_references(Request $request)
+    {
+        $data = $request->only('termo');
+        $resp = $this->repo->search_references($data);
+        return response()->json($resp);
+    }
+    public function get_references(int $id)
+    {
+        $resp = $this->repo->get_references($id);
+        return response()->json($resp);
+    }
+    public function create_references(Request $request)
+    {
+        $data = $request->only('sequencia', 'chave', 'nfe_id');
+        $resp = $this->repo->create_references($data);
+        return response()->json($resp);
+    }
+    public function remove_references(int $id)
+    {
+        $resp = $this->repo->remove_references($id);
+        return response()->json($resp);
     }
 }

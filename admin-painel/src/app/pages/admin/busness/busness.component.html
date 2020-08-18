@@ -1,0 +1,52 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">Empresas</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+
+    <!-- <div class="btn-group mr-2">
+      <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+      <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+    </div> -->
+    <button type="button" class="btn btn-sm btn-outline-primary mr-2" (click)="open({})">
+      <i class="fas fa-plus"></i> Novo
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-dark mr-2" (click)="loadList()">
+      <i class="fas fa-sync"></i>
+    </button>
+
+  </div>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-sm table-hover">
+    <thead>
+      <th>ID</th>
+      <th>Razão</th>
+      <th>CPF/CNPJ</th>
+      <th>Cidade/UF</th>
+      <th>Plano</th>
+      <th>Licença</th>
+      <th class="text-right"></th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of dataSource">
+        <td>{{item.id}}</td>
+        <td>{{ item.razao | uppercase }}</td>
+        <td>{{item.cnpj}}</td>
+        <td>{{item.cidade}}/{{item.uf}}</td>
+        <td>{{item.plano}}</td>
+        <td>{{item.licenca | date: 'dd/MM/yyyy'}}</td>
+        <td class="text-right">
+          <button type="button" class="btn btn-sm btn-outline-primary mr-2" (click)="open(item)">
+            <i class="fas fa-pen"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-info mr-2" (click)="open_users(item)">
+            <i class="fas fa-user"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(item)">
+            <i class="fas fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

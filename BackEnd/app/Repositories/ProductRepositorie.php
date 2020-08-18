@@ -64,6 +64,7 @@ class ProductRepositorie
             $dados['foto'] = $this->parse_foto($dados);
         }
 
+        $dados['empresa_id'] = $this->user->empresa_id;
         $dados = $this->model->create($dados);
         // print_r($dados);
         $produto_id = (isset($dados->id)) ? $dados->id : 0;

@@ -1,200 +1,256 @@
 <div class="kt-portlet no-margin"
-   [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
-   <div class="kt-portlet__head kt-portlet__head__custom">
-      <div class="kt-portlet__head-label">
-         <!-- <button mat-icon-button matTooltip="Voltar" [routerLink]="/vendas">
+	[ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+	<div class="kt-portlet__head kt-portlet__head__custom">
+		<div class="kt-portlet__head-label">
+			<!-- <button mat-icon-button matTooltip="Voltar" [routerLink]="/vendas">
             <i class="fa fa-arrow-left"></i>
          </button> -->
-         <h3 class="kt-portlet__head-title">
-            <span *ngIf="permissions.id > 0">Lista de Permissões: </span>
-            <span *ngIf="!permissions.id">Nova Permissão</span> <span *ngIf="permissions.id > 0"> {{user.nivel}}</span>
-         </h3>
-      </div>
+			<h3 class="kt-portlet__head-title">
+				<span *ngIf="permissions.id > 0">Lista de Permissões: </span>
+				<span *ngIf="!permissions.id">Nova Permissão</span> <span *ngIf="permissions.id > 0">
+					{{user.nivel}}</span>
+			</h3>
+		</div>
 
-   </div>
-   <div class="kt-form kt-portlet__body">
+	</div>
+	<div class="kt-form kt-portlet__body">
 
-      <div class="kt-portlet__body-progress">
-         <mat-spinner [diameter]="40"></mat-spinner>
-      </div>
+		<div class="kt-portlet__body-progress">
+			<mat-spinner [diameter]="40"></mat-spinner>
+		</div>
 
-      <div class="row" *ngIf="!permissions.id">
-         <div class="col-sm-6 form-group">
-            <span>Descrição:</span>
-            <input type="text" class="form-control" [(ngModel)]="permissions.descricao">
-         </div>
-      </div>
+		<div class="row" *ngIf="!permissions.id">
+			<div class="col-sm-6 form-group">
+				<span>Descrição:</span>
+				<input type="text" class="form-control" [(ngModel)]="permissions.descricao">
+			</div>
+		</div>
 
-      <div class="row">
-         <div class="col-sm-4 form-group">
-            <fieldset>
-               <legend>
-                  <mat-checkbox color="primary" [(ngModel)]="permissions.users">Usuários</mat-checkbox>
-               </legend>
-               <div class="col-sm">
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_user">Criar Usuário</mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_user">Editar Usuário</mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_user">
-                     Deletar Usuário
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.nivel_user">
-                     Gerenciar Permissões
-                  </mat-checkbox>
-               </div>
-            </fieldset>
-         </div>
+		<div class="row">
+			<div class="col-sm-4 form-group">
+				<fieldset>
+					<legend>
+						<mat-checkbox color="primary" [(ngModel)]="permissions.users">Usuários</mat-checkbox>
+					</legend>
+					<div class="col-sm">
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_user">Criar
+							Usuário</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_user">Editar
+							Usuário</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_user">
+							Deletar Usuário
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.nivel_user">
+							Gerenciar Permissões
+						</mat-checkbox>
+					</div>
+				</fieldset>
+			</div>
 
-         <div class="col-sm-4 form-group">
-            <fieldset>
-               <legend>
-                  <mat-checkbox color="primary" [(ngModel)]="permissions.clients">Clientes</mat-checkbox>
-               </legend>
-               <div class="col-sm">
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_client">
-                     Criar Cliente
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_client">
-                     Editar Cliente
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_client">
-                     Deletar Cliente
-                  </mat-checkbox>
-               </div>
-            </fieldset>
-         </div>
+			<div class="col-sm-4 form-group">
+				<fieldset>
+					<legend>
+						<mat-checkbox color="primary" [(ngModel)]="permissions.clients">Clientes</mat-checkbox>
+					</legend>
+					<div class="col-sm">
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_client">
+							Criar Cliente
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_client">
+							Editar Cliente
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_client">
+							Deletar Cliente
+						</mat-checkbox>
+					</div>
+				</fieldset>
+			</div>
 
-         <div class="col-sm-4 form-group">
-            <fieldset>
-               <legend>
-                  <mat-checkbox color="primary" [(ngModel)]="permissions.products">Produtos</mat-checkbox>
-               </legend>
-               <div class="col-sm">
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_product">
-                     Criar Produto
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_product">
-                     Editar Produto
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_product">
-                     Deletar Produto
-                  </mat-checkbox>
-               </div>
-            </fieldset>
-         </div>
+			<div class="col-sm-4 form-group">
+				<fieldset>
+					<legend>
+						<mat-checkbox color="primary" [(ngModel)]="permissions.products">Produtos</mat-checkbox>
+					</legend>
+					<div class="col-sm">
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_product">
+							Criar Produto
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_product">
+							Editar Produto
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_product">
+							Deletar Produto
+						</mat-checkbox>
+					</div>
+				</fieldset>
+			</div>
 
-         <div class="col-sm-4 form-group">
-            <fieldset>
-               <legend>
-                  <mat-checkbox color="primary" [(ngModel)]="permissions.vendas">Vendas</mat-checkbox>
-               </legend>
-               <div class="col-sm">
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_venda">
-                     Criar Venda
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_venda">
-                     Editar Venda
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_venda">
-                     Deletar Venda
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.cancel_venda">
-                     Cancelar Venda
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.finalizar_venda">
-                     Finalizar Venda
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.desconto_venda">
-                     Desconto acima
-                  </mat-checkbox>
-               </div>
-            </fieldset>
-         </div>
+			<div class="col-sm-4 form-group">
+				<fieldset>
+					<legend>
+						<mat-checkbox color="primary" [(ngModel)]="permissions.vendas">Vendas</mat-checkbox>
+					</legend>
+					<div class="col-sm">
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_venda">
+							Criar Venda
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_venda">
+							Editar Venda
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_venda">
+							Deletar Venda
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.cancel_venda">
+							Cancelar Venda
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.finalizar_venda">
+							Finalizar Venda
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.desconto_venda">
+							Desconto acima
+						</mat-checkbox>
+					</div>
+				</fieldset>
+			</div>
 
-         <div class="col-sm-4 form-group">
-            <fieldset>
-               <legend>
-                  <mat-checkbox color="primary" [(ngModel)]="permissions.nfe">NFe</mat-checkbox>
-               </legend>
-               <div class="col-sm">
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_nfe">
-                     Criar NFe
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_nfe">
-                     Editar NFe
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_nfe">
-                     Deletar NFe
-                  </mat-checkbox>
-               </div>
-            </fieldset>
-         </div>
+			<div class="col-sm-4 form-group">
+				<fieldset>
+					<legend>
+						<mat-checkbox color="primary" [(ngModel)]="permissions.nfe">NFe</mat-checkbox>
+					</legend>
+					<div class="col-sm">
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_nfe">
+							Criar NFe
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_nfe">
+							Editar NFe
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_nfe">
+							Deletar NFe
+						</mat-checkbox>
+					</div>
+				</fieldset>
+			</div>
 
-         <div class="col-sm-4 form-group">
-            <fieldset>
-               <legend>
-                  <mat-checkbox color="primary" [(ngModel)]="permissions.nfce">NFCe</mat-checkbox>
-               </legend>
-               <div class="col-sm">
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_nfce">
-                     Criar NFCe
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_nfce">
-                     Editar NFCe
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_nfce">
-                     Deletar NFCe
-                  </mat-checkbox>
-               </div>
-            </fieldset>
-         </div>
+			<div class="col-sm-4 form-group">
+				<fieldset>
+					<legend>
+						<mat-checkbox color="primary" [(ngModel)]="permissions.nfce">NFCe</mat-checkbox>
+					</legend>
+					<div class="col-sm">
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_nfce">
+							Criar NFCe
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_nfce">
+							Editar NFCe
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_nfce">
+							Deletar NFCe
+						</mat-checkbox>
+					</div>
+				</fieldset>
+			</div>
 
-         <div class="col-sm-4 form-group">
-            <fieldset>
-               <legend>
-                  <mat-checkbox color="primary" [(ngModel)]="permissions.emitentes">Emitentes</mat-checkbox>
-               </legend>
-               <div class="col-sm">
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_emitente">
-                     Criar Emitente
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_emitente">
-                     Editar Emitente
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_emitente">
-                     Deletar Emitente
-                  </mat-checkbox>
-               </div>
-            </fieldset>
-         </div>
+			<div class="col-sm-4 form-group">
+				<fieldset>
+					<legend>
+						<mat-checkbox color="primary" [(ngModel)]="permissions.emitentes">Emitentes</mat-checkbox>
+					</legend>
+					<div class="col-sm">
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_emitente">
+							Criar Emitente
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_emitente">
+							Editar Emitente
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_emitente">
+							Deletar Emitente
+						</mat-checkbox>
+					</div>
+				</fieldset>
+			</div>
 
-         <div class="col-sm-4 form-group">
-            <fieldset>
-               <legend>
-                  <mat-checkbox color="primary" [(ngModel)]="permissions.caixa">Caixa</mat-checkbox>
-               </legend>
-               <div class="col-sm">
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_caixa">
-                     Criar Caixa
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_caixa">
-                     Editar Caixa
-                  </mat-checkbox>
-                  <mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_caixa">
-                     Deletar Caixa
-                  </mat-checkbox>
-               </div>
-            </fieldset>
-         </div>
-      </div>
+			<div class="col-sm-4 form-group">
+				<fieldset>
+					<legend>
+						<mat-checkbox color="primary" [(ngModel)]="permissions.caixa">Caixa</mat-checkbox>
+					</legend>
+					<div class="col-sm">
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.create_caixa">
+							Criar Caixa
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.edit_caixa">
+							Editar Caixa
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.delete_caixa">
+							Deletar Caixa
+						</mat-checkbox>
+					</div>
+				</fieldset>
+			</div>
+
+			<div class="col-sm-4 form-group">
+				<fieldset>
+					<legend>
+						<mat-checkbox color="primary" [(ngModel)]="permissions.contas_pagar">Contas a Pagar
+						</mat-checkbox>
+					</legend>
+					<div class="col-sm">
+						<mat-checkbox color="primary" class="margin-right"
+							[(ngModel)]="permissions.contas_pagar_create">
+							Criar Conta
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right" [(ngModel)]="permissions.contas_pagar_edit">
+							Editar Conta
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right"
+							[(ngModel)]="permissions.contas_pagar_payment">
+							Pagar Conta
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right"
+							[(ngModel)]="permissions.contas_pagar_delete">
+							Deletar Conta
+						</mat-checkbox>
+					</div>
+				</fieldset>
+			</div>
+
+			<div class="col-sm-4 form-group">
+				<fieldset>
+					<legend>
+						<mat-checkbox color="primary" [(ngModel)]="permissions.contas_receber">Contas a Receber
+						</mat-checkbox>
+					</legend>
+					<div class="col-sm">
+						<mat-checkbox color="primary" class="margin-right"
+							[(ngModel)]="permissions.contas_receber_create">
+							Criar Conta
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right"
+							[(ngModel)]="permissions.contas_receber_edit">
+							Editar Conta
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right"
+							[(ngModel)]="permissions.contas_receber_payment">
+							Pagar Conta
+						</mat-checkbox>
+						<mat-checkbox color="primary" class="margin-right"
+							[(ngModel)]="permissions.contas_receber_delete">
+							Deletar Conta
+						</mat-checkbox>
+					</div>
+				</fieldset>
+			</div>
+		</div>
 
 
-   </div>
+	</div>
 
-   <div class="kt-portlet__footer" align="right">
-      <button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
-      <button class="btn btn-sm btn-success" [disabled]="loading" (click)="submit()"
-         [ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
-         {{(permissions.id > 0) ? 'Atualizar' : 'Cadastrar'}}
-      </button>
-   </div>
+	<div class="kt-portlet__footer" align="right">
+		<button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+		<button class="btn btn-sm btn-success" [disabled]="loading" (click)="submit()"
+			[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+			{{(permissions.id > 0) ? 'Atualizar' : 'Cadastrar'}}
+		</button>
+	</div>
 </div>

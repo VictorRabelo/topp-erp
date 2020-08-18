@@ -22,15 +22,17 @@ import { currentUser } from '../../../../core/auth';
 export class NfeFormComponent implements OnInit {
 
 	loading: boolean = false;
-	loadingItens: boolean = false;
 
 	nfe: any = {};
 	ItemSource = [];
 	paymentSource = [];
+	sourceReferences = [];
 
 	paymentSelect = [];
+	selectedReferences = [];
 
 	payment: string = "";
+	keyword = "";
 
 	permissions: any = {};
 
@@ -89,8 +91,7 @@ export class NfeFormComponent implements OnInit {
 		this.loading = true;
 		this.servicePayment.getList({}).subscribe(resp => {
 			this.paymentSource = resp;
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 		}, (erro) => {
 			this.close();
 		});
@@ -102,27 +103,28 @@ export class NfeFormComponent implements OnInit {
 			this.loading = false;
 
 			this.nfe = resp;
+			if (resp.finalidade_nf != 1) {
+				this.getReferences();
+			}
+			// this.getPayments();
 
 			this.ref.detectChanges();
 		}, erro => {
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 		});
 	}
 
 	getItens(id_nfe) {
-		this.loadingItens = true;
+		this.loading = true;
 		this.service.getListItens({ nfe_id: id_nfe }).subscribe((resp: any) => {
 			this.ItemSource = resp.itens;
 			this.nfe.subtotal = resp.totais.subtotal;
 			this.nfe.total = resp.totais.total;
 			this.paymentSelect = resp.payments;
 			this.payments_calc_resto();
-			this.loadingItens = false;
-			this.ref.detectChanges();
+			this._loading();
 		}, (erro) => {
-			this.loadingItens = false;
-			this.ref.detectChanges();
+			this._loading();
 		});
 	}
 
@@ -157,9 +159,10 @@ export class NfeFormComponent implements OnInit {
 	//Produtos
 	search_item() {
 		const modalRef = this.modalCtrl.open(ProdutoSearchComponent, { size: 'xl', backdrop: 'static' });
+		modalRef.componentInstance.data = { 'nfe': this.nfe };
 		modalRef.result.then(resp => {
 			if (resp) {
-				console.log(resp);
+				console.log(resp)
 				this.open_item(resp);
 			}
 		})
@@ -167,7 +170,7 @@ export class NfeFormComponent implements OnInit {
 
 	open_item(item) {
 		const modalRef = this.modalCtrl.open(ProdutoDetalheComponent, { size: 'lg', backdrop: 'static' });
-		modalRef.componentInstance.data = { 'item': item, 'venda': this.nfe };
+		modalRef.componentInstance.data = { 'item': item, 'nfe': this.nfe };
 		modalRef.result.then(resp => {
 			if (resp) {
 				resp.nfe_id = this.nfe.id;
@@ -184,23 +187,19 @@ export class NfeFormComponent implements OnInit {
 	add_item(item) {
 		this.loading = true;
 		this.service.create_item(item).subscribe(resp => {
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 			this.getItens(this.nfe.id);
 		}, erro => {
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 		});
 	}
 	update_item(item) {
 		this.loading = true;
 		this.service.update_item(item, item.id).subscribe(resp => {
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 			this.getItens(this.nfe.id);
 		}, erro => {
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 		});
 	}
 
@@ -224,15 +223,49 @@ export class NfeFormComponent implements OnInit {
 			return false;
 		}
 
-		this.loadingItens = true;
-		this.ref.detectChanges();
+		this._loading(true);
 		this.service.delete_item(item.id).subscribe((resp: any) => {
 			this.getItens(this.nfe.id);
 		}, erro => {
-			this.loadingItens = false;
+			this._loading();
+		});
+	}
+
+	//referencias
+	getReferences() {
+		this.service.get_references(this.nfe.id).subscribe((resp: any) => {
+			this.selectedReferences = resp;
 			this.ref.detectChanges();
 		});
 	}
+	selectEvent(item) {
+		item.nfe_id = this.nfe.id;
+
+		this._loading(true);
+		this.service.create_references(item).subscribe((resp: any) => {
+			this.keyword = "";
+			this.sourceReferences = [];
+			this._loading();
+
+			this.getReferences();
+		});
+	}
+	onChangeSearch(ev) {
+		const termo = this.keyword;
+
+		this.service.get_search_references({ 'termo': termo }).subscribe((resp: []) => {
+			this.sourceReferences = resp;
+			this.ref.detectChanges();
+		});
+	}
+	onChangeDel(item) {
+		this._loading(true);
+		this.service.delete_references(item.id).subscribe((resp: any) => {
+			this._loading();
+			this.getReferences();
+		});
+	}
+	//end referencias
 
 
 	//pagamentos
@@ -339,31 +372,26 @@ export class NfeFormComponent implements OnInit {
 		payment.nfe_id = this.nfe.id;
 		payment.forma_id = payment.id;
 
-		this.loadingItens = true;
-		this.ref.detectChanges();
+		this._loading(true)
 		this.service.create_payment(payment).subscribe((resp: any) => {
-			this.loadingItens = false;
+			this.loading = false;
 			this.payment = "";
 			this.ref.detectChanges();
 			this.getItens(this.nfe.id);
 		}, erro => {
-			this.loadingItens = false;
-			this.ref.detectChanges();
+			this._loading();
 		});
 		// this.paymentSelect.push(payment);
 		// console.log(this.paymentSelect);
 		// this.payments_calc_resto();
 	}
 	remove_payment(item) {
-		this.loadingItens = true;
-		this.ref.detectChanges();
+		this._loading(true)
 		this.service.delete_payment(item.id).subscribe((resp: any) => {
-			this.loadingItens = false;
-			this.ref.detectChanges();
+			this._loading();
 			this.getItens(this.nfe.id);
 		}, erro => {
-			this.loadingItens = false;
-			this.ref.detectChanges();
+			this._loading();
 		});
 		// this.paymentSelect.splice(i, 1);
 		// this.payments_calc_resto();
@@ -408,12 +436,11 @@ export class NfeFormComponent implements OnInit {
 		this.loading = true;
 		this.service.update(this.nfe, this.nfe.id).subscribe((resp: any) => {
 			this.ItemSource = resp.itens;
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 			this.getDados(this.nfe.id);
+			this.getItens(this.nfe.id);
 		}, (erro) => {
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 		});
 	}
 
@@ -439,12 +466,11 @@ export class NfeFormComponent implements OnInit {
 				window.open(resp.pdf_url, '_blank');
 			}
 			this.getDados(this.nfe.id);
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 		}, erro => {
-			this.message.alertErro(erro.error.text);
-			this.loading = false;
-			this.ref.detectChanges();
+			const message = (erro.error.text) ? erro.error.text : erro.error.message
+			this.message.alertErro(message);
+			this._loading();
 		});
 	}
 
@@ -473,12 +499,10 @@ export class NfeFormComponent implements OnInit {
 				window.open(resp.pdf_url, '_blank');
 			}
 			this.getDados(this.nfe.id);
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 		}, erro => {
 			this.message.alertErro(erro.error.text);
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 		});
 	}
 
@@ -489,14 +513,16 @@ export class NfeFormComponent implements OnInit {
 			if (resp.pdf_url) {
 				window.open(resp.pdf_url, '_blank');
 			}
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 		}, erro => {
 			this.message.alertErro(erro.error.text);
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 		});
 	}
 
+	_loading(type = false) {
+		this.loading = type;
+		this.ref.detectChanges();
+	}
 
 }

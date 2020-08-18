@@ -82,14 +82,29 @@ class FiscalRepositorie
         }
 
         if ($params->modelo == "55") {
-            $notas = NFe::where('emitente_id', $params->emitente_id)->where('created_at', 'like', '%' . $mes . '%');
+            $notas = NFe::where('emitente_id', $params->emitente_id)->where('updated_at', 'like', '%' . $mes . '%')
+                ->orWhere('cstatus', 100)->orWhere('cstatus', 101)->orWhere('cstatus', 135)->orWhere('cstatus', 155)
+                ->get();
         } elseif ($params->modelo == "65") {
-            $notas = NFCe::where('emitente_id', $params->emitente_id)->where('created_at', 'like', '%' . $mes . '%');
+            $notas = NFCe::where('emitente_id', $params->emitente_id)->where('updated_at', 'like', '%' . $mes . '%')
+                ->orWhere('cstatus', 100)->orWhere('cstatus', 101)->orWhere('cstatus', 135)->orWhere('cstatus', 155)
+                ->get();
         } else {
-        }
+            $nfe = NFe::where('emitente_id', $params->emitente_id)->where('updated_at', 'like', '%' . $mes . '%')
+                ->orWhere('cstatus', 100)->orWhere('cstatus', 101)->orWhere('cstatus', 135)->orWhere('cstatus', 155)
+                ->get();
+            $nfce = NFCe::where('emitente_id', $params->emitente_id)->where('updated_at', 'like', '%' . $mes . '%')
+                ->orWhere('cstatus', 100)->orWhere('cstatus', 101)->orWhere('cstatus', 135)->orWhere('cstatus', 155)
+                ->get();
 
-        $notas = $notas->orWhere('cstatus', 100)->orWhere('cstatus', 101)->orWhere('cstatus', 135)->orWhere('cstatus', 155)
-            ->get();
+            $notas = array();
+            foreach ($nfe as $item) {
+                array_push($notas, $item);
+            }
+            foreach ($nfce as $item) {
+                array_push($notas, $item);
+            }
+        }
 
         $zip = $this->geraZIP($notas, $params);
         if (is_array($zip)) {
@@ -107,7 +122,9 @@ class FiscalRepositorie
 
     private function geraZIP($notas, $params)
     {
-        $path_zip = storage_path("app/public/" . md5($params->empresa_id) . "/zips/{$params->cnpj}");
+        $app_public = "app/public/";
+
+        $path_zip = storage_path("{$app_public}" . md5($params->empresa_id) . "/zips/{$params->cnpj}");
         if ($params->modelo == "55") {
             $zipFileName = "XMLs_NFe_{$params->cnpj}_{$params->mes}.zip";
         } elseif ($params->modelo == "65") {
@@ -140,9 +157,9 @@ class FiscalRepositorie
                     $pathCancelados = md5($params->empresa_id) . "/xml/{$params->cnpj}/nfe/{$tpambPath}/{$mesPath}/cancelados";
 
                     if ($item->cstatus == 100) {
-                        $path_locale = storage_path("app/public/{$pathAutorizados}/{$item->chave}.xml");
+                        $path_locale = storage_path("{$app_public}{$pathAutorizados}/{$item->chave}.xml");
                     } else {
-                        $path_locale = storage_path("app/public/{$pathCancelados}/{$item->chave}.xml");
+                        $path_locale = storage_path("{$app_public}{$pathCancelados}/{$item->chave}.xml");
                     }
                     if (!file_exists($path_locale)) {
                         continue;
@@ -152,19 +169,37 @@ class FiscalRepositorie
                     $pathCancelados = md5($params->empresa_id) . "/xml/{$params->cnpj}/nfce/{$tpambPath}/{$mesPath}/cancelados";
 
                     if ($item->cstatus == 100) {
-                        $path_locale = storage_path("app/public/{$pathAutorizados}/{$item->chave}.xml");
+                        $path_locale = storage_path("{$app_public}{$pathAutorizados}/{$item->chave}.xml");
                     } else {
-                        $path_locale = storage_path("app/public/{$pathCancelados}/{$item->chave}.xml");
+                        $path_locale = storage_path("{$app_public}{$pathCancelados}/{$item->chave}.xml");
                     }
                     if (!file_exists($path_locale)) {
                         continue;
                     }
                 } else {
-                    // if (!file_exists(public_path("{$params->cnpj}/xml/nfc/{$locationPath}/{$mesPath}/{$tpambPath}/{$item->chave}.xml"))) {
-                    //     $path_locale = public_path("{$params->cnpj}/xml/nfe/{$locationPath}/{$mesPath}/{$tpambPath}/{$item->chave}.xml");
-                    // } else {
-                    //     $path_locale = public_path("{$params->cnpj}/xml/nfc/{$locationPath}/{$mesPath}/{$tpambPath}/{$item->chave}.xml");
-                    // }
+
+                    $pathAutorizados = md5($params->empresa_id) . "/xml/{$params->cnpj}/nfe/{$tpambPath}/{$mesPath}/autorizados";
+                    $pathCancelados = md5($params->empresa_id) . "/xml/{$params->cnpj}/nfe/{$tpambPath}/{$mesPath}/cancelados";
+
+                    if ($item->cstatus == 100) {
+                        $path_locale = storage_path("{$app_public}{$pathAutorizados}/{$item->chave}.xml");
+                    } else {
+                        $path_locale = storage_path("{$app_public}{$pathCancelados}/{$item->chave}.xml");
+                    }
+
+                    if (!file_exists($path_locale)) {
+                        $pathAutorizados = md5($params->empresa_id) . "/xml/{$params->cnpj}/nfce/{$tpambPath}/{$mesPath}/autorizados";
+                        $pathCancelados = md5($params->empresa_id) . "/xml/{$params->cnpj}/nfce/{$tpambPath}/{$mesPath}/cancelados";
+
+                        if ($item->cstatus == 100) {
+                            $path_locale = storage_path("{$app_public}{$pathAutorizados}/{$item->chave}.xml");
+                        } else {
+                            $path_locale = storage_path("{$app_public}{$pathCancelados}/{$item->chave}.xml");
+                        }
+                        if (!file_exists($path_locale)) {
+                            continue;
+                        }
+                    }
                 }
 
                 $zip->addFile($path_locale, "{$item->chave}.xml");

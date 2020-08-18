@@ -4,12 +4,16 @@ import { Component, OnInit } from '@angular/core';
 import { LayoutConfigService } from '../../../core/_base/layout';
 // Object-Path
 import * as objectPath from 'object-path';
+import { environment } from '../../../../environments/environment';
 
 @Component({
 	selector: 'kt-footer',
 	templateUrl: './footer.component.html',
 })
 export class FooterComponent implements OnInit {
+	app_name = environment.app_name;
+	app_url = environment.app_url;
+
 	// Public properties
 	today: number = Date.now();
 	fluid: boolean;

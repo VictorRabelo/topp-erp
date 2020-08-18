@@ -43,7 +43,8 @@
 			<button class="btn btn-sm btn-info" *ngIf="vendaCurrent.status == 10">
 				<i class="fas fa-print"></i>
 			</button>
-			<button class="btn btn-sm btn-danger" *ngIf="permissions.cancel_venda  && vendaCurrent.status == 1">
+			<button class="btn btn-sm btn-danger" (click)="cancel_sale()"
+				*ngIf="permissions.cancel_venda  && vendaCurrent.status == 1">
 				Cancelar
 			</button>
 			<button class="btn btn-sm btn-success" (click)="finish()"
@@ -103,6 +104,19 @@
 				<hr>
 			</div>
 
+			<div class="col-sm-4 form-group">
+				<input type="text" class="form-control" *ngIf="permissions.edit_venda && vendaCurrent.status == 1"
+					(keyup.enter)="search_produto($event)" [(ngModel)]="input_search"
+					placeholder="Digite o código ou passe o leitor...">
+			</div>
+			<div class="col-sm-2 form-group">
+				<button class="btn btn-sm btn-primary" [disabled]="loadingItens" (click)="search_item()"
+					*ngIf="permissions.edit_venda && vendaCurrent.status == 1"
+					[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loadingItens}">
+					<i class="fas fa-search"></i> Pesquisar Produto
+				</button>
+			</div>
+
 			<div class="col-sm-9">
 				<div class="table-responsive">
 					<table class="table  mb-0">
@@ -112,11 +126,7 @@
 							<th width="12%" class="text-right">Valor Unit.</th>
 							<th width="12%" class="text-right">Total R$</th>
 							<th width="20%" class="text-right">
-								<button class="btn btn-sm btn-primary" [disabled]="loadingItens" (click)="search_item()"
-									*ngIf="permissions.edit_venda && vendaCurrent.status == 1"
-									[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loadingItens}">
-									<i class="fas fa-plus-square"></i> Adicionar item
-								</button>
+
 							</th>
 						</thead>
 					</table>

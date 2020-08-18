@@ -5,36 +5,36 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
 @Injectable({
-   providedIn: 'root'
+	providedIn: 'root'
 })
 export class ProductService {
-   public url = environment.url;
+	public url = environment.url;
 
-   constructor(
-      public http: HttpClient
-   ) { }
+	constructor(
+		public http: HttpClient
+	) { }
 
-   getList(queryParams: any): Observable<any[]> {
-      return this.http.get<any[]>(`${this.url}/product`, { params: queryParams });
-   }
+	getList(queryParams: any): Observable<any[]> {
+		return this.http.get<any[]>(`${this.url}/product`, { params: queryParams });
+	}
 
-   create(data: any): Observable<any[]> {
-      return this.http.post<any[]>(`${this.url}/product`, data);
-   }
+	create(data: any): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/product`, data);
+	}
 
-   update(data: any, id: number): Observable<any[]> {
-      return this.http.put<any[]>(`${this.url}/product/${id}`, data);
-   }
+	update(data: any, id: number): Observable<any[]> {
+		return this.http.put<any[]>(`${this.url}/product/${id}`, data);
+	}
 
-   getById(id: number): Observable<any[]> {
-      return this.http.get<any[]>(`${this.url}/product/${id}`);
-   }
+	getById(id: number): Observable<any[]> {
+		return this.http.get<any[]>(`${this.url}/product/${id}`);
+	}
 
-   delete(id: number): Observable<any[]> {
-      return this.http.delete<any[]>(`${this.url}/product/${id}`);
-   }
+	delete(id: number): Observable<any[]> {
+		return this.http.delete<any[]>(`${this.url}/product/${id}`);
+	}
 
-   mov_estoque(data: any) {
-      return this.http.post<any[]>(`${this.url}/product/mov_estoque`, data);
-   }
+	mov_estoque(data: any) {
+		return this.http.post<any[]>(`${this.url}/product/mov_estoque`, data);
+	}
 }

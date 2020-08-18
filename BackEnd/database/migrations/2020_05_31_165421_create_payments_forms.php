@@ -23,6 +23,7 @@ class CreatePaymentsForms extends Migration
             $table->integer('max_parcelas')->default(1);
             $table->integer('more')->default(0);
             $table->string('obs')->nullable();
+            $table->integer('status')->default(1);
             $table->timestamps();
         });
     }

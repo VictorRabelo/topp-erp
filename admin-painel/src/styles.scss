@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Importing Bootstrap SCSS file. */
+// @import '~bootstrap/scss/bootstrap';
+
+.form-control {
+  border-color: #ccc;
+  height: calc(1.5em + 0.5rem + 2px);
+}
+
+.btn-outline-secondary {
+  border-color: #ccc;
+  color: #797979;
+}
+
+.input-group-append {
+  height: calc(1.5em + 0.5rem + 2px);
+}
+.toast-container .ngx-toastr {
+  width: auto;
+  min-width: 300px;
+  max-width: 500px;
+}

@@ -80,6 +80,7 @@ class NFCeRepositorie
 
         //gera nfce
         $resp = $nfce->make();
+
         if (isset($resp['cstatus']) && $resp['cstatus'] == 100) {
             $dados = $this->create($resp);
 

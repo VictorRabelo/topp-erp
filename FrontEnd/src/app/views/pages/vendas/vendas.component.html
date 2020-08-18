@@ -50,7 +50,7 @@
                      <td width="30%">{{item.cliente | titlecase}}</td>
                      <td width="15%">{{item.created_at | date: 'dd/MM/yyyy H:mm'}}</td>
                      <td width="10%">
-                        <span class="badge badge-alt-danger" *ngIf="item.status == 0">Cancelado</span>
+                        <span class="badge badge-alt-danger" *ngIf="item.status == 0">Cancelada</span>
                         <span class="badge badge-secondary" *ngIf="item.status == 1">Aberto</span>
                         <span class="badge badge-alt-success" *ngIf="item.status == 10">Finalizada</span>
                      </td>
@@ -69,14 +69,14 @@
                            *ngIf="item.status != 1">
                            <i class="fas fa-file"></i>
                         </button>
-                        <button mat-icon-button color="warn" matTooltip="Deletar Cadastro" (click)="delete_item(item)"
+                        <!-- <button mat-icon-button color="warn" matTooltip="Deletar Cadastro" (click)="delete_item(item)"
                            *ngIf="permissions.delete_venda && item.status == 1">
                            <i class="fas fa-trash"></i>
-                        </button>
-                        <button mat-icon-button color="warn" matTooltip="Cancelar Venda" (click)="cancel_item(item)"
+                        </button> -->
+                        <!-- <button mat-icon-button color="warn" matTooltip="Cancelar Venda" (click)="cancel_item(item)"
                            *ngIf="permissions.cancel_venda && item.status == 10">
                            <i class="fas fa-times-circle"></i>
-                        </button>
+                        </button> -->
                      </td>
 
                   </tr>

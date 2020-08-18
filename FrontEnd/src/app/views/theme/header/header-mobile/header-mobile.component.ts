@@ -2,6 +2,7 @@
 import { Component, OnInit } from '@angular/core';
 // Layout
 import { LayoutConfigService, ToggleOptions } from '../../../../core/_base/layout';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
 	selector: 'kt-header-mobile',
@@ -9,6 +10,9 @@ import { LayoutConfigService, ToggleOptions } from '../../../../core/_base/layou
 	styleUrls: ['./header-mobile.component.scss']
 })
 export class HeaderMobileComponent implements OnInit {
+
+	app_name = environment.app_name;
+
 	// Public properties
 	headerLogo: string;
 	asideDisplay: boolean;

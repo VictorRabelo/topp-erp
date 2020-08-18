@@ -1,73 +1,74 @@
 <div class="kt-portlet no-margin"
-   [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+	[ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
 
-   <div class="kt-portlet__head kt-portlet__head__custom">
-      <div class="kt-portlet__head-label">
-         <h3 class="kt-portlet__head-title">
-            <span>Pesquisar Clientes: </span>
-         </h3>
-      </div>
+	<div class="kt-portlet__head kt-portlet__head__custom">
+		<div class="kt-portlet__head-label">
+			<h3 class="kt-portlet__head-title">
+				<span>Pesquisar Clientes: </span>
+			</h3>
+		</div>
 
-      <div class="kt-portlet__head-toolbar">
+		<div class="kt-portlet__head-toolbar">
 
-         <button type="button" class="close" aria-label="Close" (click)="close()">
-            <span aria-hidden="true">&times;</span>
-         </button>
+			<button type="button" class="close" aria-label="Close" (click)="close()">
+				<span aria-hidden="true">&times;</span>
+			</button>
 
-      </div>
+		</div>
 
-   </div>
-   <div class="kt-form kt-portlet__body">
+	</div>
+	<div class="kt-form kt-portlet__body">
 
-      <!-- <div class="kt-portlet__body-progress">
+		<!-- <div class="kt-portlet__body-progress">
          <mat-spinner [diameter]="40"></mat-spinner>
       </div> -->
 
-      <div class="row">
-         <div class="col-sm-7 form-group">
-            <input type="text" class="form-control" [(ngModel)]="filters.termo" placeholder="Pesquisar..." debounce
-               [delay]="500" (func)="list()">
-         </div>
+		<div class="row">
+			<div class="col-sm-7 form-group">
+				<input type="text" class="form-control" [(ngModel)]="filters.termo" placeholder="Pesquisar..." debounce
+					[delay]="500" (func)="list()">
+			</div>
 
-         <div class="col-sm-5 form-group" *ngIf="!source.nfe">
-            <button class="btn btn-sm btn-primary">
-               Inserir Manual
-            </button>
-            <button class="btn btn-sm btn-info" (click)="cadastro_cliente()">
-               Cadastro rápido
-            </button>
-         </div>
-      </div>
+			<div class="col-sm-5 form-group">
+				<button class="btn btn-sm btn-primary" (click)="add_manual()" *ngIf="!source.nfe">
+					Inserir Manual
+				</button>
+				<button class="btn btn-sm btn-info" (click)="cadastro_cliente()">
+					Cadastro rápido
+				</button>
+			</div>
+		</div>
 
-      <div class="table-responsive">
-         <table class="table mb-0">
-            <thead>
-               <th width="15%">CÓDIGO</th>
-               <th width="40%">NOME/RAZÃO</th>
-               <th width="30%" class="text-left">CPF/CNPJ</th>
-               <th width="10%" class="text-right"></th>
-            </thead>
-         </table>
-         <div [style.height.px]="screen">
-            <table class="table table-hover">
-               <tbody>
-                  <tr *ngFor="let item of dataSource">
-                     <td width="15%">{{item.id}}</td>
-                     <td width="40%">{{item.razao}}</td>
-                     <td width="30%" class="text-left">
-                        {{item.cnpj | mask:(item.tipo == 1) ? '000.000.000-00' : '00.000.000/0000-00'}}
-                     </td>
-                     <td width="10%" class="text-right">
-                        <button mat-icon-button color="primary" matTooltip="Selecionar Cliente" (click)="chage(item)">
-                           <i class="fas fa-check"></i>
-                        </button>
-                     </td>
-                  </tr>
-               </tbody>
-            </table>
-         </div>
-      </div>
+		<div class="table-responsive">
+			<table class="table mb-0">
+				<thead>
+					<th width="15%">CÓDIGO</th>
+					<th width="40%">NOME/RAZÃO</th>
+					<th width="30%" class="text-left">CPF/CNPJ</th>
+					<th width="10%" class="text-right"></th>
+				</thead>
+			</table>
+			<div [style.height.px]="screen">
+				<table class="table table-hover">
+					<tbody>
+						<tr *ngFor="let item of dataSource">
+							<td width="15%">{{item.id}}</td>
+							<td width="40%">{{item.razao}}</td>
+							<td width="30%" class="text-left">
+								{{item.cnpj | mask:(item.tipo == 1) ? '000.000.000-00' : '00.000.000/0000-00'}}
+							</td>
+							<td width="10%" class="text-right">
+								<button mat-icon-button color="primary" matTooltip="Selecionar Cliente"
+									(click)="chage(item)">
+									<i class="fas fa-check"></i>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 
-   </div>
+	</div>
 
 </div>

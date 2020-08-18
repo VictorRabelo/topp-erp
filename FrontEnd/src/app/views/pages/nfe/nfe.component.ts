@@ -90,27 +90,27 @@ export class NfeComponent implements OnInit {
 		this.router.navigate([`nfe/${id}`]);
 	}
 
-	cancel_item(item) {
+	del_nota(item) {
 		this.message.swal.fire({
-			title: `Cancelar NFe: ${item.numero}`,
-			input: 'textarea',
-			inputPlaceholder: 'Informe uma justificativa para o cancelamento...',
+			title: `Deletar NFe: ${item.id}`,
+			// input: 'textarea',
+			// inputPlaceholder: 'Informe uma justificativa para o cancelamento...',
 			showCancelButton: true,
 			confirmButtonText: 'Confirmar',
 			cancelButtonText: 'Voltar'
 		}).then(resp => {
 			console.log(resp);
 			if (resp.value) {
-				item.xjust = resp.value;
-				this.cancela_nfc(item);
+				// item.xjust = resp.value;
+				this.deleta_nota(item);
 			}
 		});
 	}
 
-	cancela_nfc(nota) {
+	deleta_nota(nota) {
 		this.loading = true;
 		this.ref.detectChanges();
-		this.serviceFiscal.cancelNFe(nota, nota.id).subscribe((resp: any) => {
+		this.service.delete(nota.id).subscribe((resp: any) => {
 			this.loading = false;
 			this.ref.detectChanges();
 			this.load_list()

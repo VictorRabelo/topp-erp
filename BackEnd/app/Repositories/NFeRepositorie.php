@@ -7,6 +7,7 @@ use App\Models\Emitente;
 use App\Models\EmitenteConfig;
 use App\Models\NfeItens;
 use App\Models\NfePayment;
+use App\Models\NfeReferences;
 use App\Models\Product;
 use App\Tools\NFe\NFeXML;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,10 @@ class NFeRepositorie
 
     public function list($params)
     {
-        $query = $this->model->with(['emitente', 'venda'])->where('empresa_id', $this->user->empresa_id)->get();
+        $query = $this->model->with(['emitente', 'venda'])
+            ->where('empresa_id', $this->user->empresa_id)
+            ->orderBy('updated_at', 'desc')
+            ->get();
 
         return $query;
     }
@@ -56,6 +60,14 @@ class NFeRepositorie
         $nfc->save();
 
         return $nfc;
+    }
+
+    public function deleta(int $id)
+    {
+        $resp = $this->model->find($id);
+        $resp = $resp->delete();
+
+        return $resp;
     }
 
 
@@ -148,6 +160,10 @@ class NFeRepositorie
         //dados da nota
         $dados = NFe::find($data['id']);
 
+        if ($dados->finalidade_nf != 1) {
+            $dados->references = NfeReferences::where('nfe_id', $dados->id)->get();
+        }
+
         //dados dos itens
         $itens = NfeItens::with('produto')->where('nfe_id', $data['id'])->get();
 
@@ -159,6 +175,7 @@ class NFeRepositorie
         $resp = $nfe->make();
 
         if (isset($resp['cstatus']) && $resp['cstatus'] == 100) {
+            unset($dados->references);
             $dados->fill($resp);
             $dados->save();
 
@@ -228,5 +245,41 @@ class NFeRepositorie
         // }
 
         return array('pdf_url' => $urlPDF);
+    }
+
+    public function search_references($params)
+    {
+        $search = $this->model->orWhere('sequencia', 'like', '%' . $params['termo'] . '%')
+            ->orWhere('chave', 'like', '%' . $params['termo'] . '%')->get();
+
+        return $search;
+    }
+
+    public function get_references($nfe_id)
+    {
+        $resp = NfeReferences::where('nfe_id', $nfe_id)->get();
+
+        return $resp;
+    }
+
+    public function create_references($params)
+    {
+        $dados = [
+            'nfe_id' => $params['nfe_id'],
+            'numero_nfe' => $params['sequencia'],
+            'chave_nfe' => $params['chave']
+        ];
+
+        $resp = NfeReferences::create($dados);
+        $resp->save();
+
+        return $resp;
+    }
+
+    public function remove_references($id)
+    {
+        $resp = NfeReferences::find($id)->delete();
+
+        return $resp;
     }
 }

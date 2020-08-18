@@ -23,6 +23,12 @@ class FiscalController extends Controller
         $data = (object) $request->all();
         $resp = $this->repo->envioXMLContail($data);
 
-        return response()->json(['message' => "Arquivos enviados com sucesso!"], 201);
+        if (isset($resp['errors'])) {
+            foreach ($resp['errors'] as $erro) {
+                echo "$erro </br></br>";
+            }
+        } else {
+            return response()->json(['message' => "Arquivos enviados com sucesso!"], 201);
+        }
     }
 }

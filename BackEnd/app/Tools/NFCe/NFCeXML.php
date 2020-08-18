@@ -65,7 +65,7 @@ class NFCeXML
         //variaveis global
         if ($business != null) {
             $this->tpamb = $this->business->config->tpamb;
-            $this->mesPath = date('Y-m', strtotime(isset($nota->updated_at) ? $nota->updated_at : $venda->updated_at));
+            $this->mesPath = date('Y-m', strtotime(isset($nota->updated_at) ? $nota->updated_at : date('Y-m-d')));
             $this->tpambPath = ($this->tpamb == 1) ? "producao" : "homologacao";
             $this->pathRoot = md5($business->empresa_id);
 
@@ -151,7 +151,7 @@ class NFCeXML
 
             return $this->xml;
         } catch (\Exception $e) {
-            return ['erros' => $this->nfe->getErrors()];
+            return ['erros' => [$this->nfe->getErrors()]];
         }
     }
 
@@ -296,11 +296,11 @@ class NFCeXML
 
             if ($this->business->crt == 1) { //simples nacional
 
-                if ($item['produto']['cst'] == '102') {
+                if ($item['produto']['cst_icms'] == '102') {
                     $std = new \stdClass();
                     $std->item = $i;
                     $std->orig = $item['produto']['origin'];
-                    $std->CSOSN = $item['produto']['cst'];
+                    $std->CSOSN = $item['produto']['cst_icms'];
                     $this->nfe->tagICMSSN($std);
                 }
 
@@ -441,7 +441,7 @@ class NFCeXML
 
             return $nota;
         } catch (\Exception $e) {
-            return array($e->getMessage());
+            return array('erros' => [$e->getMessage()]);
         }
     }
 

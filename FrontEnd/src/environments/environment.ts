@@ -3,10 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-   production: false,
-   isMockEnabled: false, // You have to switch this, when your real back-end is done
-   authTokenKey: 'authce9d77b308c149d5992a80073637e4d5',
-   url: 'http://localhost:8000/api'
+	production: false,
+	isMockEnabled: false, // You have to switch this, when your real back-end is done
+	authTokenKey: 'authce9d77b308c149d5992a80073637e4d5',
+	url: 'http://localhost:8000/api',
+	app_name: 'TOPP ERP',
+	app_url: 'https://toppautomacao.com.br/topp-erp'
 };
 
 /*

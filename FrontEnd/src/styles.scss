@@ -105,7 +105,7 @@ legend {
 }
 
 .kt-login.kt-login--v1 .kt-login__wrapper .kt-login__body .kt-login__form {
-	box-shadow: 0 0 15px 5px #292929;
+	box-shadow: 0 0 15px 5px #29292961;
 	border-radius: 10px;
 	padding: 15px;
 	background: #fff;
@@ -119,10 +119,10 @@ legend {
 	margin-bottom: 1.2rem !important;
 }
 .form-control {
-	height: 35px !important;
+	height: 35px;
 	margin-top: 0 !important;
 	border: 1px solid #cecece !important;
-	background: #fff !important;
+	background: #fff;
 	font-size: 1rem !important;
 	padding: 0.5rem;
 }
@@ -182,7 +182,7 @@ legend {
 .mat-button.mat-primary,
 .mat-icon-button.mat-primary,
 .mat-stroked-button.mat-primary {
-	color: #0047cc;
+	color: #1666a9;
 }
 
 .table .thead-dark th {
@@ -302,7 +302,7 @@ legend {
 }
 
 .kt-header-base-dark .kt-header .kt-header-menu .kt-menu__nav > .kt-menu__item.kt-menu__item--here > .kt-menu__link {
-	background-color: #0047cc !important;
+	background-color: #1666a9 !important;
 }
 .kt-header-menu-dark
 	.kt-header-menu
@@ -312,7 +312,7 @@ legend {
 	> .kt-menu__subnav
 	> .kt-menu__item.kt-menu__item--active
 	> .kt-menu__link {
-	background-color: #0047cc !important;
+	background-color: #1666a9 !important;
 }
 .kt-header-menu-dark
 	.kt-header-menu
@@ -363,8 +363,17 @@ fieldset {
 	margin: 0;
 }
 
+.modal-sm {
+	max-width: 400px;
+}
+.modal-md {
+	max-width: 600px;
+}
+.modal-lg {
+	max-width: 850px;
+}
 .modal-xl {
-	max-width: 900px;
+	max-width: 990px;
 }
 
 .form-group-sm {
@@ -411,4 +420,27 @@ fieldset {
 
 .mat-checkbox {
 	display: block;
+}
+
+.img-logo-header {
+	width: 40px;
+}
+
+.box-autocomplete {
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	overflow-y: hidden;
+	tr {
+		cursor: pointer;
+	}
+}
+
+.bg-blue {
+	background: #0b4f86 !important;
+}
+
+.mat-button.mat-success,
+.mat-icon-button.mat-success,
+.mat-stroked-button.mat-success {
+	color: #07a53c;
 }

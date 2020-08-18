@@ -1,0 +1,107 @@
+<div class="kt-portlet no-margin"
+	[ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+
+	<form #form="ngForm" (ngSubmit)="submit(form)">
+		<div class="kt-portlet__head kt-portlet__head__custom">
+			<div class="kt-portlet__head-label">
+				<h3 class="kt-portlet__head-title">
+					<span> {{(dados.id > 0) ? 'Atualizar' : 'Nova'}} Conta a Pagar: </span>
+				</h3>
+			</div>
+		</div>
+
+		<div class="kt-form kt-portlet__body">
+
+			<div class="kt-portlet__body-progress">
+				<mat-spinner [diameter]="40"></mat-spinner>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12 form-group"
+					[ngClass]="{'is-invalid': !cliente.valid && (cliente.touched || form.submitted)}">
+					<span>Cliente: <strong *ngIf="dados.cliente_id">{{dados.cliente_id}}</strong></span>
+					<div class="input-group">
+						<input type="text" class="form-control" required readonly [(ngModel)]="dados.cliente"
+							name="cliente" #cliente="ngModel"
+							[ngClass]="{'is-invalid': !cliente.valid && (cliente.touched || form.submitted)}">
+
+						<div class="input-group-append">
+							<button type="button" class="input-group-text" (click)="search_cliente()">
+								<i class="fas fa-search"></i>
+							</button>
+						</div>
+					</div>
+					<div *ngIf="!cliente.valid && (cliente.touched || form.submitted)"
+						class="invalid-feedback animated fadeInDown">
+						Informe o cliente
+					</div>
+				</div>
+
+				<div class="col-sm-8 form-group"
+					[ngClass]="{'is-invalid': !descricao.valid && (descricao.touched || form.submitted)}">
+					<span>Descrição:</span>
+					<input type="text" class="form-control" required [(ngModel)]="dados.descricao" name="descricao"
+						#descricao="ngModel"
+						[ngClass]="{'is-invalid': !descricao.valid && (descricao.touched || form.submitted)}">
+
+					<div *ngIf="!descricao.valid && (descricao.touched || form.submitted)"
+						class="invalid-feedback animated fadeInDown">
+						Campo obrigatório
+					</div>
+				</div>
+
+				<div class="col-sm-4 form-group"
+					[ngClass]="{'is-invalid': !valor.valid && (valor.touched || form.submitted)}">
+					<span>Valor:</span>
+					<input type="text" class="form-control" required [(ngModel)]="dados.valor" name="valor"
+						#valor="ngModel" currencyMask
+						[ngClass]="{'is-invalid': !valor.valid && (valor.touched || form.submitted)}">
+
+					<div *ngIf="!valor.valid && (valor.touched || form.submitted)"
+						class="invalid-feedback animated fadeInDown">
+						Campo obrigatório
+					</div>
+				</div>
+
+				<div class="col-sm-4 form-group"
+					[ngClass]="{'is-invalid': !vencimento.valid && (vencimento.touched || form.submitted)}">
+					<span>Vencimento:</span>
+					<input type="date" class="form-control" required [(ngModel)]="dados.vencimento" name="vencimento"
+						#vencimento="ngModel"
+						[ngClass]="{'is-invalid': !vencimento.valid && (vencimento.touched || form.submitted)}">
+
+					<div *ngIf="!vencimento.valid && (vencimento.touched || form.submitted)"
+						class="invalid-feedback animated fadeInDown">
+						Campo obrigatório
+					</div>
+				</div>
+
+				<div class="col-sm-3 form-group" *ngIf="!dados.id">
+					<span>Parcelas:</span>
+					<input type="number" class="form-control" [(ngModel)]="dados.parcelas" name="parcelas" value="1">
+				</div>
+
+				<div class="col-sm-5 form-group">
+					<span>Categoria:</span>
+					<select class="form-control" [(ngModel)]="dados.categoria_id" name="categoria" #categoria="ngModel">
+						<option value="0">Sem categoria</option>
+					</select>
+				</div>
+
+				<div class="col-sm-12 form-group">
+					<span>Histórico:</span>
+					<textarea class="form-control" [(ngModel)]="dados.historico" name="historico" rows="5"></textarea>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="kt-portlet__footer" align="right">
+			<button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+			<button class="btn btn-sm btn-success" [disabled]="loading" type="submit"
+				[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+				{{(dados.id > 0) ? 'Salvar' : 'Cadastrar'}}
+			</button>
+		</div>
+	</form>
+</div>

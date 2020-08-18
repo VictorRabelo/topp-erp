@@ -20,8 +20,9 @@ class CreateVendasPayments extends Migration
 
             $table->unsignedInteger('forma_id');
             $table->text('forma');
-            $table->decimal('valor', 10, 2);
-            $table->text('obs');
+            $table->float('valor', 10, 2);
+            $table->float('resto', 10, 2)->default(0);
+            $table->text('obs')->nullable();
 
             $table->timestamps();
         });

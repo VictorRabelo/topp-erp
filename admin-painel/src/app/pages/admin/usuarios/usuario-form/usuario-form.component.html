@@ -1,0 +1,66 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{getTitle()}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <div class="row">
+
+
+      <div class="col-sm-6 form-group" [ngClass]="{'is-invalid': !nome.valid && (nome.touched || form.submitted)}">
+        <strong>Nome </strong>
+        <input type="text" class="form-control" [(ngModel)]="dados.nome" required name="nome" #nome="ngModel"
+          [ngClass]="{'is-invalid': !nome.valid && (nome.touched || form.submitted)}">
+
+        <div *ngIf="!nome.valid && (nome.touched || form.submitted)" class="invalid-feedback animated fadeInDown">
+          Campo obrigatório
+        </div>
+      </div>
+
+      <div class="col-sm-6 form-group">
+        <span>Sobrenome:</span>
+        <input type="text" class="form-control" [(ngModel)]="dados.sobrenome" name="sobrenome">
+      </div>
+
+      <div class="col-sm-12 form-group" [ngClass]="{'is-invalid': !email.valid && (email.touched || form.submitted)}">
+        <span>Email </span>
+        <input type="email" class="form-control" [(ngModel)]="dados.email" name="email" required #email="ngModel"
+          [ngClass]="{'is-invalid': !email.valid && (email.touched || form.submitted)}" autocomplete="false">
+
+        <div *ngIf="!email.valid && (email.touched || form.submitted)" class="invalid-feedback animated fadeInDown">
+          Campo obrigatório
+        </div>
+      </div>
+
+      <div class="col-sm-6 form-group" [ngClass]="{'is-invalid': !senha.valid && (senha.touched || form.submitted)}">
+        <span>Senha: </span>
+        <input type="password" class="form-control" [(ngModel)]="dados.password" name="senha"
+          [required]="dados.id > 0 ? 'false':'true'" #senha="ngModel" autocomplete="false"
+          [ngClass]="{'is-invalid': !senha.valid && (senha.touched || form.submitted)}">
+
+        <div *ngIf="!senha.valid && (senha.touched || form.submitted)" class="invalid-feedback animated fadeInDown">
+          Campo obrigatório
+        </div>
+      </div>
+
+      <div class="col-sm-4 form-group">
+        <span>Status: </span>
+        <select class="form-control" [(ngModel)]="dados.status" name="status">
+          <option value="1">Ativo</option>
+          <option value="0">Inativo</option>
+        </select>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="close()">Voltar</button>
+    <button type="submit" class="btn btn-sm btn-success">Salvar</button>
+  </div>
+
+</form>

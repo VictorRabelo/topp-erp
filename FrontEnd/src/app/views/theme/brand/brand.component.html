@@ -3,9 +3,9 @@
 	[ngClass]="htmlClassService.getClasses('brand', true)" id="kt_aside_brand">
 	<div class="kt-aside__brand-logo">
 		<a href="javascript:;" routerLink="/">
-			<!-- <img alt="logo" [attr.src]="headerLogo"/> -->
-			<strong class="logo" style="color: white;font-size: 1.9rem;">
-				TOPP ERP
+			<img alt="logo" [attr.src]="headerLogo" class="img-logo-header"/>
+			<strong class="logo" style="color: white;font-size: 1.5rem;">
+				{{app_name}}
 			</strong>
 		</a>
 

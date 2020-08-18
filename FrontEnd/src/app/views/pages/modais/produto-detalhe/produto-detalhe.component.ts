@@ -34,6 +34,9 @@ export class ProdutoDetalheComponent implements OnInit {
 		if (this.data.venda) {
 			this.vendaCurrent = this.data.venda;
 		}
+		if (this.data.nfe) {
+			this.vendaCurrent = this.data.nfe;
+		}
 		this.calc_desconto();
 		console.log(this.item);
 	}

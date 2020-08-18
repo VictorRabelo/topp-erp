@@ -1,33 +1,125 @@
 <div class="kt-portlet" [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
-   <div class="kt-portlet__head kt-portlet__head__custom">
-      <div class="kt-portlet__head-label">
-         <h3 class="kt-portlet__head-title">Resumo do Caixa: </h3>
-      </div>
+	<div class="kt-portlet__head kt-portlet__head__custom">
+		<div class="kt-portlet__head-label">
+			<h3 class="kt-portlet__head-title">Resumo do Caixa: {{ filters.data | date: 'dd/MM/yyyy' }}</h3>
+		</div>
 
-      <div class="kt-portlet__head-toolbar">
-         <!-- <button class="btn btn-sm btn-primary" (click)="add()" matTooltip="Cria uma nova nota">
-            <i class="fas fa-plus"></i> Nova NFe
-         </button> -->
-         <button class="btn btn-sm btn-success" (click)="filters()" matTooltip="Filtra os dados">
-            <i class="fas fa-sliders-h"></i> Filtros
-         </button>
-         <button class="btn btn-label-brand btn-bold btn-sm" (click)="getResumo()" matTooltip="Atualizar dados">
-            <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
-         </button>
-      </div>
-   </div>
-   <div class="kt-form kt-portlet__body">
+		<div class="kt-portlet__head-toolbar">
+			<button class="btn btn-sm btn-primary" matTooltip="Cria uma nova nota"
+				[routerLink]="['/caixa/payments_forms']">
+				<i class="fas fa-file-invoice-dollar"></i> Formas de Pagamento
+			</button>
+			<button class="btn btn-sm btn-success" (click)="open_filters(filtros)" matTooltip="Filtra os dados">
+				<i class="fas fa-sliders-h"></i> Filtros
+			</button>
+			<button class="btn btn-label-brand btn-bold btn-sm" (click)="getResumo()" matTooltip="Atualizar dados">
+				<i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+			</button>
+		</div>
+	</div>
+	<div class="kt-form kt-portlet__body">
 
-      <div class="kt-portlet__body-progress">
-         <mat-spinner [diameter]="40"></mat-spinner>
-      </div>
+		<div class="kt-portlet__body-progress">
+			<mat-spinner [diameter]="40"></mat-spinner>
+		</div>
 
-      <div class="col-sm-6 form-group">
-         <div *ngFor="let item of resumo">
-            <strong>{{ item.forma | titlecase }}: </strong>
-            <span>{{ item.total | currency:'R$' }} </span>
-         </div>
-      </div>
+		<div class="row">
 
-   </div>
+			<div class="col-sm-8 form-group">
+				<table class="table  mb-0">
+					<thead class="">
+						<th width="20%">Data</th>
+						<th width="40%">Descrição</th>
+						<th width="20%">Tipo</th>
+						<th width="20%">Valor R$</th>
+					</thead>
+				</table>
+				<div>
+					<table class="table table-hover mb-0">
+						<tbody>
+							<tr *ngFor="let item of movs">
+								<td width="20%">
+									<span class="badge badge-primary">
+										{{item.updated_at | date: 'dd/MM/yyyy hh:mm'}}
+									</span>
+								</td>
+								<td width="40%">{{item.descricao}}</td>
+								<td width="20%">
+									<span class="badge badge-success" *ngIf="item.tipo == 1">Entrada</span>
+									<span class="badge badge-danger" *ngIf="item.tipo == 2">Saída</span>
+								</td>
+								<td width="20%">{{ item.valor | currency:'R$' }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="col-sm-4 form-group">
+				<!-- <table class="table">
+					<thead class="">
+						<th width="60%">Forma</th>
+						<th width="40%">Total R$</th>
+					</thead>
+					<tbody>
+						<tr *ngFor="let item of resumo">
+							<td width="60%">
+								<strong>{{ item.forma | titlecase }}: </strong>
+							</td>
+							<td width="40%">
+								{{ item.total | currency:'R$' }}
+							</td>
+						</tr>
+					</tbody>
+				</table> -->
+
+				<h4>Resumo Geral:</h4>
+				<table class="table">
+					<tbody>
+						<tr>
+							<th class="text-success">Total Entradas:</th>
+							<th class="text-success">{{ dados.total_entradas | currency:'R$' }}</th>
+						</tr>
+						<tr>
+							<th class="text-danger">Total Saídas:</th>
+							<th class="text-danger">{{ dados.total_saidas | currency:'R$' }}</th>
+						</tr>
+						<tr>
+							<th>
+								Total Líquido:
+							</th>
+							<th class="text-danger"
+								[ngClass]="{'text-danger': dados.total < 0, 'text-success': dados.total > 0}">
+								{{ dados.total | currency:'R$' }}
+							</th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+
+		</div>
+
+	</div>
 </div>
+
+<ng-template #filtros let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">Filtros</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<div class="row">
+			<div class="col-sm-12">
+				<span>Data:</span>
+				<input type="date" class="form-control" [(ngModel)]="filters.data">
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary"
+			(click)="modal.close('close click');getResumo();">Confirmar</button>
+	</div>
+</ng-template>

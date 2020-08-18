@@ -14,6 +14,7 @@ import { VendaFinishComponent } from '../../modais/venda-finish/venda-finish.com
 import { GeraNotaComponent } from '../../modais/gera-nota/gera-nota.component';
 import { FiscalService } from '../../../../services/fiscal.service';
 import { NFeService } from '../../../../services/nfe.service';
+import { ProductService } from '../../../../services/product.service';
 
 @Component({
 	selector: 'kt-venda-balcao',
@@ -33,12 +34,15 @@ export class VendaBalcaoComponent implements OnInit {
 	ItemSource = [];
 	paymentSource = [];
 
+	input_search: string = "";
+
 	constructor(
 		private ref: ChangeDetectorRef,
 		private message: MessageService,
 		private service: VendaService,
 		private serviceNFe: NFeService,
 		private serviceFiscal: FiscalService,
+		private serviceProduto: ProductService,
 		private util: ToolsService,
 		private ActiveRoute: ActivatedRoute,
 		private modalCtrl: NgbModal,
@@ -57,9 +61,13 @@ export class VendaBalcaoComponent implements OnInit {
 				this.getItens(id);
 			}
 			else {
-				this.router.navigate(['/vendas']);
+				this.close();
 			}
 		});
+	}
+
+	close() {
+		this.router.navigate(['/vendas']);
 	}
 
 	getPermissions() {
@@ -121,11 +129,52 @@ export class VendaBalcaoComponent implements OnInit {
 		return troco.toFixed(2);
 	}
 
+	search_produto(ev) {
+		// console.log(ev);
+		const code: string = ev.target.value;
+		if (code.length <= 0) {
+			return false;
+		}
+
+		this.loading = true;
+		this.ref.detectChanges();
+		this.serviceProduto.getList({ termo: code }).subscribe(resp => {
+			this.loading = false;
+			this.ref.detectChanges();
+
+			if (resp.length > 1) {
+				this.search_item();
+			} else if (resp.length == 1) {
+
+				const item = {
+					'desconto': 0,
+					'descontop': 0,
+					'descricao': resp[0].descricao,
+					'foto': resp[0].foto,
+					'produto_id': resp[0].id,
+					'quantidade': 1,
+					'total': resp[0].preco,
+					'valor_unitario': resp[0].preco
+				}
+				this.input_search = "";
+				this.open_item(item);
+			} else {
+				this.message.alertErro('Produto não encontrado!');
+				this.search_item();
+			}
+
+		}, erro => {
+			this.loading = false;
+			this.ref.detectChanges();
+		});
+
+	}
+
 	search_item() {
 		const modalRef = this.modalCtrl.open(ProdutoSearchComponent, { size: 'xl', backdrop: 'static' });
+		modalRef.componentInstance.data = { 'venda': this.vendaCurrent };
 		modalRef.result.then(resp => {
 			if (resp) {
-				console.log(resp);
 				this.open_item(resp);
 			}
 		})
@@ -176,7 +225,7 @@ export class VendaBalcaoComponent implements OnInit {
 		this.message.swal.fire({
 			// title: 'Remover ?',
 			icon: 'question',
-			html: `Desaja remover o item: <br><b>${item.descricao}</b> ?`,
+			html: `Deseja remover o item: <br><b>${item.descricao}</b> ?`,
 			confirmButtonText: 'Confirmar',
 			showCancelButton: true,
 			cancelButtonText: 'Não',
@@ -244,6 +293,27 @@ export class VendaBalcaoComponent implements OnInit {
 			if (resp) {
 				this.getDados(this.vendaCurrent.id);
 				this.getItens(this.vendaCurrent.id);
+			}
+		});
+	}
+
+	cancel_sale() {
+		this.message.swal.fire({
+			title: 'Cancelar ?',
+			icon: 'question',
+			html: `Deseja cancelar a venda ?`,
+			confirmButtonText: 'Confirmar',
+			showCancelButton: true,
+			cancelButtonText: 'Não',
+		}).then((result) => {
+			if (!result.dismiss) {
+				this.loading = true;
+				this.service.cancel(this.vendaCurrent.id).subscribe(resp => {
+					this.close();
+				}, erro => {
+					this.loading = false;
+					this.ref.detectChanges();
+				})
 			}
 		});
 	}

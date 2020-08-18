@@ -142,14 +142,15 @@ export class VendaFinishComponent implements OnInit {
 			'forma': paymentSeleted.forma,
 			'max_parcelas': paymentSeleted.max_parcelas,
 			'obs_title': paymentSeleted.obs,
-			'valor': 0
+			'valor': 0,
+			'resto': this.vendaCurrent.resto
 		}
 
 		this.message.swal.fire({
 			title: payment.forma,
 			html: `Falta pagar: R$ ${this.util.money(this.vendaCurrent.resto)}`,
 			input: 'number',
-			inputValue: this.vendaCurrent.resto,
+			inputValue: payment.resto,
 			inputAttributes: {
 				autocapitalize: 'off',
 				'placeholder': 'Informe o valor pago...',

@@ -1,0 +1,86 @@
+<div class="kt-portlet no-margin"
+	[ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : submited }">
+
+	<form #form="ngForm" (ngSubmit)="submit(form)">
+		<div class="kt-portlet__head kt-portlet__head__custom">
+			<div class="kt-portlet__head-label">
+				<h3 class="kt-portlet__head-title">
+					<h4 class="modal-title">{{getTitle()}}</h4>
+				</h3>
+			</div>
+
+			<div class="kt-portlet__head-toolbar">
+
+				<button type="button" class="close" aria-label="Close" (click)="close()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+
+			</div>
+
+		</div>
+		<div class="kt-form kt-portlet__body">
+			<div class="kt-portlet__body-progress">
+				<mat-spinner [diameter]="40"></mat-spinner>
+			</div>
+
+			<div class="row">
+
+				<div class="col-sm-8 form-group"
+					[ngClass]="{'is-invalid': !forma.valid && (forma.touched || form.submitted)}">
+					<strong>Descrição: </strong>
+					<input type="text" class="form-control" [(ngModel)]="dados.forma" required name="forma"
+						#forma="ngModel" [ngClass]="{'is-invalid': !forma.valid && (forma.touched || form.submitted)}">
+
+					<div *ngIf="!forma.valid && (forma.touched || form.submitted)"
+						class="invalid-feedback animated fadeInDown">
+						Campo obrigatório
+					</div>
+				</div>
+
+				<div class="col-sm-4 form-group">
+					<span>Parcelamento:</span>
+					<select class="form-control" [(ngModel)]="dados.parcelamento" name="parcelamento">
+						<option value="1">1 - Sim</option>
+						<option value="0" selected>0 - Não</option>
+					</select>
+				</div>
+
+				<div class="col-sm-4 form-group">
+					<span>Max. Parcelas </span>
+					<input type="number" class="form-control" [(ngModel)]="dados.max_parcelas" name="max_parcelas">
+				</div>
+
+				<div class="col-sm-4 form-group">
+					<span>Ultrapassar Total:</span>
+					<select class="form-control" [(ngModel)]="dados.more" name="more">
+						<option value="1">1 - Sim</option>
+						<option value="0" selected>0 - Não</option>
+					</select>
+				</div>
+
+				<div class="col-sm-4 form-group">
+					<span>Observação: </span>
+					<input type="text" class="form-control" [(ngModel)]="dados.obs" name="obs">
+				</div>
+
+				<div class="col-sm-4 form-group">
+					<span>Status:</span>
+					<select class="form-control" [(ngModel)]="dados.status" name="status">
+						<option value="1" selected>1 - Ativo</option>
+						<option value="0">0 - Inativo</option>
+					</select>
+				</div>
+
+			</div>
+
+		</div>
+		<div class="kt-portlet__footer" align="right">
+			<button class="btn btn-sm btn-default" [disabled]="submited" (click)="close()">Voltar</button>
+			<button class="btn btn-sm btn-success" [disabled]="submited" type="submit"
+				[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': submited }">
+				{{(dados.id > 0) ? 'Atualizar' : 'Cadastrar'}}
+			</button>
+		</div>
+	</form>
+
+</div>

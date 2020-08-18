@@ -1,0 +1,157 @@
+<div class="kt-portlet no-margin"
+	[ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+
+	<form #form="ngForm" (ngSubmit)="submit(form)">
+		<div class="kt-portlet__head kt-portlet__head__custom">
+			<div class="kt-portlet__head-label">
+				<h3 class="kt-portlet__head-title">
+					<span> {{(contas.length > 1) ? 'Pagar Contas' : 'Pagar Conta'}}: </span>
+				</h3>
+			</div>
+		</div>
+
+		<div class="kt-form kt-portlet__body">
+
+			<div class="kt-portlet__body-progress">
+				<mat-spinner [diameter]="40"></mat-spinner>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-4 form-group"
+					[ngClass]="{'is-invalid': !data_pago.valid && (data_pago.touched || form.submitted)}">
+					<span>Data:</span>
+					<input type="date" class="form-control" required [(ngModel)]="dados.data_pago" name="data_pago"
+						#data_pago="ngModel"
+						[ngClass]="{'is-invalid': !data_pago.valid && (data_pago.touched || form.submitted)}">
+
+					<div *ngIf="!data_pago.valid && (data_pago.touched || form.submitted)"
+						class="invalid-feedback animated fadeInDown">
+						Campo obrigatório
+					</div>
+				</div>
+
+				<div class="col-sm-8 form-group"
+					[ngClass]="{'is-invalid': !descricao.valid && (descricao.touched || form.submitted)}">
+					<span>Descrição:</span>
+					<input type="text" class="form-control" required [(ngModel)]="dados.descricao" name="descricao"
+						#descricao="ngModel"
+						[ngClass]="{'is-invalid': !descricao.valid && (descricao.touched || form.submitted)}">
+
+					<div *ngIf="!descricao.valid && (descricao.touched || form.submitted)"
+						class="invalid-feedback animated fadeInDown">
+						Campo obrigatório
+					</div>
+				</div>
+			</div>
+
+			<mat-tab-group mat-align-tabs="center">
+
+				<mat-tab label="CONTAS">
+					<div class="table-responsive">
+						<table class="table">
+							<thead>
+								<th width="17%">Fornecedor</th>
+								<th width="7%">Documento</th>
+								<th width="12%">Vencimento</th>
+								<th width="12%">Valor</th>
+
+								<th width="13%">Juros</th>
+								<th width="13%">Desconto</th>
+								<th width="13%">Acréscimo</th>
+								<th width="13%">Valor Pago</th>
+							</thead>
+							<tbody>
+								<tr *ngFor="let item of contas; let i = index;trackBy:trackByIdx">
+									<td>{{item.cliente | slice:0:20}}</td>
+									<td>{{item.documento | uppercase}}</td>
+									<td>{{item.vencimento | date:'dd/MM/yyyy'}}</td>
+									<td>{{ item.valor | currency:'R$' }}</td>
+									<td>
+										<input type="text" class="form-control" currencyMask [(ngModel)]="item.juros"
+											name="juros{{i}}" debounce delay="600" (func)="calc_parcelas()">
+									</td>
+									<td>
+										<input type="text" class="form-control" currencyMask [(ngModel)]="item.desconto"
+											name="desconto{{i}}" debounce delay="600" (func)="calc_parcelas()">
+									</td>
+									<td>
+										<input type="text" class="form-control" currencyMask
+											[(ngModel)]="item.acrescimo" name="acrescimo{{i}}" debounce delay="600"
+											(func)="calc_parcelas()">
+									</td>
+									<td>
+										<input type="text" class="form-control" currencyMask
+											[(ngModel)]="item.valor_pago" name="total{{i}}" readonly>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</mat-tab>
+
+				<mat-tab label="FORMAS DE PAGAMENTO">
+					<div class="row">
+						<div class="col-sm-4 form-group">
+							<span>Formas de Pagamento</span>
+							<select class="form-control" [(ngModel)]="payments" name="payments"
+								(change)="change_payment($event)">
+								<option value="">Selecione uma opção</option>
+								<option *ngFor="let pay of paymentSource" [value]="pay.id">
+									{{pay.forma | titlecase}}
+								</option>
+							</select>
+						</div>
+
+						<div class="col-sm-6 form-group">
+							<table class="table table-hover">
+								<thead>
+									<th>Forma de Pagamento</th>
+									<th class="text-right">Valor R$</th>
+									<th class="text-right"></th>
+								</thead>
+								<tbody>
+									<tr *ngFor="let pay of paymentsCurrent; let i = index">
+										<td>{{ pay.forma | titlecase }}</td>
+										<td class="text-right">{{ pay.valor | currency:'R$' }}</td>
+										<td class="text-right">
+											<button mat-icon-button color="warn" matTooltip="Remover Pagamento"
+												(click)="remove_payment(i)">
+												<i class="fas fa-trash"></i>
+											</button>
+										</td>
+									</tr>
+									<tr>
+										<th class="text-right">
+											<h4>Total:</h4>
+										</th>
+										<th class="text-right">{{ dados.total | currency:'R$' }}</th>
+										<th class="text-right"></th>
+									</tr>
+									<tr>
+										<th class="text-right">
+											<h4>Total Pago:</h4>
+										</th>
+										<th class="text-right">{{ sum_payments() | currency:'R$' }}</th>
+										<th class="text-right"></th>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+					</div>
+				</mat-tab>
+			</mat-tab-group>
+
+
+
+		</div>
+
+		<div class="kt-portlet__footer" align="right">
+			<button class="btn btn-sm btn-default" [disabled]="loading" (click)="close()">Voltar</button>
+			<button class="btn btn-sm btn-success" [disabled]="loading" type="submit"
+				[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading }">
+				Pagar
+			</button>
+		</div>
+	</form>
+</div>

@@ -1,8 +1,42 @@
 <?php
 
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
+
+Route::get('/testes', function () {
+});
+
+Route::get('/clear-cache', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    return "Cache is cleared";
+});
+
+Route::group([
+    'prefix' => 'admin'
+], function () {
+
+    Route::group([
+        'prefix' => 'busness'
+    ], function () {
+        Route::get('', 'EmpresaController@index');
+        Route::post('', 'EmpresaController@create');
+        Route::get('{id}', 'EmpresaController@show');
+        Route::put('{id}', 'EmpresaController@update');
+        Route::delete('{id}', 'EmpresaController@destroy');
+    });
+
+    Route::group([
+        'prefix' => 'users'
+    ], function () {
+        Route::get('', 'EmpresaController@getUsers');
+        Route::post('', 'EmpresaController@createUser');
+        Route::get('{id}', 'EmpresaController@showUser');
+        Route::put('{id}', 'EmpresaController@updateUser');
+        Route::delete('{id}', 'EmpresaController@destroyUser');
+    });
+});
 
 Route::post('auth', 'AuthController@login');
 
@@ -64,6 +98,7 @@ Route::group([
         Route::post('', 'VendaController@create');
         Route::post('gera_nfe', 'VendaController@geraNFe');
         Route::put('set-client/{venda_id}', 'VendaController@setClient');
+        Route::post('cancel/{id}', 'VendaController@cancel');
         Route::get('{id}', 'VendaController@show');
         Route::put('{id}', 'VendaController@update');
         Route::delete('{id}', 'VendaController@destroy');
@@ -108,6 +143,15 @@ Route::group([
         Route::get('', 'NFeController@index');
         Route::post('', 'NFeController@create');
 
+        Route::group([
+            'prefix' => 'references'
+        ], function () {
+            Route::get('', 'NFeController@search_references');
+            Route::post('', 'NFeController@create_references');
+            Route::get('{id}', 'NFeController@get_references');
+            Route::delete('{id}', 'NFeController@remove_references');
+        });
+
         Route::post('emitir', 'NFeController@transmitir');
         Route::post('cancelar', 'NFeController@cancelar');
 
@@ -122,7 +166,7 @@ Route::group([
         Route::get('print/{id}', 'NFeController@print');
         Route::get('{id}', 'NFeController@show');
         Route::put('{id}', 'NFeController@update');
-        Route::post('{id}', 'NFeController@destroy');
+        Route::delete('{id}', 'NFeController@destroy');
     });
 
     Route::group([
@@ -139,7 +183,34 @@ Route::group([
     Route::group([
         'prefix' => 'financeiro'
     ], function () {
+
+        Route::group([
+            'prefix' => 'contas-pagar'
+        ], function () {
+            Route::get('', 'ContasPagarController@index');
+            Route::post('', 'ContasPagarController@create');
+            Route::post('paymentConta', 'ContasPagarController@paymentConta');
+            Route::get('{id}', 'ContasPagarController@show');
+            Route::put('{id}', 'ContasPagarController@update');
+            Route::delete('{id}', 'ContasPagarController@destroy');
+        });
+        Route::group([
+            'prefix' => 'contas-receber'
+        ], function () {
+            Route::get('', 'ContasReceberController@index');
+            Route::post('', 'ContasReceberController@create');
+            Route::post('paymentConta', 'ContasReceberController@paymentConta');
+            Route::get('{id}', 'ContasReceberController@show');
+            Route::put('{id}', 'ContasReceberController@update');
+            Route::delete('{id}', 'ContasReceberController@destroy');
+        });
+
         Route::get('caixa', 'FinanceiroController@resumoCaixa');
+        Route::get('payments', 'FinanceiroController@listPayments');
+        Route::post('createPayment', 'FinanceiroController@createPayment');
+        Route::get('showPayment/{id}', 'FinanceiroController@getByIdPayment');
+        Route::put('updatePayment/{id}', 'FinanceiroController@updatePayment');
+        Route::delete('payments/{id}', 'FinanceiroController@deletePayments');
     });
 
     Route::group([
