@@ -14,11 +14,11 @@ class Caixa extends Model
 
    public function cliente()
    {
-      return $this->belongsTo('App\models\Client', 'client_id');
+      return $this->belongsTo('App\Models\Client', 'client_id');
    }
 
    public function venda()
    {
-      return $this->belongsTo('App\models\Venda', 'venda_id');
+      return $this->belongsTo('App\Models\Venda', 'venda_id');
    }
 }

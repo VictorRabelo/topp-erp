@@ -47,4 +47,15 @@ export class FiscalService {
 		return this.http.post<any[]>(`${this.url}/fiscal/sendXML`, data);
 	}
 
+
+	//manifesto
+	getListaNotas(queryParams: any): Observable<any[]> {
+		return this.http.get<any[]>(`${this.url}/manifesto`, { params: queryParams });
+	}
+	getMonitorSefaz(data: any): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/manifesto`, data);
+	}
+	manifestaNFe(data: any, id: number): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/manifesto/${id}`, data);
+	}
 }

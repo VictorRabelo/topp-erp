@@ -12,11 +12,11 @@ class NFCe extends Model
 
    public function emitente()
    {
-      return $this->belongsTo('App\models\Emitente', 'emitente_id');
+      return $this->belongsTo('App\Models\Emitente', 'emitente_id');
    }
 
    public function venda()
    {
-      return $this->belongsTo('App\models\Venda', 'venda_id');
+      return $this->belongsTo('App\Models\Venda', 'venda_id');
    }
 }

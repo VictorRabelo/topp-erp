@@ -184,6 +184,16 @@ legend {
 .mat-stroked-button.mat-primary {
 	color: #1666a9;
 }
+.mat-button.mat-warning,
+.mat-icon-button.mat-warning,
+.mat-stroked-button.mat-warning {
+	color: #ecc900;
+}
+.mat-button.mat-info,
+.mat-icon-button.mat-info,
+.mat-stroked-button.mat-info {
+	color: #009fcf;
+}
 
 .table .thead-dark th {
 	background-color: #1a1a27;
@@ -443,4 +453,28 @@ fieldset {
 .mat-icon-button.mat-success,
 .mat-stroked-button.mat-success {
 	color: #07a53c;
+}
+
+
+.text-danger {
+	color: #a70000 !important;
+}
+
+.box-card {
+	text-align: center;
+	border: 1px solid #aaa;
+	border-radius: 10px;
+	background: #fff;
+	text-transform: uppercase;
+	color: #1a1a27;
+	padding: 6% 3%;
+	cursor: pointer;
+	transition: 0.2s ease-in-out;
+	i {
+		font-size: 2rem;
+	}
+}
+.box-card:hover {
+	box-shadow: 0 0 10px 1px #aaa;
+	margin-top: -3px;
 }

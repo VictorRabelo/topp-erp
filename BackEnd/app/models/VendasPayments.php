@@ -14,10 +14,10 @@ class VendasPayments extends Model
 
     public function payment()
     {
-        return $this->belongsTo('App\models\Payment', 'forma_id');
+        return $this->belongsTo('App\Models\Payment', 'forma_id');
     }
     public function venda()
     {
-        return $this->belongsTo('App\models\Payment', 'venda_id');
+        return $this->belongsTo('App\Models\Payment', 'venda_id');
     }
 }

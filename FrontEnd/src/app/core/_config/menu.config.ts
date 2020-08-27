@@ -85,6 +85,12 @@ export class MenuConfig {
 							show$: this.getPermissions('nfce')
 						},
 						{
+							title: 'Monitor Fiscal',
+							icon: 'fas fa-tv',
+							page: '/monitor-fiscal',
+							show$: this.getPermissions('monitor')
+						},
+						{
 							title: 'Emitentes',
 							icon: 'fas fa-building',
 							page: '/emitentes',
@@ -196,6 +202,9 @@ export class MenuConfig {
 						}
 						if (nivel == "contas_receber") {
 							observer.next(res.permissions.contas_receber);
+						}
+						if (nivel == "monitor") {
+							observer.next(true);
 						}
 					}
 				});

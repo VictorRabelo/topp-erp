@@ -14,6 +14,6 @@ class NfePayment extends Model
 
    public function payment()
    {
-      return $this->belongsTo('App\models\Payment', 'forma_id');
+      return $this->belongsTo('App\Models\Payment', 'forma_id');
    }
 }

@@ -15,6 +15,6 @@ class NfeItens extends Model
 
     public function produto()
     {
-        return $this->belongsTo('App\models\Product', 'produto_id');
+        return $this->belongsTo('App\Models\Product', 'produto_id');
     }
 }

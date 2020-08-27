@@ -1,0 +1,180 @@
+<div class="kt-portlet" [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+	<div class="kt-portlet__head kt-portlet__head__custom">
+		<div class="kt-portlet__head-label">
+			<h3 class="kt-portlet__head-title">Monitor Fiscal: {{filters.emitente}}</h3>
+		</div>
+
+		<div class="kt-portlet__head-toolbar">
+			<button class="btn btn-sm btn-primary" (click)="search_notas()" matTooltip="Verifica se tem notas novas"
+				[disabled]="!filters.emitente_id || loading">
+				<i class="fas fa-search"></i>
+				<span *ngIf="!loading">Verificar</span>
+				<span *ngIf="loading">Verificando...</span>
+			</button>
+			<button class="btn btn-sm btn-success" (click)="open_filters(filtros)" matTooltip="Filtra os dados">
+				<i class="fas fa-sliders-h"></i> Filtros
+			</button>
+			<button class="btn btn-label-brand btn-bold btn-sm" (click)="load_list()" matTooltip="Atualiza a lista"
+				[disabled]="!filters.emitente_id">
+				<i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
+			</button>
+		</div>
+	</div>
+	<div class="kt-form kt-portlet__body">
+
+		<div class="kt-portlet__body-progress">
+			<mat-spinner [diameter]="40"></mat-spinner>
+		</div>
+
+		<div class="table-responsive">
+			<table class="table  mb-0">
+				<thead class="">
+					<!-- <th width="10%">ID</th> -->
+					<th width="25%">Fornecedor</th>
+					<th width="20%">Status</th>
+					<th width="15%">Situação</th>
+					<th width="15%">Valor R$</th>
+					<th width="15%">Data</th>
+					<th width="10%"></th>
+				</thead>
+				<tbody>
+					<tr *ngFor="let item of dataSource | paginate: { itemsPerPage: '10', currentPage: pageCurrent }">
+						<td>{{item.razao | titlecase | slice:0:33}}</td>
+						<td>
+							<span *ngIf="item.csituacao == 1" class="badge badge-primary">{{item.status}}</span>
+							<span *ngIf="item.csituacao == 2" class="badge badge-warning">{{item.status}}</span>
+							<span *ngIf="item.csituacao == 3" class="badge badge-danger">{{item.status}}</span>
+						</td>
+						<td>
+							<span *ngIf="!item.pathXML">Sem Manifestação</span>
+							<span *ngIf="item.pathXML" class="badge badge-success">Manifestada</span>
+						</td>
+						<td>{{ item.valor | currency:'R$' }}</td>
+						<td>{{ item.created_at | date: 'dd/MM/yyyy HH:mm' }}</td>
+						<td class="text-right">
+							<div ngbDropdown [placement]="'bottom-right'" class="dropdown dropdown-inline" matTooltip="Opções">
+								<button ngbDropdownToggle type="button"
+									class="btn btn-clean btn-sm btn-icon btn-icon-md">
+									<i class="fas fa-bars"></i>
+								</button>
+								<div ngbDropdownMenu class="dropdown-menu" style="width: 300px;">
+									<button ngbDropdownItem mat-icon-button color="success" matTooltip="Importar Nota"
+										*ngIf="item.pathXML">
+										<i class="fas fa-file-upload"></i> Importar para o Estoque
+									</button>
+									<button ngbDropdownItem mat-icon-button color="info" matTooltip="Ciência da Emissão"
+										(click)="manifestar('210210', item)" *ngIf="!verificaOptions('210210', item)">
+										<i class="fas fa-thumbs-up"></i> Ciência da Emissão
+									</button>
+									<button ngbDropdownItem mat-icon-button color="primary"
+										matTooltip="Confirmação da Operação" (click)="manifestar('210200', item)"
+										*ngIf="!verificaOptions('210200', item)">
+										<i class="fas fa-check"></i> Confirmação da Operação
+									</button>
+									<button ngbDropdownItem mat-icon-button color="warning"
+										matTooltip="Desconhecimento da Operação" (click)="manifestar('210220', item)"
+										*ngIf="!verificaOptions('210220', item)">
+										<i class="fas fa-question-circle"></i> Desconhecimento da Operação
+									</button>
+									<button ngbDropdownItem mat-icon-button color="warn"
+										matTooltip="Operação Não Realizada" (click)="manifestar('210240', item)"
+										*ngIf="!verificaOptions('210240', item)">
+										<i class="fas fa-ban"></i> Operação Não Realizada
+									</button>
+
+								</div>
+							</div>
+							<!-- <button mat-icon-button color="success" matTooltip="Importar Nota" *ngIf="item.pathXML">
+								<i class="fas fa-file-upload"></i>
+							</button>
+							<button mat-icon-button color="info" matTooltip="Ciência da Emissão"
+								(click)="manifestar('210210', item)" *ngIf="!verificaOptions('210210', item)">
+								<i class="fas fa-thumbs-up"></i>
+							</button>
+							<button mat-icon-button color="primary" matTooltip="Confirmação da Operação"
+								(click)="manifestar('210200', item)" *ngIf="!verificaOptions('210200', item)">
+								<i class="fas fa-check"></i>
+							</button>
+							<button mat-icon-button color="warning" matTooltip="Desconhecimento da Operação"
+								(click)="manifestar('210220', item)" *ngIf="!verificaOptions('210220', item)">
+								<i class="fas fa-question-circle"></i>
+							</button>
+							<button mat-icon-button color="warn" matTooltip="Operação Não Realizada"
+								(click)="manifestar('210240', item)" *ngIf="!verificaOptions('210240', item)">
+								<i class="fas fa-ban"></i>
+							</button> -->
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div align="right">
+				<pagination-controls (pageChange)="pageCurrent = $event" maxSize="9" autoHide="true" responsive="true"
+					previousLabel="Previous" nextLabel="Próximo" previousLabel="Anterior"
+					screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page"
+					screenReaderCurrentLabel="You're on page">
+				</pagination-controls>
+			</div>
+		</div>
+
+
+	</div>
+</div>
+
+<ng-template #filtros let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">Filtros</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<div class="row">
+			<div class="col-sm-12 form-group">
+				<strong>Emitente: </strong>
+				<select class="form-control" [(ngModel)]="filters.emitente_id" placeholder="Selecione um emitente"
+					(change)="setEmitente()">
+					<!-- <option value="" selected>Selecione um emitente</option> -->
+					<option *ngFor="let item of emitentes" [value]="item.id">{{item.razao}} - {{item.cnpj}}</option>
+				</select>
+			</div>
+
+			<!-- <div class="col-sm-12 form-group">
+				<span>Pesquisa:</span>
+				<input type="text" class="form-control" [(ngModel)]="filters.termo">
+			</div> -->
+
+			<!-- <div class="col-sm-6 form-group">
+				<span>Situação:</span>
+				<select class="form-control" [(ngModel)]="filters.status">
+					<option value="1">Abertas</option>
+					<option value="10">Pagas</option>
+					<option value="">Todas</option>
+				</select>
+			</div>
+
+			<div class="col-sm-6 form-group">
+				<span>Tipo:</span>
+				<select class="form-control" [(ngModel)]="filters.tipo">
+					<option value="0">Data</option>
+					<option value="1">Mensal</option>
+					<option value="2">Período</option>
+				</select>
+			</div>
+
+			<div class="col-sm-6 form-group">
+				<span *ngIf="filters.tipo != 2">Data:</span>
+				<span *ngIf="filters.tipo == 2">Data Inicial:</span>
+				<input type="date" class="form-control" [(ngModel)]="filters.data_ini" />
+			</div>
+			<div class="col-sm-6 form-group" *ngIf="filters.tipo == 2">
+				<span>Data Final:</span>
+				<input type="date" class="form-control" [(ngModel)]="filters.data_fim" />
+			</div> -->
+
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary"
+			(click)="modal.close('close click');load_list();">Confirmar</button>
+	</div>
+</ng-template>

@@ -219,4 +219,12 @@ Route::group([
         Route::post('getMeses', 'FiscalController@index');
         Route::post('sendXML', 'FiscalController@sendXML');
     });
+
+    Route::group([
+        'prefix' => 'manifesto'
+    ], function () {
+        Route::get('', 'FiscalController@getListaNotas');
+        Route::post('', 'FiscalController@getMonitorSefaz');
+        Route::post('{id}', 'FiscalController@manifestaNFe');
+    });
 });

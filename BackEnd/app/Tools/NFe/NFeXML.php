@@ -61,8 +61,10 @@ class NFeXML
 
         //variaveis global
         if ($business != null) {
+            $dataNow = isset($dados->updated_at) ? $dados->updated_at : date('Y-m-d');
+
             $this->tpamb = $this->business->config->tpamb;
-            $this->mesPath = date('Y-m', strtotime($dados->updated_at));
+            $this->mesPath = date('Y-m', strtotime($dataNow));
             $this->tpambPath = ($this->tpamb == 1) ? "producao" : "homologacao";
             $this->pathRoot = md5($business->empresa_id);
 
@@ -76,6 +78,8 @@ class NFeXML
             $this->pathAutorizados = "{$this->pathRoot}/xml/{$this->business->cnpj}/nfe/{$this->tpambPath}/{$this->mesPath}/autorizados";
             $this->pathCancelados = "{$this->pathRoot}/xml/{$this->business->cnpj}/nfe/{$this->tpambPath}/{$this->mesPath}/cancelados";
             $this->pathPDF = "{$this->pathRoot}/pdf/{$this->business->cnpj}/nfe/{$this->tpambPath}/{$this->mesPath}";
+
+            $this->pathMonitor = "{$this->pathRoot}/xml/{$this->business->cnpj}/monitor";
 
             $this->numero = ($this->tpamb == 1) ? $this->business->config->seq : $this->business->config->seqHomolog;
             $this->serie = ($this->tpamb == 1) ? $this->business->config->serie : $this->business->config->serieHomolog;
@@ -758,6 +762,180 @@ class NFeXML
             return Storage::url($pathPDF);
         } catch (\InvalidArgumentException $e) {
             echo ["erros" => ["Ocorreu um erro durante o processamento :" . $e->getMessage()]];
+        }
+    }
+
+    //verifica e guarda os XMLS encontrados
+    public function monitor_fiscal($ultimoNSU)
+    {
+        //este serviço somente opera em ambiente de produção
+        $this->tools->setEnvironment(1);
+
+        //este numero deverá vir do banco de dados nas proximas buscas para reduzir
+        //a quantidade de documentos, e para não baixar várias vezes as mesmas coisas.
+        $ultNSU = $ultimoNSU;
+        $maxNSU = $ultNSU;
+        $loopLimit = 50;
+        $iCount = 0;
+
+        $result = array();
+        //executa a busca de DFe em loop
+        while ($ultNSU <= $maxNSU) {
+            $iCount++;
+            if ($iCount >= $loopLimit) {
+                break;
+            }
+
+            try {
+                //executa a busca pelos documentos
+                $resp = $this->tools->sefazDistDFe($ultNSU);
+            } catch (\Exception $e) {
+                return array('error' => $e->getMessage());
+                //tratar o erro
+            }
+
+            //extrair e salvar os retornos
+            $dom = new \DOMDocument();
+            $dom->loadXML($resp);
+            $node = $dom->getElementsByTagName('retDistDFeInt')->item(0);
+            $tpAmb = $node->getElementsByTagName('tpAmb')->item(0)->nodeValue;
+            $verAplic = $node->getElementsByTagName('verAplic')->item(0)->nodeValue;
+            $cStat = $node->getElementsByTagName('cStat')->item(0)->nodeValue;
+            $xMotivo = $node->getElementsByTagName('xMotivo')->item(0)->nodeValue;
+            $dhResp = $node->getElementsByTagName('dhResp')->item(0)->nodeValue;
+            $ultNSU = $node->getElementsByTagName('ultNSU')->item(0)->nodeValue;
+            $maxNSU = $node->getElementsByTagName('maxNSU')->item(0)->nodeValue;
+            $lote = $node->getElementsByTagName('loteDistDFeInt')->item(0);
+
+            if (empty($lote)) {
+                //lote vazio
+                continue;
+            }
+
+            //essas tags irão conter os documentos zipados
+            $docs = $lote->getElementsByTagName('docZip');
+            foreach ($docs as $doc) {
+                $numnsu = $doc->getAttribute('NSU');
+                $schema = $doc->getAttribute('schema');
+                //descompacta o documento e recupera o XML original
+                $content = gzdecode(base64_decode($doc->nodeValue));
+                //identifica o tipo de documento
+                $tipo = substr($schema, 0, 6);
+                //processar o conteudo do NSU, da forma que melhor lhe interessar
+                //esse processamento depende do seu aplicativo
+
+                if ($tipo == "resNFe") {
+                    $stdCl = new Standardize($content);
+                    $std   = $stdCl->toStd();
+
+                    //variaveis
+                    $dados = [
+                        'nsu' => $numnsu,
+                        'razao' => $std->xNome,
+                        'cnpj' => $std->CNPJ,
+                        'tpnf' => $std->tpNF,
+                        'created_at' => $std->dhEmi,
+                        'valor' => $std->vNF,
+                        'chave' => $std->chNFe,
+                        'nprot' => $std->nProt,
+                        'csituacao' => $std->cSitNFe,
+                    ];
+
+                    if ($dados['csituacao'] == 1) {
+                        $dados['status'] = 'Autorizada';
+                    } elseif ($dados['csituacao'] == 2) {
+                        $dados['status'] = 'Uso Denegado';
+                    } elseif ($dados['csituacao'] == 3) {
+                        $dados['status'] = 'Cancelada';
+                    }
+
+                    $path = "{$this->pathMonitor}/resumos/{$numnsu}.xml";
+
+                    Storage::disk('public')->put($path, $content);
+
+                    array_push($result, $dados);
+                }
+
+                if ($tipo == "procNF") {
+                    $stdCl = new Standardize($content);
+                    $std   = $stdCl->toStd();
+
+                    $chave = $std->protNFe->infProt->chNFe;
+
+                    //variaveis
+                    $dados = [
+                        'nsu' => $numnsu,
+                        'razao' => $std->NFe->infNFe->emit->xNome,
+                        'cnpj' => $std->NFe->infNFe->emit->CNPJ,
+                        'tpnf' => $std->NFe->infNFe->ide->tpNF,
+                        'create_at' => $std->NFe->infNFe->ide->dhEmi,
+                        'numero_nfe' => $std->NFe->infNFe->ide->nNF,
+                        'valor' => $std->NFe->infNFe->total->ICMSTot->vNF,
+                        'chave' => $std->protNFe->infProt->chNFe,
+                        'nprot' => $std->protNFe->infProt->nProt,
+                        'status' => $std->protNFe->infProt->xMotivo,
+                        'cstatus' => $std->protNFe->infProt->cStat,
+                    ];
+
+                    $path = "{$this->pathMonitor}/notas/{$chave}.xml";
+
+                    Storage::disk('public')->put($path, $content);
+
+                    array_push($result, $dados);
+                }
+            }
+
+            sleep(2);
+        }
+
+        return $result;
+    }
+
+    public function manifestarNFe($params)
+    {
+        try {
+
+            $chNFe = $params['chave']; //chave de 44 digitos da nota do fornecedor
+            $tpEvento = $params['tpevento']; //ciencia da operação
+            $xJust = $params['xjust']; //a ciencia não requer justificativa
+            $nSeqEvento = $params['sequencia']; //a ciencia em geral será numero inicial de uma sequencia para essa nota e evento
+
+            $response = $this->tools->sefazManifesta($chNFe, $tpEvento, $xJust, $nSeqEvento);
+            //você pode padronizar os dados de retorno atraves da classe abaixo
+            //de forma a facilitar a extração dos dados do XML
+            //NOTA: mas lembre-se que esse XML muitas vezes será necessário,
+            //      quando houver a necessidade de protocolos
+            $st = new Standardize($response);
+            //nesse caso $std irá conter uma representação em stdClass do XML
+            $std = $st->toStd();
+
+
+            if ($std->cStat != 128) {
+                return array('errors' => [$std->cStat . ' - ' . $std->xMotivo]);
+            } else {
+
+                $cStatus = $std->retEvento->infEvento->cStat;
+
+                if ($cStatus == 135 || $cStatus == 573) {
+                    $params['status'] = $std->retEvento->infEvento->xMotivo;
+
+                    $params['cstatus'] = $std->retEvento->infEvento->cStat;
+
+                    $params['evento'] = $std->retEvento->infEvento->xEvento;
+
+                    // $params['nprot'] = $std->retEvento->infEvento->nProt;
+
+                    $path = "{$this->pathMonitor}/eventos/{$chNFe}/{$nSeqEvento}-{$tpEvento}.xml";
+
+                    Storage::disk('public')->put($path, $response);
+
+                    return $params;
+                } else {
+                    return array('errors' => [$std->retEvento->infEvento->cStat . ' - ' . $std->retEvento->infEvento->xMotivo]);
+                }
+            }
+        } catch (\Exception $e) {
+            return array('errors' => [$e->getMessage()]);
         }
     }
 

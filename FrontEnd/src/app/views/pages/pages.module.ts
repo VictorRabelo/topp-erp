@@ -21,6 +21,7 @@ import {
 import { NgxCurrencyModule, CurrencyMaskInputMode } from "ngx-currency";
 
 import { DebounceModule } from 'ngx-debounce';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import { ClientesComponent } from './clientes/clientes.component';
 import { ProdutosComponent } from './produtos/produtos.component';
@@ -42,6 +43,8 @@ import { ContaPagarFormComponent } from './contas-pagar/conta-pagar-form/conta-p
 import { ContaPagarPaymentComponent } from './contas-pagar/conta-pagar-payment/conta-pagar-payment.component';
 import { ContaReceberFormComponent } from './contas-receber/conta-receber-form/conta-receber-form.component';
 import { ContaReceberPaymentComponent } from './contas-receber/conta-receber-payment/conta-receber-payment.component';
+import { ManifestoComponent } from './manifesto/manifesto.component';
+import { NotaEntradaComponent } from './imports/nota-entrada/nota-entrada.component';
 
 export const customCurrencyMaskConfig = {
 	align: "right",
@@ -75,6 +78,9 @@ const routes: Routes = [
 	{ path: 'contas_pagar', component: ContasPagarComponent },
 	{ path: 'contas_receber', component: ContasReceberComponent },
 
+	{ path: 'monitor-fiscal', component: ManifestoComponent },
+	{ path: 'monitor-fiscal/import', component: NotaEntradaComponent },
+
 	{ path: 'nfe/:id', component: NfeFormComponent },
 	{ path: 'emitente/:id', component: EmitenteDetalheComponent },
 	{ path: 'venda_standart/:id', component: VendaBalcaoComponent }
@@ -104,6 +110,8 @@ const routes: Routes = [
 		ContaPagarPaymentComponent,
 		ContaReceberFormComponent,
 		ContaReceberPaymentComponent,
+		ManifestoComponent,
+		NotaEntradaComponent,
 	],
 	exports: [],
 	imports: [
@@ -118,6 +126,8 @@ const routes: Routes = [
 		NgxMaskModule.forRoot(),
 		NgxCurrencyModule.forRoot(customCurrencyMaskConfig),
 		DebounceModule,
+		NgxPaginationModule,
+
 		SharedModule,
 
 		MatButtonModule,
