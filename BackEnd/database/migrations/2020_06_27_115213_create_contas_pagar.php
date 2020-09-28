@@ -21,7 +21,7 @@ class CreateContasPagar extends Migration
 
             $table->unsignedInteger('categoria_id')->nullable();
 
-            $table->unsignedInteger('cliente_id');
+            $table->unsignedInteger('cliente_id')->nullable();
             $table->string('cliente')->nullable();
 
             // $table->unsignedInteger('vendedor_id');

@@ -770,6 +770,7 @@ class NFeXML
     {
         //este serviço somente opera em ambiente de produção
         $this->tools->setEnvironment(1);
+        // $this->tools->soap->httpVersion('1.1');
 
         //este numero deverá vir do banco de dados nas proximas buscas para reduzir
         //a quantidade de documentos, e para não baixar várias vezes as mesmas coisas.
@@ -843,10 +844,13 @@ class NFeXML
 
                     if ($dados['csituacao'] == 1) {
                         $dados['status'] = 'Autorizada';
+                        $dados['cstatus'] = 100;
                     } elseif ($dados['csituacao'] == 2) {
                         $dados['status'] = 'Uso Denegado';
+                        $dados['cstatus'] = 200;
                     } elseif ($dados['csituacao'] == 3) {
                         $dados['status'] = 'Cancelada';
+                        $dados['cstatus'] = 101;
                     }
 
                     $path = "{$this->pathMonitor}/resumos/{$numnsu}.xml";
@@ -885,7 +889,7 @@ class NFeXML
                 }
             }
 
-            sleep(2);
+            sleep(3);
         }
 
         return $result;

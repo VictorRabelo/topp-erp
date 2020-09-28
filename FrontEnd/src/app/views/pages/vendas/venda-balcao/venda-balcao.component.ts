@@ -53,7 +53,7 @@ export class VendaBalcaoComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.loading = true;
+		this._loading(true);
 		this.ActiveRoute.params.subscribe(params => {
 			if (params['id']) {
 				const id = params['id'];
@@ -68,6 +68,11 @@ export class VendaBalcaoComponent implements OnInit {
 
 	close() {
 		this.router.navigate(['/vendas']);
+	}
+
+	_loading(type = false) {
+		this.loading = type;
+		this.ref.detectChanges();
 	}
 
 	getPermissions() {
@@ -88,16 +93,12 @@ export class VendaBalcaoComponent implements OnInit {
 	}
 
 	getDados(id) {
-		this.loading = true;
+		this._loading(true);
 		this.service.getById(id).subscribe((resp: any) => {
-			this.loading = false;
-
 			this.vendaCurrent = resp;
-
-			this.ref.detectChanges();
+			this._loading();
 		}, erro => {
-			this.loading = false;
-			this.ref.detectChanges();
+			this._loading();
 		});
 	}
 
@@ -136,10 +137,10 @@ export class VendaBalcaoComponent implements OnInit {
 			return false;
 		}
 
-		this.loading = true;
+		this._loading(true);
 		this.ref.detectChanges();
 		this.serviceProduto.getList({ termo: code }).subscribe(resp => {
-			this.loading = false;
+			this._loading();
 			this.ref.detectChanges();
 
 			if (resp.length > 1) {
@@ -164,7 +165,7 @@ export class VendaBalcaoComponent implements OnInit {
 			}
 
 		}, erro => {
-			this.loading = false;
+			this._loading();
 			this.ref.detectChanges();
 		});
 
@@ -197,26 +198,26 @@ export class VendaBalcaoComponent implements OnInit {
 	}
 
 	add_item(item) {
-		this.loading = true;
+		this._loading(true);
 		this.ref.detectChanges();
 		this.service.create_item(item).subscribe(resp => {
-			this.loading = false;
+			this._loading();
 			this.ref.detectChanges();
 			this.getItens(this.vendaCurrent.id);
 		}, erro => {
-			this.loading = false;
+			this._loading();
 			this.ref.detectChanges();
 		});
 	}
 	update_item(item) {
-		this.loading = true;
+		this._loading(true);
 		this.ref.detectChanges();
 		this.service.update_item(item, item.id).subscribe(resp => {
-			this.loading = false;
+			this._loading();
 			this.ref.detectChanges();
 			this.getItens(this.vendaCurrent.id);
 		}, erro => {
-			this.loading = false;
+			this._loading();
 			this.ref.detectChanges();
 		});
 	}
@@ -272,12 +273,12 @@ export class VendaBalcaoComponent implements OnInit {
 			'cpf': item.cnpj,
 		}
 
-		this.loading = true;
+		this._loading(true);
 		this.service.setClient(request, this.vendaCurrent.id).subscribe(resp => {
 			this.getDados(this.vendaCurrent.id);
 			this.getItens(this.vendaCurrent.id);
 		}, erro => {
-			this.loading = false;
+			this._loading();
 			this.ref.detectChanges();
 		})
 	}
@@ -307,11 +308,11 @@ export class VendaBalcaoComponent implements OnInit {
 			cancelButtonText: 'Não',
 		}).then((result) => {
 			if (!result.dismiss) {
-				this.loading = true;
+				this._loading(true);
 				this.service.cancel(this.vendaCurrent.id).subscribe(resp => {
 					this.close();
 				}, erro => {
-					this.loading = false;
+					this._loading();
 					this.ref.detectChanges();
 				})
 			}
@@ -344,17 +345,17 @@ export class VendaBalcaoComponent implements OnInit {
 		});
 	}
 	printNFe() {
-		this.loading = true;
+		this._loading(true);
 		this.ref.detectChanges();
 		this.serviceNFe.print(this.vendaCurrent.nfe.id).subscribe((resp: any) => {
 			if (resp.pdf_url) {
 				window.open(resp.pdf_url, '_blank');
 			}
-			this.loading = false;
+			this._loading();
 			this.ref.detectChanges();
 		}, erro => {
 			this.message.alertErro(erro.error.text);
-			this.loading = false;
+			this._loading();
 			this.ref.detectChanges();
 		});
 	}

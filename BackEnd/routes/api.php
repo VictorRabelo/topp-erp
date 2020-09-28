@@ -71,6 +71,7 @@ Route::group([
         Route::post('', 'EmitenteController@create');
 
         //configs
+        Route::post('config', 'EmitenteController@configCreate');
         Route::get('config/{id}', 'EmitenteController@configDados');
         Route::put('config/{id}', 'EmitenteController@configUpdate');
         Route::put('certificate/{id}', 'EmitenteController@configCertificate');
@@ -83,6 +84,13 @@ Route::group([
     Route::group([
         'prefix' => 'product'
     ], function () {
+
+        Route::group([
+            'prefix' => 'variation'
+        ], function () {
+            Route::get('', 'ProductController@variationList');
+        });
+
         Route::get('', 'ProductController@index');
         Route::post('', 'ProductController@create');
         Route::post('mov_estoque', 'ProductController@mov_estoque');
@@ -226,5 +234,12 @@ Route::group([
         Route::get('', 'FiscalController@getListaNotas');
         Route::post('', 'FiscalController@getMonitorSefaz');
         Route::post('{id}', 'FiscalController@manifestaNFe');
+    });
+
+    Route::group([
+        'prefix' => 'import'
+    ], function () {
+        Route::post('', 'FiscalController@getDadosXML');
+        Route::post('{id}', 'FiscalController@importDadosXML');
     });
 });

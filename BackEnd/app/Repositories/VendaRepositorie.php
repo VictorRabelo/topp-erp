@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Caixa;
 use App\Models\Client;
+use App\Models\ContasReceber;
 use App\Models\EstoqueSaida;
 use App\Models\NFCe;
 use App\Models\NFe;
@@ -15,7 +16,6 @@ use App\Models\Venda;
 use App\Models\VendaItens;
 use App\Models\VendasPayments;
 use App\User;
-// use Hashids\Hashids;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -25,7 +25,6 @@ class VendaRepositorie
     {
         $this->model = new Venda();
         $this->user = Auth::guard('api')->user();
-        // $this->hashids = new Hashids();
     }
 
     public function list($params)
@@ -90,6 +89,7 @@ class VendaRepositorie
     function finish_venda(array $dados)
     {
         // print_r($dados);
+        // return $dados;
         $venda = $this->model->find($dados['id']);
         $venda->status = 10;
         $venda->desconto = $dados['desconto_b'];
@@ -99,28 +99,28 @@ class VendaRepositorie
 
         if ($resp) {
             $this->move_estoque_saida($venda->id);
-            $this->geraCaixa($venda);
+            // $this->geraCaixa($venda);
         }
 
         return $resp;
     }
-    private function geraCaixa(object $venda)
-    {
-        $payments = VendasPayments::where('venda_id', $venda->id)->get();
-        foreach ($payments as $payment) {
+    // private function geraCaixa(object $venda)
+    // {
+    //     $payments = VendasPayments::where('venda_id', $venda->id)->get();
+    //     foreach ($payments as $payment) {
 
-            $caixa = new Caixa();
-            $caixa->empresa_id = $this->user->empresa_id;
-            $caixa->cliente_id = $venda->cliente_id;
-            $caixa->venda_id = $venda->id;
-            $caixa->forma_id = $payment->forma_id;
-            $caixa->forma = $payment->forma;
-            $caixa->tipo = 1;
-            $caixa->descricao = "Ref. Venda n° {$venda->id} Realizada no balcão - {$payment->forma}";
-            $caixa->valor = ($payment->resto > $payment->valor) ? $payment->valor : $payment->resto;
-            $caixa->save();
-        }
-    }
+    //         $caixa = new Caixa();
+    //         $caixa->empresa_id = $this->user->empresa_id;
+    //         $caixa->cliente_id = $venda->cliente_id;
+    //         $caixa->venda_id = $venda->id;
+    //         $caixa->forma_id = $payment->forma_id;
+    //         $caixa->forma = $payment->forma;
+    //         $caixa->tipo = 1;
+    //         $caixa->descricao = "Ref. Venda n° {$venda->id} Realizada no balcão - {$payment->forma}";
+    //         $caixa->valor = (floatval($payment->resto) > $payment->valor) ? $payment->valor : floatval($payment->resto);
+    //         $caixa->save();
+    //     }
+    // }
     private function gen_payments(array $payments, array $venda)
     {
         foreach ($payments as $payment) {
@@ -136,11 +136,39 @@ class VendaRepositorie
 
             $pagamento = new VendasPayments();
             $pagamento->fill($data);
-            $pagamento->save();
 
-            if (!$pagamento->id) {
+            if (!$pagamento->save()) {
                 VendasPayments::where('venda_id', $venda['id'])->delete();
                 return false;
+            }
+
+
+            if (isset($payment['parcelas'])) {
+                foreach ($payment['parcelas'] as $item) {
+                    $conta = ContasReceber::create([
+                        'empresa_id' => $this->user->empresa_id,
+                        'venda_id' => $venda['id'],
+                        'cliente_id' => $venda['cliente_id'],
+                        'cliente' => $venda['cliente'],
+                        'vendedor_id' => $venda['user_id'],
+                        'vendedor' => $venda['vendedor'],
+                        'descricao' => "Parcela da venda Nº: " . $venda['id'],
+                        'documento' => $venda['id'] . "/" . $item['num'],
+                        'valor' => $item['valor'],
+                        'vencimento' => $item['data_vence']
+                    ]);
+                }
+            } else {
+                $caixa = new Caixa();
+                $caixa->empresa_id = $this->user->empresa_id;
+                $caixa->cliente_id = $venda['cliente_id'];
+                $caixa->venda_id = $venda['id'];
+                $caixa->forma_id = $payment['id'];
+                $caixa->forma = $payment['forma'];
+                $caixa->tipo = 1;
+                $caixa->descricao = "Ref. Venda n° {$caixa->venda_id} Realizada no balcão - {$caixa->forma}";
+                $caixa->valor = (floatval($payment['resto']) > $payment['valor']) ? $payment['valor'] : floatval($payment['resto']);
+                $caixa->save();
             }
         }
 

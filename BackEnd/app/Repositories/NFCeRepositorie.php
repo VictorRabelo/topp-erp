@@ -161,7 +161,7 @@ class NFCeRepositorie
         // $dados->cnpj = $emitente->cnpj;
         $nfe = new NFCeXML($emitente, $dados);
 
-        $urlPDF = $nfe->getPDF($dados);
+        $urlPDF = $nfe->geraPDF($dados);
         // if ($urlPDF == false) {
         //    return array('pdf_url' => $this->nfce->geraPDF($nota));
         // }

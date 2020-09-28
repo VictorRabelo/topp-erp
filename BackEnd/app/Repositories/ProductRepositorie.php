@@ -147,6 +147,12 @@ class ProductRepositorie
     }
 
 
+    //variations
+    public function variationList($params)
+    {
+        # code...
+    }
+
 
     // utilidades
     private function parse_foto($data)

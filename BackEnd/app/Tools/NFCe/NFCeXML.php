@@ -143,7 +143,7 @@ class NFCeXML
         try {
             $this->xml = $this->nfe->getXml();
 
-            file_put_contents('./nfe.xml', $this->xml);
+            file_put_contents('./nfce.xml', $this->xml);
 
             Storage::disk('public')->put("{$this->pathGerados}/{$this->chave}.xml", $this->xml);
 
@@ -257,6 +257,7 @@ class NFCeXML
         $this->desconto_venda = $this->venda->desconto;
         $this->total_items = 0;
         $this->total_desconto = 0;
+        $this->vBC = 0;
         foreach ($this->items as $i => $item) {
             $cfop = "5" . substr($item['produto']['cfop'], 1);
 
@@ -282,6 +283,7 @@ class NFCeXML
                 $std->vDesc += $this->desconto_venda;
                 $this->desconto_venda = 0;
             }
+            $total_item = $std->vProd - $std->vDesc;
 
             $this->nfe->tagprod($std);
 
@@ -296,13 +298,41 @@ class NFCeXML
 
             if ($this->business->crt == 1) { //simples nacional
 
-                if ($item['produto']['cst_icms'] == '102') {
-                    $std = new \stdClass();
+                $std = new \stdClass();
+                if ($item['produto']['cst_icms'] == '101') {
                     $std->item = $i;
                     $std->orig = $item['produto']['origin'];
                     $std->CSOSN = $item['produto']['cst_icms'];
-                    $this->nfe->tagICMSSN($std);
+                    $std->pCredSN = $item['produto']['p_icms'];
+                    $std->vCredICMSSN = ($std->pCredSN / 100) * $total_item;
+                    // $this->vBC +=
+                } elseif ($item['produto']['cst_icms'] == '102') {
+                    $std->item = $i;
+                    $std->orig = $item['produto']['origin'];
+                    $std->CSOSN = $item['produto']['cst_icms'];
+                } elseif ($item['produto']['cst_icms'] == '103') {
+                    $std->item = $i;
+                    $std->orig = $item['produto']['origin'];
+                    $std->CSOSN = $item['produto']['cst_icms'];
+                } elseif ($item['produto']['cst_icms'] == '500') {
+                    $std->item = $i;
+                    $std->orig = $item['produto']['origin'];
+                    $std->CSOSN = $item['produto']['cst_icms'];
+                    $std->vBCSTRet = $total_item;
+                    $std->pST = $item['produto']['p_icms'];
+                    $std->vICMSSTRet = ($std->pST / 100) * $total_item;
+                    $this->vBC += $total_item;
+                } elseif ($item['produto']['cst_icms'] == '103') {
+                    $std->item = $i;
+                    $std->orig = $item['produto']['origin'];
+                    $std->CSOSN = $item['produto']['cst_icms'];
+                } else {
+                    $std->item = $i;
+                    $std->orig = $item['produto']['origin'];
+                    $std->CSOSN = $item['produto']['cst_icms'];
                 }
+
+                $this->nfe->tagICMSSN($std);
 
                 // $std = new \stdClass();
                 // $std->item = $i;
@@ -316,7 +346,7 @@ class NFCeXML
                 //PIS - Programa de Integração Social]
                 $std = new \stdClass();
                 $std->item = $i; //produtos 1
-                $std->CST = '07';
+                $std->CST = $item['produto']['cst_pis'];
                 $std->vBC = null;
                 $std->pPIS = null;
                 $std->vPIS = null;
@@ -327,7 +357,7 @@ class NFCeXML
                 //COFINS - Contribuição para o Financiamento da Seguridade Social
                 $std = new \stdClass();
                 $std->item = $i; //produtos 1
-                $std->CST = '07';
+                $std->CST = $item['produto']['cst_cofins'];
                 $std->vBC = null;
                 $std->pCOFINS = null;
                 $std->vCOFINS = null;
@@ -670,7 +700,7 @@ class NFCeXML
         return Storage::url($pathPDF);
     }
 
-    private function geraPDF(object $dados)
+    public function geraPDF(object $dados)
     {
 
         if ($dados->cstatus == 100) {

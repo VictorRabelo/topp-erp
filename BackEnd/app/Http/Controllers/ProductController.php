@@ -68,4 +68,13 @@ class ProductController extends Controller
 
         return response()->json(['message' => "Movimentação realizado com sucesso!"], 201);
     }
+
+    //variações
+    public function variationList(Request $request)
+    {
+        $params = $request->all();
+        $resp = $this->repo->variationList($params);
+
+        return response()->json($resp);
+    }
 }

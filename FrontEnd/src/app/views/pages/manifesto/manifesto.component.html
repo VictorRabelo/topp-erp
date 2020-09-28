@@ -11,11 +11,12 @@
 				<span *ngIf="!loading">Verificar</span>
 				<span *ngIf="loading">Verificando...</span>
 			</button>
-			<button class="btn btn-sm btn-success" (click)="open_filters(filtros)" matTooltip="Filtra os dados">
+			<button class="btn btn-sm btn-success" (click)="open_filters(filtros)" matTooltip="Filtra os dados"
+				[disabled]="loading">
 				<i class="fas fa-sliders-h"></i> Filtros
 			</button>
 			<button class="btn btn-label-brand btn-bold btn-sm" (click)="load_list()" matTooltip="Atualiza a lista"
-				[disabled]="!filters.emitente_id">
+				[disabled]="!filters.emitente_id || loading">
 				<i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
 			</button>
 		</div>
@@ -26,96 +27,76 @@
 			<mat-spinner [diameter]="40"></mat-spinner>
 		</div>
 
-		<div class="table-responsive">
-			<table class="table  mb-0">
-				<thead class="">
-					<!-- <th width="10%">ID</th> -->
-					<th width="25%">Fornecedor</th>
-					<th width="20%">Status</th>
-					<th width="15%">Situação</th>
-					<th width="15%">Valor R$</th>
-					<th width="15%">Data</th>
-					<th width="10%"></th>
-				</thead>
-				<tbody>
-					<tr *ngFor="let item of dataSource | paginate: { itemsPerPage: '10', currentPage: pageCurrent }">
-						<td>{{item.razao | titlecase | slice:0:33}}</td>
-						<td>
-							<span *ngIf="item.csituacao == 1" class="badge badge-primary">{{item.status}}</span>
-							<span *ngIf="item.csituacao == 2" class="badge badge-warning">{{item.status}}</span>
-							<span *ngIf="item.csituacao == 3" class="badge badge-danger">{{item.status}}</span>
-						</td>
-						<td>
-							<span *ngIf="!item.pathXML">Sem Manifestação</span>
-							<span *ngIf="item.pathXML" class="badge badge-success">Manifestada</span>
-						</td>
-						<td>{{ item.valor | currency:'R$' }}</td>
-						<td>{{ item.created_at | date: 'dd/MM/yyyy HH:mm' }}</td>
-						<td class="text-right">
-							<div ngbDropdown [placement]="'bottom-right'" class="dropdown dropdown-inline" matTooltip="Opções">
-								<button ngbDropdownToggle type="button"
-									class="btn btn-clean btn-sm btn-icon btn-icon-md">
-									<i class="fas fa-bars"></i>
+		<table class="table  mb-0">
+			<thead class="">
+				<!-- <th width="10%">ID</th> -->
+				<th width="25%">Fornecedor</th>
+				<th width="20%">Status</th>
+				<th width="15%">Situação</th>
+				<th width="15%">Valor R$</th>
+				<th width="15%">Data</th>
+				<th width="10%"></th>
+			</thead>
+			<tbody>
+				<tr *ngFor="let item of dataSource | paginate: { itemsPerPage: '10', currentPage: pageCurrent }">
+					<td>{{item.razao | titlecase | slice:0:33}}</td>
+					<td>
+						<span *ngIf="item.cstatus == 100" class="badge badge-primary">{{item.status}}</span>
+						<span
+							*ngIf="item.cstatus != 100 && item.cstatus != 101 && item.cstatus != 135 && item.cstatus != 155"
+							class="badge badge-warning">{{item.status}}</span>
+						<span *ngIf="item.cstatus == 101 || item.cstatus == 135 || item.cstatus == 155"
+							class="badge badge-danger">{{item.status}}</span>
+					</td>
+					<td>
+						<span *ngIf="!item.pathXML">Sem Manifestação</span>
+						<span *ngIf="item.pathXML" class="badge badge-success">Manifestada</span>
+					</td>
+					<td>{{ item.valor | currency:'R$' }}</td>
+					<td>{{ item.created_at | date: 'dd/MM/yyyy HH:mm' }}</td>
+					<td class="text-right">
+						<div ngbDropdown [placement]="'bottom-right'" class="dropdown dropdown-inline"
+							matTooltip="Opções">
+							<button ngbDropdownToggle type="button" class="btn btn-clean btn-sm btn-icon btn-icon-md">
+								<i class="fas fa-bars"></i>
+							</button>
+							<div ngbDropdownMenu class="dropdown-menu" style="width: 300px;">
+								<button ngbDropdownItem mat-icon-button color="success" matTooltip="Importar Nota"
+									*ngIf="item.pathXML && item.import == null" (click)="import_xml(item)">
+									<i class="fas fa-file-upload"></i> Importar para o Estoque
 								</button>
-								<div ngbDropdownMenu class="dropdown-menu" style="width: 300px;">
-									<button ngbDropdownItem mat-icon-button color="success" matTooltip="Importar Nota"
-										*ngIf="item.pathXML">
-										<i class="fas fa-file-upload"></i> Importar para o Estoque
-									</button>
-									<button ngbDropdownItem mat-icon-button color="info" matTooltip="Ciência da Emissão"
-										(click)="manifestar('210210', item)" *ngIf="!verificaOptions('210210', item)">
-										<i class="fas fa-thumbs-up"></i> Ciência da Emissão
-									</button>
-									<button ngbDropdownItem mat-icon-button color="primary"
-										matTooltip="Confirmação da Operação" (click)="manifestar('210200', item)"
-										*ngIf="!verificaOptions('210200', item)">
-										<i class="fas fa-check"></i> Confirmação da Operação
-									</button>
-									<button ngbDropdownItem mat-icon-button color="warning"
-										matTooltip="Desconhecimento da Operação" (click)="manifestar('210220', item)"
-										*ngIf="!verificaOptions('210220', item)">
-										<i class="fas fa-question-circle"></i> Desconhecimento da Operação
-									</button>
-									<button ngbDropdownItem mat-icon-button color="warn"
-										matTooltip="Operação Não Realizada" (click)="manifestar('210240', item)"
-										*ngIf="!verificaOptions('210240', item)">
-										<i class="fas fa-ban"></i> Operação Não Realizada
-									</button>
+								<button ngbDropdownItem mat-icon-button color="info" matTooltip="Ciência da Emissão"
+									(click)="manifestar('210210', item)" *ngIf="!verificaOptions('210210', item)">
+									<i class="fas fa-thumbs-up"></i> Ciência da Emissão
+								</button>
+								<button ngbDropdownItem mat-icon-button color="primary"
+									matTooltip="Confirmação da Operação" (click)="manifestar('210200', item)"
+									*ngIf="!verificaOptions('210200', item)">
+									<i class="fas fa-check"></i> Confirmação da Operação
+								</button>
+								<button ngbDropdownItem mat-icon-button color="warning"
+									matTooltip="Desconhecimento da Operação" (click)="manifestar('210220', item)"
+									*ngIf="!verificaOptions('210220', item)">
+									<i class="fas fa-question-circle"></i> Desconhecimento da Operação
+								</button>
+								<button ngbDropdownItem mat-icon-button color="warn" matTooltip="Operação Não Realizada"
+									(click)="manifestar('210240', item)" *ngIf="!verificaOptions('210240', item)">
+									<i class="fas fa-ban"></i> Operação Não Realizada
+								</button>
 
-								</div>
 							</div>
-							<!-- <button mat-icon-button color="success" matTooltip="Importar Nota" *ngIf="item.pathXML">
-								<i class="fas fa-file-upload"></i>
-							</button>
-							<button mat-icon-button color="info" matTooltip="Ciência da Emissão"
-								(click)="manifestar('210210', item)" *ngIf="!verificaOptions('210210', item)">
-								<i class="fas fa-thumbs-up"></i>
-							</button>
-							<button mat-icon-button color="primary" matTooltip="Confirmação da Operação"
-								(click)="manifestar('210200', item)" *ngIf="!verificaOptions('210200', item)">
-								<i class="fas fa-check"></i>
-							</button>
-							<button mat-icon-button color="warning" matTooltip="Desconhecimento da Operação"
-								(click)="manifestar('210220', item)" *ngIf="!verificaOptions('210220', item)">
-								<i class="fas fa-question-circle"></i>
-							</button>
-							<button mat-icon-button color="warn" matTooltip="Operação Não Realizada"
-								(click)="manifestar('210240', item)" *ngIf="!verificaOptions('210240', item)">
-								<i class="fas fa-ban"></i>
-							</button> -->
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<div align="right">
-				<pagination-controls (pageChange)="pageCurrent = $event" maxSize="9" autoHide="true" responsive="true"
-					previousLabel="Previous" nextLabel="Próximo" previousLabel="Anterior"
-					screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page"
-					screenReaderCurrentLabel="You're on page">
-				</pagination-controls>
-			</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div align="right">
+			<pagination-controls (pageChange)="pageCurrent = $event" maxSize="9" autoHide="true" responsive="true"
+				previousLabel="Previous" nextLabel="Próximo" previousLabel="Anterior"
+				screenReaderPaginationLabel="Pagination" screenReaderPageLabel="page"
+				screenReaderCurrentLabel="You're on page">
+			</pagination-controls>
 		</div>
-
 
 	</div>
 </div>

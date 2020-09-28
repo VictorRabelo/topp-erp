@@ -85,18 +85,18 @@
 					<div class="col-sm-4 form-group">
 						<span>Quantidade:</span>
 						<input type="number" step="any" class="form-control" [(ngModel)]="item.quantidade" debounce
-							[delay]="700" (func)="calc_desconto(1)">
+							[delay]="400" (func)="calc_desconto(1)" (change)="calc_desconto(1)">
 					</div>
 					<div class="col-sm-4 form-group">
 						<span>Desconto R$:</span>
 						<input type="text" class="form-control" currencyMask [(ngModel)]="item.desconto" debounce
-							[delay]="700" (func)="calc_desconto(1)">
+							[delay]="400" (func)="calc_desconto(1)">
 					</div>
 
 					<div class="col-sm-4 form-group">
 						<span>Desconto %:</span>
 						<input type="text" class="form-control" currencyMask [(ngModel)]="item.descontop" debounce
-							[delay]="700" (func)="calc_desconto(2)" [options]="{prefix:' ', suffix:' %'}">
+							[delay]="400" (func)="calc_desconto(2)" [options]="{prefix:' ', suffix:' %'}">
 					</div>
 
 					<div class="col-sm-6 form-group">

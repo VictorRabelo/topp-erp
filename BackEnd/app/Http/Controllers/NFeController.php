@@ -74,7 +74,7 @@ class NFeController extends Controller
 
     public function create_item(Request $request)
     {
-        $data = $request->only('nfe_id', 'produto_id', 'descricao', 'quantidade', 'valor_unitario', 'desconto', 'total', 'cfop', 'cst_icms', 'p_icms', 'cst_ipi', 'p_ipi', 'cst_pis', 'p_pis', 'cst_cofins', 'p_cofins',);
+        $data = $request->only('nfe_id', 'produto_id', 'descricao', 'quantidade', 'valor_unitario', 'desconto', 'total', 'cfop', 'cst_icms', 'p_icms', 'cst_ipi', 'p_ipi', 'cst_pis', 'p_pis', 'cst_cofins', 'p_cofins');
         $resp = $this->repo->create_item($data);
 
         return response()->json(['message' => "Item adicionado com sucesso!"], 201);
@@ -82,7 +82,7 @@ class NFeController extends Controller
 
     public function update_item(Request $request, int $id)
     {
-        $data = $request->only('nfe_id', 'produto_id', 'descricao', 'quantidade', 'valor_unitario', 'desconto', 'total', 'cfop', 'cst_icms', 'p_icms', 'cst_ipi', 'p_ipi', 'cst_pis', 'p_pis', 'cst_cofins', 'p_cofins',);
+        $data = $request->only('nfe_id', 'produto_id', 'descricao', 'quantidade', 'valor_unitario', 'desconto', 'total', 'cfop', 'cst_icms', 'p_icms', 'cst_ipi', 'p_ipi', 'cst_pis', 'p_pis', 'cst_cofins', 'p_cofins');
         $dados = $this->repo->editar_item($data, $id);
 
         return response()->json(['message' => "Item atualizado com sucesso!"], 201);

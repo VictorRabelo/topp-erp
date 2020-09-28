@@ -121,11 +121,11 @@
 				<div class="table-responsive">
 					<table class="table  mb-0">
 						<thead class="">
-							<th width="29%">Produto</th>
-							<th width="12%" class="text-right">Quant.</th>
-							<th width="12%" class="text-right">Valor Unit.</th>
-							<th width="12%" class="text-right">Total R$</th>
-							<th width="20%" class="text-right">
+							<th width="30%">Produto</th>
+							<th width="15%" class="text-right">Quant.</th>
+							<th width="15%" class="text-right">Valor Unit.</th>
+							<th width="15%" class="text-right">Total R$</th>
+							<th width="15%" class="text-right">
 
 							</th>
 						</thead>
@@ -134,20 +134,20 @@
 						<table class="table table-hover mb-0">
 							<tbody>
 								<tr *ngFor="let item of ItemSource">
-									<td width="29%">{{item.descricao | titlecase}}</td>
-									<td width="12%" class="text-right">
+									<td width="30%">{{item.descricao | titlecase}}</td>
+									<td width="15%" class="text-right">
 										{{ item.quantidade | currency:' ' }}
 									</td>
-									<td width="12%" class="text-right">
+									<td width="15%" class="text-right">
 										{{ item.valor_unitario | currency:'R$' }}
 									</td>
-									<td width="12%" class="text-right">
+									<td width="15%" class="text-right">
 										{{ item.total | currency:'R$' }}
 										<div class="text-danger" *ngIf="item.desconto > 0">
 											{{ item.desconto | currency:'R$' }}
 										</div>
 									</td>
-									<td width="20%" class="text-right">
+									<td width="15%" class="text-right">
 										<button mat-icon-button color="primary" [disabled]="loadingItens"
 											matTooltip="Alterar Item" (click)="open_item(item)"
 											*ngIf="permissions.edit_venda && vendaCurrent.status == 1">

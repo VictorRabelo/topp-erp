@@ -87,6 +87,14 @@ class EmitenteRepositorie
         $dados = EmitenteConfig::find($id);
         return $dados;
     }
+    public function createConfig($data)
+    {
+        $dados = EmitenteConfig::create($data);
+        if (!$dados->save()) {
+            return array('error' => "Falha ao criar configurações!");
+        }
+        return $dados;
+    }
     public function updateConfig($data, $id)
     {
         $dados = EmitenteConfig::find($id);

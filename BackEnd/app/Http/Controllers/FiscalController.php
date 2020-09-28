@@ -64,4 +64,29 @@ class FiscalController extends Controller
             return response()->json($resp);
         }
     }
+
+    //importações de xml
+
+    public function getDadosXML(Request $request)
+    {
+        $params = $request->all('chave', 'emitente');
+        $resp = $this->repo->getDadosXML($params);
+
+        if (isset($resp['error'])) {
+            return response()->json(['message' => $resp['error']], 500);
+        }
+
+        return response()->json($resp);
+    }
+    public function importDadosXML(Request $request, int $id)
+    {
+        $params = $request->all();
+        $resp = $this->repo->importDadosXML($params, $id);
+
+        if (isset($resp['error'])) {
+            return response()->json(['message' => $resp['error']], 500);
+        }
+
+        return response()->json(array('message' => 'Nota importada com sucesso!'), 201);
+    }
 }

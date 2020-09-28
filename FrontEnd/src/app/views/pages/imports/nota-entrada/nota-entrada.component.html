@@ -1,1 +1,202 @@
-<p>nota-entrada works!</p>
+<div class="kt-portlet" [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
+	<div class="kt-portlet__head kt-portlet__head__custom">
+		<div class="kt-portlet__head-label">
+			<button mat-icon-button matTooltip="Voltar" class="icon-back" (click)="close()">
+				<i class="fa fa-arrow-left"></i>
+			</button>
+			<h3 class="kt-portlet__head-title">Importação de NFe:</h3>
+		</div>
+
+		<div class="kt-portlet__head-toolbar">
+			<button class="btn btn-success btn-sm" (click)="submit()" matTooltip="Importa a nota para o estoque"
+				[disabled]="loading">
+				<!-- <i class="fas fa-sync-alt"></i> -->
+				Confirmar
+			</button>
+		</div>
+	</div>
+	<div class="kt-form kt-portlet__body">
+
+		<div class="kt-portlet__body-progress">
+			<mat-spinner [diameter]="40"></mat-spinner>
+		</div>
+
+		<div class="row">
+
+			<div class="col-sm-5 form-group">
+				<span>Fornecedor:</span>
+				<input type="text" class="form-control" [(ngModel)]="nota.fornecedor.razao">
+			</div>
+			<div class="col-sm-2 form-group">
+				<span>CNPJ:</span>
+				<input type="text" class="form-control" [(ngModel)]="nota.fornecedor.cnpj" mask="00.000.000/0000-00">
+			</div>
+
+			<div class="col-sm-2 form-group">
+				<span>Número da nota:</span>
+				<input type="text" class="form-control" readonly [(ngModel)]="nota.ide.numero_nfe">
+			</div>
+
+			<div class="col-sm-2 form-group">
+				<span>Data da Emissão:</span>
+				<input type="date" class="form-control" readonly [(ngModel)]="nota.ide.data_emissao">
+			</div>
+
+		</div>
+
+		<!-- Fatura -->
+		<div class="row" *ngIf="nota.fatura.numero_fatura">
+
+			<div class="col-sm-3 form-group">
+				<span>Número da Fatura:</span>
+				<input type="text" readonly class="form-control" [(ngModel)]="nota.fatura.numero_fatura">
+			</div>
+
+			<div class="col-sm-2 form-group">
+				<span>Subtotal:</span>
+				<input type="text" class="form-control" readonly currencyMask [(ngModel)]="nota.fatura.subtotal">
+			</div>
+
+			<div class="col-sm-2 form-group">
+				<span>Desconto:</span>
+				<input type="text" class="form-control" readonly currencyMask [(ngModel)]="nota.fatura.desconto">
+			</div>
+
+			<div class="col-sm-2 form-group">
+				<span>Total:</span>
+				<input type="text" class="form-control" readonly currencyMask [(ngModel)]="nota.fatura.total">
+			</div>
+
+		</div>
+
+		<hr>
+
+		<mat-tab-group mat-align-tabs="center">
+
+			<mat-tab label="Produtos">
+				<table class="table mb-0">
+					<thead>
+						<th width="5%"></th>
+						<th width="15%">Código de Barras</th>
+						<th width="15%">Referência</th>
+						<th width="25%">Produto</th>
+						<th width="10%">Custo</th>
+						<th width="10%">Quantidade</th>
+						<th width="10%">Preço</th>
+						<th width="10%">
+							<button class="btn btn-sm btn-primary" (click)="open_change_margem()">
+								Margem %
+							</button>
+						</th>
+					</thead>
+					<tbody>
+						<tr *ngFor="let item of nota.itens; let i = index">
+							<td width="5%">
+								<span class="badge badge-secondary" matTooltip="Produto novo!"
+									*ngIf="item.product == null">
+									<i class="fas fa-info"></i>
+								</span>
+								<span class="badge badge-success" matTooltip="Produto já cadastrado!"
+									*ngIf="item.product != null">
+									<i class="fas fa-check"></i>
+								</span>
+							</td>
+							<td width="15%">{{item.codigo_barras}}</td>
+							<td width="15%">{{item.referencia}}</td>
+							<td width="25%">{{item.descricao}}</td>
+							<td width="10%">{{item.custo | currency:'R$'}}</td>
+							<td width="10%">{{item.quantidade | currency:' '}}</td>
+							<td width="10%">{{ item.preco | currency:'R$' }}</td>
+							<td width="10%">
+								<button mat-icon-button color="primary" matTooltip="Detalhes"
+									(click)="open_item(modalItem, item, i)">
+									<i class="fas fa-list"></i>
+								</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</mat-tab>
+
+			<mat-tab label="Duplicatas" *ngIf="nota.fatura.duplicatas">
+				<table class="table mb-0">
+					<thead>
+						<th width="20%">Documento</th>
+						<th width="25%">Descrição</th>
+						<th width="20%">Valor</th>
+						<th width="20%">Vencimento</th>
+					</thead>
+					<tbody>
+						<tr *ngFor="let item of nota.fatura.duplicatas; let i = index">
+							<td width="20%">{{item.documento}}</td>
+							<td width="25%">{{item.descricao}}</td>
+							<td width="20%">{{item.valor | currency:'R$'}}</td>
+							<td width="20%">{{ item.vencimento | date:'dd/MM/yyyy' }}</td>
+							<!-- <td width="10%">
+								<button mat-icon-button color="primary" matTooltip="Detalhes"
+									(click)="open_item(modalItem, item, i)">
+									<i class="fas fa-list"></i>
+								</button>
+							</td> -->
+						</tr>
+					</tbody>
+				</table>
+			</mat-tab>
+
+		</mat-tab-group>
+
+
+
+	</div>
+</div>
+
+<ng-template #modalItem let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">Detalhes do Produto:</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+	<div class="modal-body">
+		<div class="row">
+			<div class="col-sm-12 form-group">
+				<span>Produto:</span>
+				<input type="text" class="form-control" name="descricao" [(ngModel)]="product.descricao">
+			</div>
+			<div class="col-sm-5 form-group">
+				<span>Código de Barras:</span>
+				<input type="text" readonly class="form-control" name="cean" [(ngModel)]="product.codigo_barras">
+			</div>
+			<div class="col-sm-5 form-group">
+				<span>Referência:</span>
+				<input type="text" readonly class="form-control" name="referencia" [(ngModel)]="product.referencia">
+			</div>
+			<div class="col-sm-2 form-group">
+				<span>Medida:</span>
+				<input type="text" class="form-control" name="referencia" [(ngModel)]="product.medida">
+			</div>
+			<div class="col-sm-3 form-group">
+				<span>Custo:</span>
+				<input type="text" readonly currencyMask class="form-control" name="custo" [(ngModel)]="product.custo">
+			</div>
+			<div class="col-sm-3 form-group">
+				<span>Quantidade:</span>
+				<input type="number" step="any" class="form-control" name="quantidade" [(ngModel)]="product.quantidade">
+			</div>
+			<div class="col-sm-3 form-group">
+				<span>Margem:</span>
+				<input type="text" currencyMask class="form-control" name="margem" debounce [delay]="500"
+					(func)="calc_preco()" [(ngModel)]="product.margem" [options]="{ suffix: ' %', prefix: '' }">
+			</div>
+			<div class="col-sm-3 form-group">
+				<span>Preço:</span>
+				<input type="text" currencyMask class="form-control" name="preco" debounce [delay]="500"
+					(func)="calc_margem()" [(ngModel)]="product.preco">
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary"
+			(click)="modal.close('close click');edit_item();">Confirmar</button>
+	</div>
+</ng-template>

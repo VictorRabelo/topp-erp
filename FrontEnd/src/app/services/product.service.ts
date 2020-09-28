@@ -37,4 +37,26 @@ export class ProductService {
 	mov_estoque(data: any) {
 		return this.http.post<any[]>(`${this.url}/product/mov_estoque`, data);
 	}
+
+	//variações
+
+	getVariations(queryParams: any): Observable<any[]> {
+		return this.http.get<any[]>(`${this.url}/product/variation`, { params: queryParams });
+	}
+
+	createVariation(data: any): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/product/variation`, data);
+	}
+
+	updateVariation(data: any, id: number): Observable<any[]> {
+		return this.http.put<any[]>(`${this.url}/product/variation/${id}`, data);
+	}
+
+	getVariation(id: number): Observable<any[]> {
+		return this.http.get<any[]>(`${this.url}/product/variation/${id}`);
+	}
+
+	deleteVariation(id: number): Observable<any[]> {
+		return this.http.delete<any[]>(`${this.url}/product/variation/${id}`);
+	}
 }

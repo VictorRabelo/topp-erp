@@ -172,6 +172,11 @@ export class VendaFinishComponent implements OnInit {
 					return false;
 				}
 
+				if (paymentSeleted.parcelamento == 1 && !this.vendaCurrent.cliente_id) {
+					this.message.alertErro('Formas de pagamento com parcelamento informe um cliente cadastrado!', 'Ops!');
+					return false;
+				}
+
 				//atribui o valor informado
 				payment.valor = valor;
 
@@ -217,7 +222,7 @@ export class VendaFinishComponent implements OnInit {
 	}
 
 	openModalCrediario(payment, paymentSelect) {
-		const modalRef = this.modalCtrl.open(GeraParcelasComponent, { size: 'lg', backdrop: 'static' });
+		const modalRef = this.modalCtrl.open(GeraParcelasComponent, { size: 'md', backdrop: 'static' });
 		modalRef.componentInstance.data = payment;
 		modalRef.result.then(resp => {
 			if (resp != undefined) {

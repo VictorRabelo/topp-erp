@@ -45,6 +45,9 @@ import { ContaReceberFormComponent } from './contas-receber/conta-receber-form/c
 import { ContaReceberPaymentComponent } from './contas-receber/conta-receber-payment/conta-receber-payment.component';
 import { ManifestoComponent } from './manifesto/manifesto.component';
 import { NotaEntradaComponent } from './imports/nota-entrada/nota-entrada.component';
+import { VariationsComponent } from './variations/variations.component';
+import { VariationFormComponent } from './variations/variation-form/variation-form.component';
+import { VariationItemComponent } from './variations/variation-item/variation-item.component';
 
 export const customCurrencyMaskConfig = {
 	align: "right",
@@ -112,6 +115,9 @@ const routes: Routes = [
 		ContaReceberPaymentComponent,
 		ManifestoComponent,
 		NotaEntradaComponent,
+		VariationsComponent,
+		VariationFormComponent,
+		VariationItemComponent,
 	],
 	exports: [],
 	imports: [
@@ -142,7 +148,10 @@ const routes: Routes = [
 		ContaPagarFormComponent,
 		ContaPagarPaymentComponent,
 		ContaReceberFormComponent,
-		ContaReceberPaymentComponent
+		ContaReceberPaymentComponent,
+		VariationsComponent,
+		VariationFormComponent,
+		VariationItemComponent,
 	],
 	providers: []
 })

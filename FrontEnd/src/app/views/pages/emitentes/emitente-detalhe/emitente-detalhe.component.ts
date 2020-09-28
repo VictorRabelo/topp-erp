@@ -9,109 +9,112 @@ import { EmitenteConfigFormComponent } from '../emitente-config-form/emitente-co
 import { EmitenteCertificateComponent } from '../emitente-certificate/emitente-certificate.component';
 
 @Component({
-   selector: 'kt-emitente-detalhe',
-   templateUrl: './emitente-detalhe.component.html',
-   styleUrls: ['./emitente-detalhe.component.scss']
+	selector: 'kt-emitente-detalhe',
+	templateUrl: './emitente-detalhe.component.html',
+	styleUrls: ['./emitente-detalhe.component.scss']
 })
 export class EmitenteDetalheComponent implements OnInit {
 
-   emitente: any = {};
-   nfe: any = {};
-   nfce: any = {};
-   loading: boolean = false;
+	emitente: any = {};
+	nfe: any = {};
+	nfce: any = {};
+	loading: boolean = false;
 
-   constructor(
-      private ref: ChangeDetectorRef,
-      private message: MessageService,
-      private service: EmitenteService,
-      private util: ToolsService,
-      private ActiveRoute: ActivatedRoute,
-      private modalCtrl: NgbModal,
-      private router: Router
-   ) { }
+	constructor(
+		private ref: ChangeDetectorRef,
+		private message: MessageService,
+		private service: EmitenteService,
+		private util: ToolsService,
+		private ActiveRoute: ActivatedRoute,
+		private modalCtrl: NgbModal,
+		private router: Router
+	) { }
 
-   ngOnInit() {
-      this.ActiveRoute.params.subscribe(params => {
-         if (params['id']) {
-            const id = params['id'];
-            this.getDados(id)
-         }
-         else {
-            this.router.navigate(['/emitentes']);
-         }
-      });
-   }
+	ngOnInit() {
+		this.ActiveRoute.params.subscribe(params => {
+			if (params['id']) {
+				const id = params['id'];
+				this.getDados(id)
+			}
+			else {
+				this.router.navigate(['/emitentes']);
+			}
+		});
+	}
 
-   getDados(id) {
-      this.loading = true;
-      this.service.getById(id).subscribe((resp: any) => {
-         this.loading = false;
+	getDados(id) {
+		this.loading = true;
+		this.service.getById(id).subscribe((resp: any) => {
+			this.loading = false;
 
-         this.emitente = resp.dados;
-         this.nfe = resp.nfe;
-         this.nfce = resp.nfce;
+			this.emitente = resp.dados;
+			this.nfe = resp.nfe;
+			this.nfce = resp.nfce;
 
-         this.ref.detectChanges();
-      }, erro => {
-         this.loading = false;
-         this.ref.detectChanges();
-      });
-   }
+			this.ref.detectChanges();
+		}, erro => {
+			this.loading = false;
+			this.ref.detectChanges();
+		});
+	}
 
-   editar() {
-      const modalRef = this.modalCtrl.open(EmitenteFormComponent, { size: 'lg', backdrop: 'static' });
-      modalRef.componentInstance.data = this.emitente;
-      modalRef.result.then(resp => {
-         if (resp != undefined) {
-            this.getDados(this.emitente.id);
-         }
-      });
-   }
+	editar() {
+		const modalRef = this.modalCtrl.open(EmitenteFormComponent, { size: 'lg', backdrop: 'static' });
+		modalRef.componentInstance.data = this.emitente;
+		modalRef.result.then(resp => {
+			if (resp != undefined) {
+				this.getDados(this.emitente.id);
+			}
+		});
+	}
 
-   open_config(modelo) {
-      const modalRef = this.modalCtrl.open(EmitenteConfigFormComponent, { size: 'md', backdrop: 'static' });
-      modalRef.componentInstance.data = modelo;
-      modalRef.result.then(resp => {
-         if (resp != undefined) {
-            this.getDados(this.emitente.id);
-         }
-      });
-   }
+	open_config(item, type) {
+		item = item == null ? {} : item;
+		item.modelo = type;
 
-   config_certificate() {
-      const modalRef = this.modalCtrl.open(EmitenteCertificateComponent, { size: 'sm', backdrop: 'static' });
-      modalRef.componentInstance.data = this.emitente;
-      modalRef.result.then(resp => {
-         if (resp != undefined) {
-            this.getDados(this.emitente.id);
-         }
-      });
-   }
+		const modalRef = this.modalCtrl.open(EmitenteConfigFormComponent, { size: 'md', backdrop: 'static' });
+		modalRef.componentInstance.data = { modelo: item, emitente_id: this.emitente.id };
+		modalRef.result.then(resp => {
+			if (resp != undefined) {
+				this.getDados(this.emitente.id);
+			}
+		});
+	}
 
-   delete_confirm() {
-      this.message.swal.fire({
-         title: 'Excluir ?',
-         icon: 'question',
-         html: `Desaja excluir o emitente: <br><b>${this.emitente.razao}</b> ?`,
-         confirmButtonText: 'Confirmar',
-         showCancelButton: true,
-         cancelButtonText: 'Não',
-      }).then((result) => {
-         if (!result.dismiss) {
-            this.delete(this.emitente);
-            // console.log(result);
-         }
-      });
-   }
+	config_certificate() {
+		const modalRef = this.modalCtrl.open(EmitenteCertificateComponent, { size: 'sm', backdrop: 'static' });
+		modalRef.componentInstance.data = this.emitente;
+		modalRef.result.then(resp => {
+			if (resp != undefined) {
+				this.getDados(this.emitente.id);
+			}
+		});
+	}
 
-   delete(item) {
-      this.loading = true;
-      this.service.delete(item.id).subscribe(resp => {
-         this.loading = false;
-         this.router.navigate(['/emitentes']);
-      }, erro => {
-         this.loading = false;
-      });
-   }
+	delete_confirm() {
+		this.message.swal.fire({
+			title: 'Excluir ?',
+			icon: 'question',
+			html: `Desaja excluir o emitente: <br><b>${this.emitente.razao}</b> ?`,
+			confirmButtonText: 'Confirmar',
+			showCancelButton: true,
+			cancelButtonText: 'Não',
+		}).then((result) => {
+			if (!result.dismiss) {
+				this.delete(this.emitente);
+				// console.log(result);
+			}
+		});
+	}
+
+	delete(item) {
+		this.loading = true;
+		this.service.delete(item.id).subscribe(resp => {
+			this.loading = false;
+			this.router.navigate(['/emitentes']);
+		}, erro => {
+			this.loading = false;
+		});
+	}
 
 }

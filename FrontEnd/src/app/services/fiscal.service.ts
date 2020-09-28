@@ -58,4 +58,12 @@ export class FiscalService {
 	manifestaNFe(data: any, id: number): Observable<any[]> {
 		return this.http.post<any[]>(`${this.url}/manifesto/${id}`, data);
 	}
+
+	//importação de xml
+	getDadosXML(data: any): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/import`, data);
+	}
+	importDadosXML(data: any, id: number): Observable<any[]> {
+		return this.http.post<any[]>(`${this.url}/import/${id}`, data);
+	}
 }

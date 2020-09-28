@@ -7,6 +7,7 @@ import { currentUser } from '../../../core/auth';
 import { MessageService } from '../../../services/message.service';
 import { FiscalService } from '../../../services/fiscal.service';
 import { EmitenteService } from '../../../services/emitente.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class ManifestoComponent implements OnInit {
 		private service: FiscalService,
 		private serviceEmitente: EmitenteService,
 		private modalCtrl: NgbModal,
+		private route: Router,
 		private store: Store<AppState>,
 	) {
 		this.getEmitentes();
@@ -176,6 +178,12 @@ export class ManifestoComponent implements OnInit {
 
 	open_filters(content) {
 		this.modalCtrl.open(content, { size: 'sm', backdrop: 'static' });
+	}
+
+
+	import_xml(item) {
+		console.log(item);
+		this.route.navigate(['/monitor-fiscal/import'], { queryParams: { chave: item.chave, emitente: item.emitente_id } });
 	}
 
 }
