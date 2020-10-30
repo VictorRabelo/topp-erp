@@ -40,7 +40,8 @@
 				[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': loading}">
 				<i class="fas fa-file-alt"></i> Imprimir NF-e
 			</button>
-			<button class="btn btn-sm btn-info" *ngIf="vendaCurrent.status == 10">
+			<button class="btn btn-sm btn-info" *ngIf="vendaCurrent.status == 10" [disabled]="loading"
+				(click)="print_sale()">
 				<i class="fas fa-print"></i>
 			</button>
 			<button class="btn btn-sm btn-danger" (click)="cancel_sale()"

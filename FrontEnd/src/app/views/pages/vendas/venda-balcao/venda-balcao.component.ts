@@ -375,4 +375,18 @@ export class VendaBalcaoComponent implements OnInit {
 		});
 	}
 
+	print_sale() {
+		this.loading = true;
+		this.ref.detectChanges();
+
+		this.service.printSale(this.vendaCurrent.id).subscribe(async (resp: any) => {
+			await this.util.send_print(resp);
+			this.loading = false;
+			this.ref.detectChanges();
+		}, erro => {
+			this.loading = false;
+			this.ref.detectChanges();
+		});
+	}
+
 }

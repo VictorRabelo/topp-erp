@@ -65,5 +65,8 @@ export class VendaService {
 	geraNFe(data: any): Observable<any[]> {
 		return this.http.post<any[]>(`${this.url}/venda/gera_nfe`, data);
 	}
+	printSale(id: number): Observable<any[]> {
+		return this.http.get<any[]>(`${this.url}/venda/print/${id}`);
+	}
 
 }

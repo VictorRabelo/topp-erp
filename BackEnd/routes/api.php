@@ -105,6 +105,7 @@ Route::group([
         Route::get('', 'VendaController@index');
         Route::post('', 'VendaController@create');
         Route::post('gera_nfe', 'VendaController@geraNFe');
+        Route::get('print/{id}', 'VendaController@printSale');
         Route::put('set-client/{venda_id}', 'VendaController@setClient');
         Route::post('cancel/{id}', 'VendaController@cancel');
         Route::get('{id}', 'VendaController@show');

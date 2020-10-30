@@ -151,7 +151,7 @@ class NFCeXML
 
             return $this->xml;
         } catch (\Exception $e) {
-            return ['erros' => [$this->nfe->getErrors()]];
+            return ['erros' => $this->nfe->getErrors()];
         }
     }
 
@@ -347,9 +347,9 @@ class NFCeXML
                 $std = new \stdClass();
                 $std->item = $i; //produtos 1
                 $std->CST = $item['produto']['cst_pis'];
-                $std->vBC = null;
-                $std->pPIS = null;
-                $std->vPIS = null;
+                $std->vBC = $total_item;
+                $std->pPIS = $item['produto']['p_pis'];
+                $std->vPIS = $std->vBC * ($std->pPIS / 100);
                 $std->qBCProd = null;
                 $std->vAliqProd = null;
                 $this->nfe->tagPIS($std);
@@ -358,9 +358,9 @@ class NFCeXML
                 $std = new \stdClass();
                 $std->item = $i; //produtos 1
                 $std->CST = $item['produto']['cst_cofins'];
-                $std->vBC = null;
-                $std->pCOFINS = null;
-                $std->vCOFINS = null;
+                $std->vBC = $total_item;
+                $std->pCOFINS = $item['produto']['p_cofins'];
+                $std->vCOFINS = $std->vBC * ($std->pCOFINS / 100);
                 $std->qBCProd = null;
                 $std->vAliqProd = null;
                 $this->nfe->tagCOFINS($std);

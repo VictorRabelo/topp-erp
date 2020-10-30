@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class NFCeController extends Controller
 {
+    private $repo;
     function __construct(NFCeRepositorie $repositorie)
     {
         $this->repo = $repositorie;
@@ -31,7 +32,7 @@ class NFCeController extends Controller
         } else {
             return response()->json(['message' => $resp['status']], 201);
         }
-        return $resp;
+        // return $resp;
     }
 
     public function show(int $id)

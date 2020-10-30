@@ -86,4 +86,11 @@ class VendaController extends Controller
 
         return response()->json($resp, 200);
     }
+
+    public function printSale(int $id)
+    {
+        $resp = $this->repo->printSale($id);
+
+        return response()->json($resp, 200);
+    }
 }

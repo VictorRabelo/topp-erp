@@ -427,6 +427,12 @@ fieldset {
 .swal2-input[type="number"] {
 	max-width: 90% !important;
 }
+.swal2-select {
+	min-width: 90% !important;
+}
+.swal2-html-container {
+	margin-bottom: 1rem !important;
+}
 
 .mat-checkbox {
 	display: block;
@@ -454,7 +460,6 @@ fieldset {
 .mat-stroked-button.mat-success {
 	color: #07a53c;
 }
-
 
 .text-danger {
 	color: #a70000 !important;

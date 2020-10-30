@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Caixa;
 use App\Models\Client;
 use App\Models\ContasReceber;
+use App\Models\Empresa;
 use App\Models\EstoqueSaida;
 use App\Models\NFCe;
 use App\Models\NFe;
@@ -15,12 +16,15 @@ use App\Models\Product;
 use App\Models\Venda;
 use App\Models\VendaItens;
 use App\Models\VendasPayments;
+use App\Tools\Util;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class VendaRepositorie
 {
+    private $model;
+
     function __construct()
     {
         $this->model = new Venda();
@@ -276,5 +280,25 @@ class VendaRepositorie
         }
 
         return array("nfe_id" => $nfe->id);
+    }
+
+    public function printSale($id)
+    {
+        $sale = $this->model->find($id);
+        $sale->itens = VendaItens::with('produto')->where('venda_id', $id)->get();
+        $sale->payments = VendasPayments::where('venda_id', $id)->get();
+
+        $business = Empresa::find($sale->empresa_id);
+        $user = User::find($sale->user_id);
+
+        $extras = (object) [
+            'vendedor' => $user->nome
+        ];
+
+        $tools = new Util();
+
+        $cupom = $tools->printSaleCupom($business, $sale, $extras);
+
+        return $cupom;
     }
 }

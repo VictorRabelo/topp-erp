@@ -59,7 +59,7 @@ export class AppComponent implements OnInit, OnDestroy {
 			this.store.pipe(select(currentUser))
 				.subscribe((user: any) => {
 					if (user != undefined) {
-						this.alertaRegistro(user.registro.dias);
+						// this.alertaRegistro(user.registro.dias);
 						observer.next(true);
 					}
 				});
