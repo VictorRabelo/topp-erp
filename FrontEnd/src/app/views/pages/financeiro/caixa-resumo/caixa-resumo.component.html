@@ -1,7 +1,10 @@
 <div class="kt-portlet" [ngClass]="{ 'kt-portlet--body-progress kt-portlet--body-progress-overlay' : loading }">
 	<div class="kt-portlet__head kt-portlet__head__custom">
 		<div class="kt-portlet__head-label">
-			<h3 class="kt-portlet__head-title">Resumo do Caixa: {{ filters.data | date: 'dd/MM/yyyy' }}</h3>
+			<h3 class="kt-portlet__head-title">Resumo do Caixa:
+				{{ filters.data_ini | date: 'dd/MM/yyyy' }}
+				<span *ngIf="filters.tipo == 2"> à {{ filters.data_fim | date: 'dd/MM/yyyy' }}</span>
+			</h3>
 		</div>
 
 		<div class="kt-portlet__head-toolbar">
@@ -40,7 +43,7 @@
 							<tr *ngFor="let item of movs">
 								<td width="20%">
 									<span class="badge badge-primary">
-										{{item.updated_at | date: 'dd/MM/yyyy HH:mm'}}
+										{{item.data | date: 'dd/MM/yyyy HH:mm'}}
 									</span>
 								</td>
 								<td width="40%">{{item.descricao}}</td>
@@ -111,10 +114,23 @@
 		</button>
 	</div>
 	<div class="modal-body">
+		<div class="row form-group">
+			<div class="col-sm-6">
+				<span>Tipo:</span>
+				<select class="form-control" [(ngModel)]="filters.tipo">
+					<option value="1">Por Data</option>
+					<option value="2">Por Período</option>
+				</select>
+			</div>
+		</div>
 		<div class="row">
-			<div class="col-sm-12">
-				<span>Data:</span>
-				<input type="date" class="form-control" [(ngModel)]="filters.data">
+			<div class="col-sm-6">
+				<span>{{(filters.tipo == 1) ? 'Data' : 'Data Inicial'}}:</span>
+				<input type="date" class="form-control" [(ngModel)]="filters.data_ini">
+			</div>
+			<div class="col-sm-6" *ngIf="filters.tipo == 2">
+				<span>Data Final:</span>
+				<input type="date" class="form-control" [(ngModel)]="filters.data_fim">
 			</div>
 		</div>
 	</div>

@@ -98,6 +98,8 @@ export class VendaBalcaoComponent implements OnInit {
 			this.vendaCurrent = resp;
 			this._loading();
 		}, erro => {
+			this.close();
+			this.message.toastError('Venda não localizada!');
 			this._loading();
 		});
 	}

@@ -16,19 +16,21 @@
 		</div>
 
 		<div class="row" style="margin-bottom: 10px;">
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<span>Valor a parcelar:</span>
 				<input type="text" class="form-control" currencyMask disabled [(ngModel)]="payment.aparcelar">
 			</div>
-			<!-- <div class="col-sm-4">
-            <span>Entrada:</span>
-            <input type="text" class="form-control" debounce [delay]="500" (func)="gera_parcelas()" currencyMask
-               [(ngModel)]="payment.entrada">
-         </div> -->
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<span>Parcelas:</span>
 				<input type="number" class="form-control" debounce [delay]="500" (func)="gera_parcelas()"
 					(change)="gera_parcelas()" [(ngModel)]="payment.qtd_parcelas">
+			</div>
+			<div class="col-sm-2">
+				<span>Pago:</span>
+				<select class="form-control" [(ngModel)]="payment.status_pago">
+					<option value="0">Não</option>
+					<option value="10">Sim</option>
+				</select>
 			</div>
 			<div class="col-sm-4">
 				<span>Data da 1°:</span>

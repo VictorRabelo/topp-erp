@@ -14,7 +14,7 @@ class FinanceiroController extends Controller
 
     public function resumoCaixa(Request $request)
     {
-        $data = $request->only('data');
+        $data = $request->all();
         $dados = $this->repo->resumoCaixa($data);
 
         return response()->json($dados);

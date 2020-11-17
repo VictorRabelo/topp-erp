@@ -101,7 +101,7 @@ export class ToolsService {
 			this.qzStart = true;
 			// this.listPrints();
 		}).catch(() => {
-			this.message.alertErro('Não foi possível uma conexão com o plugin QZ!', 'Falha no Plugin');
+			this.message.toastError('Não foi possível uma conexão com o plugin QZ!', 'Falha no Plugin');
 		});
 		return this.qzStart;
 	}

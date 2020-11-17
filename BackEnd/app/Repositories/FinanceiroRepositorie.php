@@ -20,13 +20,38 @@ class FinanceiroRepositorie
     public function resumoCaixa($params)
     {
         // $this->dateNow = "2020-07-28";
-        if (isset($params['data']) && !empty($params['data'])) {
-            $data = $params['data'];
+        if ($params['tipo'] == 1) {
+            if (isset($params['data_ini']) && !empty($params['data_ini'])) {
+                $data = $params['data_ini'];
+
+                $movs = Caixa::where('data', 'like', '%' . $data . '%')->get();
+            } else {
+                $data = $this->dateNow;
+
+                $movs = Caixa::where('data', 'like', '%' . $data . '%')->get();
+            }
         } else {
-            $data = $this->dateNow;
+            if (
+                (isset($params['data_ini']) && !empty($params['data_ini']))
+                &&
+                (isset($params['data_fim']) && !empty($params['data_fim']))
+            ) {
+                $data_ini = $params['data_ini'];
+                $data_fim = $params['data_fim'];
+
+                $movs = Caixa::whereBetween('data', [$data_ini, $data_fim])->get();
+            } elseif (isset($params['data_ini']) && !empty($params['data_ini'])) {
+                $data = $params['data_ini'];
+
+                $movs = Caixa::where('data', 'like', '%' . $data . '%')->get();
+            } else {
+                $data = $this->dateNow;
+
+                $movs = Caixa::where('data', 'like', '%' . $data . '%')->get();
+            }
         }
 
-        $movs = Caixa::where('updated_at', 'like', '%' . $data . '%')->get();
+
 
         $total_entradas = 0;
         $total_saidas = 0;
@@ -38,12 +63,13 @@ class FinanceiroRepositorie
             }
         }
 
+        $data = $this->dateNow;
         $payments = DB::table('caixa')
             ->select(
                 DB::raw('SUM(caixa.valor) as total'),
                 'caixa.*'
             )
-            ->where('caixa.updated_at', 'like', '%' . $data . '%')
+            ->where('caixa.data', 'like', '%' . $data . '%')
             ->orderBy('caixa.forma_id', 'asc')
             ->groupBy('caixa.forma_id')
             ->get();

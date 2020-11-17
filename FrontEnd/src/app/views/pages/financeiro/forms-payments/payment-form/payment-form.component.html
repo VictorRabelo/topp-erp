@@ -59,6 +59,14 @@
 				</div>
 
 				<div class="col-sm-4 form-group">
+					<span>Informar Cliente:</span>
+					<select class="form-control" [(ngModel)]="dados.cliente_require" name="cliente_require">
+						<option value="1">1 - Sim</option>
+						<option value="0" selected>0 - Não</option>
+					</select>
+				</div>
+
+				<div class="col-sm-5 form-group">
 					<span>Observação: </span>
 					<input type="text" class="form-control" [(ngModel)]="dados.obs" name="obs">
 				</div>

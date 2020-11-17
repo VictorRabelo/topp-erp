@@ -53,7 +53,11 @@ class VendaRepositorie
 
     public function getSingle(int $id)
     {
-        $dados = $this->model->where('id', $id)->first();
+        $dados = $this->model->where('id', $id)->where('empresa_id', $this->user->empresa_id)->first();
+
+        if (empty($dados)) {
+            return array('erro' => 'Venda não localizada!');
+        }
 
         if (!empty($dados->cliente_id)) {
             $client = Client::find($dados->cliente_id);
@@ -90,7 +94,7 @@ class VendaRepositorie
         return $_finish_venda;
     }
 
-    function finish_venda(array $dados)
+    private function finish_venda(array $dados)
     {
         // print_r($dados);
         // return $dados;
@@ -108,23 +112,6 @@ class VendaRepositorie
 
         return $resp;
     }
-    // private function geraCaixa(object $venda)
-    // {
-    //     $payments = VendasPayments::where('venda_id', $venda->id)->get();
-    //     foreach ($payments as $payment) {
-
-    //         $caixa = new Caixa();
-    //         $caixa->empresa_id = $this->user->empresa_id;
-    //         $caixa->cliente_id = $venda->cliente_id;
-    //         $caixa->venda_id = $venda->id;
-    //         $caixa->forma_id = $payment->forma_id;
-    //         $caixa->forma = $payment->forma;
-    //         $caixa->tipo = 1;
-    //         $caixa->descricao = "Ref. Venda n° {$venda->id} Realizada no balcão - {$payment->forma}";
-    //         $caixa->valor = (floatval($payment->resto) > $payment->valor) ? $payment->valor : floatval($payment->resto);
-    //         $caixa->save();
-    //     }
-    // }
     private function gen_payments(array $payments, array $venda)
     {
         foreach ($payments as $payment) {
@@ -149,7 +136,7 @@ class VendaRepositorie
 
             if (isset($payment['parcelas'])) {
                 foreach ($payment['parcelas'] as $item) {
-                    $conta = ContasReceber::create([
+                    $conta = [
                         'empresa_id' => $this->user->empresa_id,
                         'venda_id' => $venda['id'],
                         'cliente_id' => $venda['cliente_id'],
@@ -160,23 +147,40 @@ class VendaRepositorie
                         'documento' => $venda['id'] . "/" . $item['num'],
                         'valor' => $item['valor'],
                         'vencimento' => $item['data_vence']
-                    ]);
+                    ];
+
+                    if (isset($payment['status_pago']) && $payment['status_pago'] == 10) {
+                        $conta['situacao'] = 10;
+                        $conta['valor_pago'] = $item['valor'];
+                        $conta['data_pago'] = $item['data_vence'];
+
+                        $this->geraCaixa($venda, $payment);
+                    }
+
+                    ContasReceber::create($conta);
                 }
             } else {
-                $caixa = new Caixa();
-                $caixa->empresa_id = $this->user->empresa_id;
-                $caixa->cliente_id = $venda['cliente_id'];
-                $caixa->venda_id = $venda['id'];
-                $caixa->forma_id = $payment['id'];
-                $caixa->forma = $payment['forma'];
-                $caixa->tipo = 1;
-                $caixa->descricao = "Ref. Venda n° {$caixa->venda_id} Realizada no balcão - {$caixa->forma}";
-                $caixa->valor = (floatval($payment['resto']) > $payment['valor']) ? $payment['valor'] : floatval($payment['resto']);
-                $caixa->save();
+                $this->geraCaixa($venda, $payment);
             }
         }
 
         return true;
+    }
+    private function geraCaixa($venda, $payment)
+    {
+        $caixa = new Caixa();
+        $caixa->empresa_id = $this->user->empresa_id;
+        $caixa->cliente_id = $venda['cliente_id'];
+        $caixa->venda_id = $venda['id'];
+        $caixa->forma_id = $payment['id'];
+        $caixa->forma = $payment['forma'];
+        $caixa->tipo = 1;
+        $caixa->descricao = "Ref. Venda n° {$caixa->venda_id} Realizada no balcão - {$caixa->forma}";
+        $caixa->valor = (floatval($payment['resto']) > $payment['valor']) ? $payment['valor'] : floatval($payment['resto']);
+        if (isset($payment['data_pago'])) {
+            $caixa->data = $payment['data_pago'];
+        }
+        $caixa->save();
     }
     private function move_estoque_saida($venda_id)
     {

@@ -14,7 +14,7 @@ export class CaixaResumoComponent implements OnInit {
 	resumo = [];
 	movs = [];
 	dados: any = {};
-	filters: any = {};
+	filters: any = { tipo: 1 };
 
 	loading: boolean = false;
 
@@ -26,7 +26,7 @@ export class CaixaResumoComponent implements OnInit {
 		private util: ToolsService,
 		private modalCtrl: NgbModal,
 	) {
-		this.filters.data = this.util.nova_data();
+		this.filters.data_ini = this.util.nova_data();
 	}
 
 	ngOnInit() {

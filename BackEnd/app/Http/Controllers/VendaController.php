@@ -35,6 +35,10 @@ class VendaController extends Controller
     {
         $dados = $this->repo->getSingle($id);
 
+        if (isset($dados['erro'])) {
+            return response()->json($dados, 404);
+        }
+
         return response()->json($dados);
     }
 

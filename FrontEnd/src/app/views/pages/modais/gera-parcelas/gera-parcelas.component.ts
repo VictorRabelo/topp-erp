@@ -10,7 +10,7 @@ import { MessageService } from '../../../../services/message.service';
 })
 export class GeraParcelasComponent implements OnInit {
 
-	payment: any = {};
+	payment: any = { status_pago: 0 };
 	screen: number;
 
 	loading: boolean = false;

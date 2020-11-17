@@ -10,7 +10,7 @@ import { MessageService } from '../../../../../services/message.service';
 })
 export class PaymentFormComponent implements OnInit {
 
-	dados: any = { parcelamento: 0, max_parcelas: 1, more: 0, status: 1 };
+	dados: any = { parcelamento: 0, max_parcelas: 1, more: 0, cliente_require: 0, status: 1 };
 
 	submited = false;
 	loadingCep = false;

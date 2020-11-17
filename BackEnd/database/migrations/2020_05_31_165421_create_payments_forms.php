@@ -21,6 +21,7 @@ class CreatePaymentsForms extends Migration
             $table->string('forma');
             $table->integer('parcelamento')->default(0);
             $table->integer('max_parcelas')->default(1);
+            $table->integer('cliente_require')->default(0);
             $table->integer('more')->default(0);
             $table->string('obs')->nullable();
             $table->integer('status')->default(1);

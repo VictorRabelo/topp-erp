@@ -8,5 +8,7 @@ class Payment extends Model
 {
     protected $table = "payments_forms";
 
-    protected $fillable = ['id', 'empresa_id', 'forma', 'parcelamento', 'max_parcelas', 'more', 'obs', 'status',];
+    protected $fillable = [
+        'id', 'empresa_id', 'forma', 'parcelamento', 'max_parcelas', 'cliente_require', 'more', 'obs', 'status',
+    ];
 }

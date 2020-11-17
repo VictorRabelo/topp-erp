@@ -72,10 +72,10 @@ export class VendaFinishComponent implements OnInit {
 			return false;
 		}
 
-		if (this.verificaParcelas() && !this.vendaCurrent.cliente_id) {
-			this.message.alertErro('Informe um cliente cadastrado!', 'Ops!');
-			return false;
-		}
+		// if (this.verificaParcelas() && !this.vendaCurrent.cliente_id) {
+		// 	this.message.alertErro('Informe um cliente cadastrado!', 'Ops!');
+		// 	return false;
+		// }
 
 		let request = {
 			'vendaCurrent': this.vendaCurrent,
@@ -142,6 +142,7 @@ export class VendaFinishComponent implements OnInit {
 			'forma': paymentSeleted.forma,
 			'max_parcelas': paymentSeleted.max_parcelas,
 			'obs_title': paymentSeleted.obs,
+			'status_pago': 0,
 			'valor': 0,
 			'resto': this.vendaCurrent.resto
 		}
@@ -172,9 +173,11 @@ export class VendaFinishComponent implements OnInit {
 					return false;
 				}
 
-				if (paymentSeleted.parcelamento == 1 && !this.vendaCurrent.cliente_id) {
-					this.message.alertErro('Formas de pagamento com parcelamento informe um cliente cadastrado!', 'Ops!');
-					return false;
+				if (paymentSeleted.parcelamento == 1) {
+					if (paymentSeleted.cliente_require && !this.vendaCurrent.cliente_id) {
+						this.message.alertErro('Formas de pagamento com parcelamento informe um cliente cadastrado!', 'Ops!');
+						return false;
+					}
 				}
 
 				//atribui o valor informado

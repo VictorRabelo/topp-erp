@@ -1,4 +1,4 @@
-<form #form="ngForm" (ngSubmit)="onSubmit(form)">
+<form #form="ngForm" (ngSubmit)="onSubmit(form)" (keydown.enter)="$event.preventDefault()">
 
 	<div class="modal-header">
 		<h4 class="modal-title">{{getTitle()}}</h4>
@@ -211,10 +211,10 @@
 	<div class="modal-footer">
 		<button type="button" class="btn btn-sm btn-outline-dark" [disabled]="submited"
 			(click)="close()">Voltar</button>
-		<button type="button" class="btn btn-sm btn-info" [disabled]="submited" (click)="openMovEstoque()"
+		<!-- <button type="button" class="btn btn-sm btn-info" [disabled]="submited" (click)="openMovEstoque()"
 			*ngIf="dados.id">
 			<i class="fas fa-dolly"></i> Movimentar Estoque
-		</button>
+		</button> -->
 		<button type="submit" class="btn btn-sm btn-success" [disabled]="submited"
 			[ngClass]="{'kt-spinner kt-spinner--right kt-spinner--md kt-spinner--light': submited }">
 			<i class="fas fa-check"></i> Salvar

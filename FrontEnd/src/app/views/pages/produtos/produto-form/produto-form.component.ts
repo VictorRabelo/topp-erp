@@ -58,7 +58,8 @@ export class ProdutoFormComponent implements OnInit {
 	}
 
 	onSubmit(form) {
-
+		// console.log(event);
+		// return;
 		if (!form.valid) {
 			return;
 		}
@@ -146,13 +147,13 @@ export class ProdutoFormComponent implements OnInit {
 	}
 
 
-	openMovEstoque() {
-		const modalRef = this.modalCtrl.open(ProdutoMovStockComponent, { size: 'md', backdrop: 'static' });
-		modalRef.componentInstance.data = this.dados;
-		// modalRef.result.then(resp => {
+	// openMovEstoque() {
+	// 	const modalRef = this.modalCtrl.open(ProdutoMovStockComponent, { size: 'md', backdrop: 'static' });
+	// 	modalRef.componentInstance.data = this.dados;
+	// 	// modalRef.result.then(resp => {
 
-		// })
-	}
+	// 	// })
+	// }
 
 	open_variations() {
 		const modalRef = this.modalCtrl.open(VariationsComponent, { size: 'md', backdrop: 'static' });
