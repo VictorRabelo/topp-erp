@@ -2032,16 +2032,16 @@
         },
         {
             "name": "nfephp-org/sped-da",
-            "version": "v0.2.3",
+            "version": "v0.2.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-da.git",
-                "reference": "f8305a9fdd06a69d795ae68151733f7369e91a16"
+                "reference": "0ff7d4fa4d7f63ae45200e652198d26b1649639e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-da/zipball/f8305a9fdd06a69d795ae68151733f7369e91a16",
-                "reference": "f8305a9fdd06a69d795ae68151733f7369e91a16",
+                "url": "https://api.github.com/repos/nfephp-org/sped-da/zipball/0ff7d4fa4d7f63ae45200e652198d26b1649639e",
+                "reference": "0ff7d4fa4d7f63ae45200e652198d26b1649639e",
                 "shasum": ""
             },
             "require": {
@@ -2050,11 +2050,11 @@
                 "tecnickcom/tc-lib-barcode": "^1.15"
             },
             "require-dev": {
-                "phpstan/phpstan": "^0.9.2",
+                "phpstan/phpstan": "^0.12.18",
                 "phpunit/phpunit": "^5.7",
-                "scrutinizer/ocular": "^1.3",
+                "scrutinizer/ocular": "^1.7",
                 "sebastian/phpcpd": "^3.0",
-                "squizlabs/php_codesniffer": "^3.4"
+                "squizlabs/php_codesniffer": "^3.5"
             },
             "suggest": {
                 "nfephp-org/posprint": "^0.1"
@@ -2062,7 +2062,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.2.x-dev"
+                    "dev-master": "0.3.x-dev"
                 }
             },
             "autoload": {
@@ -2098,7 +2098,7 @@
                 "nfephp",
                 "sped"
             ],
-            "time": "2020-03-31T12:45:44+00:00"
+            "time": "2020-11-19T11:29:38+00:00"
         },
         {
             "name": "nfephp-org/sped-gtin",
@@ -2166,16 +2166,16 @@
         },
         {
             "name": "nfephp-org/sped-nfe",
-            "version": "v5.0.106",
+            "version": "v5.0.108",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nfephp-org/sped-nfe.git",
-                "reference": "10e159adae970cf7e28c75f7d113bb7edd314078"
+                "reference": "28679e6dcb2b2111fbbaeabfb679242a4dd56bf1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/10e159adae970cf7e28c75f7d113bb7edd314078",
-                "reference": "10e159adae970cf7e28c75f7d113bb7edd314078",
+                "url": "https://api.github.com/repos/nfephp-org/sped-nfe/zipball/28679e6dcb2b2111fbbaeabfb679242a4dd56bf1",
+                "reference": "28679e6dcb2b2111fbbaeabfb679242a4dd56bf1",
                 "shasum": ""
             },
             "require": {
@@ -2235,7 +2235,7 @@
                 "nfephp",
                 "sped"
             ],
-            "time": "2020-06-08T19:54:33+00:00"
+            "time": "2020-10-14T18:48:25+00:00"
         },
         {
             "name": "nfephp-org/sped-pos",
@@ -6160,6 +6160,7 @@
                 "faker",
                 "fixtures"
             ],
+            "abandoned": true,
             "time": "2019-12-12T13:22:17+00:00"
         },
         {
@@ -6976,6 +6977,7 @@
             "keywords": [
                 "tokenizer"
             ],
+            "abandoned": true,
             "time": "2019-09-17T06:23:10+00:00"
         },
         {

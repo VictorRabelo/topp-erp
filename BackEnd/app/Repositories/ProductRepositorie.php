@@ -20,7 +20,7 @@ class ProductRepositorie
 
     public function list($params)
     {
-        $query = $this->model->where('empresa_id', $this->user->empresa_id)->limit(100);
+        $query = $this->model->where('empresa_id', $this->user->empresa_id)->limit(100)->orderBy('created_at', 'desc');
 
         if (isset($params['termo']) && !empty($params['termo'])) {
             $query = $query->where(function ($subquery) use ($params) {

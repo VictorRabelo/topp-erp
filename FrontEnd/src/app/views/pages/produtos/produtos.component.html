@@ -9,9 +9,9 @@
 				*ngIf="permissions.create_product">
 				<i class="fas fa-plus-square"></i> Novo Produto
 			</button>
-			<button class="btn btn-sm btn-success" (click)="open_filters(filtros)" matTooltip="Filtra os dados">
+			<!-- <button class="btn btn-sm btn-success" (click)="open_filters(filtros)" matTooltip="Filtra os dados">
 				<i class="fas fa-sliders-h"></i> Filtros
-			</button>
+			</button> -->
 			<button class="btn btn-label-brand btn-bold btn-sm" (click)="load_list()" matTooltip="Atualiza a lista">
 				<i class="fas fa-sync-alt" [class.fa-spin]="loading"></i>
 			</button>
@@ -21,6 +21,27 @@
 
 		<div class="kt-portlet__body-progress">
 			<mat-spinner [diameter]="40"></mat-spinner>
+		</div>
+
+		<div class="row form-group">
+			<div class="col-sm-5">
+				<!-- <span>Pesquisa:</span> -->
+				<!-- <input type="text" class="form-control" placeholder="Digite o termo de busca.."
+					[(ngModel)]="filters.termo" (keyup.enter)="load_list()"> -->
+				<div class="input-group mb-3">
+					<input type="text" class="form-control" placeholder="Digite o termo de busca.."
+						[(ngModel)]="filters.termo" (keyup.enter)="load_list()">
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary" type="button" (click)="load_list()">
+							<i class="fas fa-search"></i> Buscar
+						</button>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="col-sm-2">
+				<button type="button" class="btn btn-primary" style="margin-top: 20px;"
+					(click)="load_list()">Buscar</button>
+			</div> -->
 		</div>
 
 		<div class="table-responsive">
