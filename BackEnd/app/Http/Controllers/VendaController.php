@@ -73,6 +73,17 @@ class VendaController extends Controller
         return response()->json(['message' => "Venda cancelada com sucesso!"], 201);
     }
 
+    public function estorno_venda(int $id)
+    {
+        $resp = $this->repo->estorno_venda($id);
+
+        if (isset($resp['erro'])) {
+            return response()->json($resp['erro'], 500);
+        }
+
+        return response()->json(['message' => "Venda estornada com sucesso!"], 201);
+    }
+
 
     public function setClient(Request $request, int $venda_id)
     {

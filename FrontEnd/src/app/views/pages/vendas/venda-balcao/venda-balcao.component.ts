@@ -63,7 +63,7 @@ export class VendaBalcaoComponent implements OnInit {
 			else {
 				this.close();
 			}
-		});
+		}).unsubscribe();
 	}
 
 	close() {
@@ -153,7 +153,7 @@ export class VendaBalcaoComponent implements OnInit {
 					'desconto': 0,
 					'descontop': 0,
 					'descricao': resp[0].descricao,
-					'foto': resp[0].foto,
+					'foto': resp[0].foto_url,
 					'produto_id': resp[0].id,
 					'quantidade': 1,
 					'total': resp[0].preco,
@@ -204,11 +204,11 @@ export class VendaBalcaoComponent implements OnInit {
 		this.ref.detectChanges();
 		this.service.create_item(item).subscribe(resp => {
 			this._loading();
-			this.ref.detectChanges();
+			// this.ref.detectChanges();
 			this.getItens(this.vendaCurrent.id);
 		}, erro => {
 			this._loading();
-			this.ref.detectChanges();
+			// this.ref.detectChanges();
 		});
 	}
 	update_item(item) {
@@ -216,11 +216,11 @@ export class VendaBalcaoComponent implements OnInit {
 		this.ref.detectChanges();
 		this.service.update_item(item, item.id).subscribe(resp => {
 			this._loading();
-			this.ref.detectChanges();
+			// this.ref.detectChanges();
 			this.getItens(this.vendaCurrent.id);
 		}, erro => {
 			this._loading();
-			this.ref.detectChanges();
+			// this.ref.detectChanges();
 		});
 	}
 

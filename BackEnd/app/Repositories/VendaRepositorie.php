@@ -201,6 +201,41 @@ class VendaRepositorie
             $produto->save();
         }
     }
+    public function estorno_venda(int $id)
+    {
+        $venda = Venda::where('id', $id)->where('empresa_id', $this->user->empresa_id)->first();
+        if (empty($venda)) {
+            return array('erro' => ['message' => 'Venda não localizada.']);
+        }
+
+        $payments = VendasPayments::where('venda_id', $venda->id)->get();
+        foreach ($payments as $payment) { //gerar caixa
+            $caixa = Caixa::create([
+                'empresa_id' => $venda->empresa_id,
+                'cliente_id' => $venda->cliente_id,
+                'venda_id' => $venda->venda_id,
+                'forma_id' => $payment->forma_id,
+                'forma' => $payment->forma,
+                'tipo' => 2, //saida
+                'descricao' => "Estorno da venda: {$venda->venda_id}, realizada no balcão - {$payment->forma}",
+                'valor' => $payment->resto,
+            ]);
+
+            if (!$caixa->save()) {
+                Caixa::where('venda_id', $venda->venda_id)->where('tipo', 2)->delete();
+                return array('erro' => ['message' => "Falha no caixa ao estornar venda."]);
+                break;
+            }
+        }
+
+        $venda->status = 0;
+        if (!$venda->save()) {
+            Caixa::where('venda_id', $venda->venda_id)->where('tipo', 2)->delete();
+            return array('erro' => ['message' => "Falha ao estornar venda."]);
+        }
+
+        return true;
+    }
 
     public function delete(int $id)
     {

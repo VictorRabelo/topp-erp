@@ -108,6 +108,7 @@ Route::group([
         Route::get('print/{id}', 'VendaController@printSale');
         Route::put('set-client/{venda_id}', 'VendaController@setClient');
         Route::post('cancel/{id}', 'VendaController@cancel');
+        Route::post('estorno/{id}', 'VendaController@estorno_venda');
         Route::get('{id}', 'VendaController@show');
         Route::put('{id}', 'VendaController@update');
         Route::delete('{id}', 'VendaController@destroy');
@@ -242,5 +243,32 @@ Route::group([
     ], function () {
         Route::post('', 'FiscalController@getDadosXML');
         Route::post('{id}', 'FiscalController@importDadosXML');
+    });
+});
+
+
+Route::group(['prefix' => 'fast-pdv'], function () {
+
+    Route::group([
+        'prefix' => 'auth'
+    ], function () {
+        Route::post('login', 'FastController@login');
+    });
+
+    Route::group([
+        'prefix' => 'carga'
+    ], function () {
+        Route::post('push/{id}', 'FastController@pushCarga');
+        Route::post('send/{id}', 'FastController@sendCarga');
+    });
+
+    Route::group([
+        'prefix' => 'users'
+    ], function () {
+        Route::get('', 'EmpresaController@getUsers');
+        Route::post('', 'EmpresaController@createUser');
+        Route::get('{id}', 'EmpresaController@showUser');
+        Route::put('{id}', 'EmpresaController@updateUser');
+        Route::delete('{id}', 'EmpresaController@destroyUser');
     });
 });

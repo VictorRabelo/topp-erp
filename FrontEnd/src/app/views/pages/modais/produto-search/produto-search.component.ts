@@ -53,7 +53,7 @@ export class ProdutoSearchComponent implements OnInit {
 		});
 	}
 
-	chage(item) {
+	change(item) {
 
 		let retorno: any = {
 			'produto_id': item.id,

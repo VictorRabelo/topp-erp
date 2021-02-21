@@ -1,0 +1,128 @@
+@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
+
+// @import '~@angular/material/prebuilt-themes/indigo-pink.css';
+// @import '~@angular/material/prebuilt-themes/pink-bluegrey.css';
+// @import '~@angular/material/prebuilt-themes/purple-green.css';
+html,
+body {
+    // height: 100%;
+    font-family: "Roboto", "Segoe UI", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol";
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #fff;
+    color: #0b4f86;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+}
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: none;
+}
+::-webkit-scrollbar-thumb {
+    background: white;
+    -webkit-box-shadow: none;
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background: none;
+}
+
+.header-custom {
+    // position: absolute;
+    // top: 0;
+    // width: 100%;
+    padding: 10px 15px;
+}
+.subheader-custom {
+    padding: 0px 15px;
+    margin: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.container-custom {
+    margin: auto;
+    padding: 15px 2%;
+    max-width: 1050px;
+}
+
+.footer-custom {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px 15px;
+}
+
+.logo-img {
+    max-height: 200px;
+    border-radius: 15px;
+}
+
+#boxItems {
+    font-size: 0.85rem;
+    strong {
+        font-size: 0.9rem;
+    }
+}
+
+.bg-blue {
+    background: #0b4f86;
+    color: white;
+}
+
+.bg-gray {
+    background: #f5f5f5;
+}
+
+.btn-outline-secondary {
+    border-color: #ced4da;
+}
+
+.list-group-item {
+    padding: 0.5rem 1rem;
+}
+.card-custom {
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.overlay-y {
+    overflow-y: auto;
+}
+
+.nItem {
+    padding: 6px 12px;
+}
+.swal2-input[type="number"] {
+    max-width: 100% !important;
+}
+.form-control:focus {
+    border-color: #094f9a;
+    box-shadow: 0 0 0 1px #094f9a85;
+}
+.table-hover tbody tr:hover {
+    cursor: pointer;
+}
+
+.dropdown-item {
+    color: #094f9a;
+}
+
+//modais
+.modal-title {
+    font-size: 1rem;
+}
+.close {
+    font-size: 1rem;
+}
+
+.modal-sm {
+    max-width: 350px;
+}
+.modal-xl {
+    max-width: 96%;
+}

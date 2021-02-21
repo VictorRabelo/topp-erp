@@ -1,0 +1,61 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <div class="modal-header bg-blue">
+    <h4 class="modal-title" id="modal-basic-title">
+      <i class="fas fa-cog mr-3"></i> <span>Configurações</span>
+    </h4>
+    <button type="button" class="close text-white" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+
+      <div class="col-5 form-group">
+        <span>Iniciar Venda: <i class="fas fa-question-circle"
+            title="Abre ou não um venda automática ao passar um código no leitor!"></i></span>
+        <select name="startSale" [(ngModel)]="settings.startSale" class="form-control">
+          <option value="0">Somente com F2</option>
+          <option value="1">Automático</option>
+        </select>
+      </div>
+
+      <div class="col-5 form-group">
+        <span>Perguntar Cliente: <i class="fas fa-question-circle"
+            title="Solicita informação do cliente ao iniciar uma venda!"></i></span>
+        <select name="requestClient" [(ngModel)]="settings.requestClient" class="form-control">
+          <option value="0">Não</option>
+          <option value="1">Sim</option>
+        </select>
+      </div>
+
+      <div class="col-5 form-group">
+        <span>Tipo Impressão: <i class="fas fa-question-circle"
+            title="Tipo de impressão ao finalizar uma venda!"></i></span>
+        <select name="tipo_print" [(ngModel)]="settings.tipo_print" class="form-control">
+          <option value="0">Sem Impressão</option>
+          <option value="1">Cupom</option>
+          <option value="2">NFC-e</option>
+        </select>
+      </div>
+
+      <div class="col-7 form-group">
+        <span>Impressora: <i class="fas fa-question-circle"
+            title="Selecione qual a impressora padrão de impressão!"></i></span>
+        <select name="printer" [(ngModel)]="settings.printer" class="form-control">
+          <option *ngFor="let printer of printers" [value]="printer.name">{{printer.name}}</option>
+        </select>
+      </div>
+
+      <!-- <div class="col-12 form-group">
+        <span>Senha:</span>
+        <input type="password" required name="password" ngModel class="form-control">
+      </div> -->
+    </div>
+  </div>
+
+  <div class="modal-footer" align="center">
+    <button type="submit" class="btn btn-primary">Salvar</button>
+  </div>
+</form>

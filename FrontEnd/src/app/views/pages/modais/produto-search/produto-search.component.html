@@ -41,7 +41,8 @@
 			<table class="table mb-0">
 				<thead>
 					<th width="10%">CÓDIGO</th>
-					<th width="40%">PRODUTO</th>
+					<th width="15%">REFERÊNCIA</th>
+					<th width="25%">PRODUTO</th>
 					<th width="20%" class="text-right">ESTOQUE</th>
 					<th width="20%" class="text-right">PREÇO R$</th>
 					<th width="10%" class="text-right"></th>
@@ -52,12 +53,13 @@
 					<tbody>
 						<tr *ngFor="let item of dataSource">
 							<td width="10%">{{item.id}}</td>
-							<td width="40%">{{item.descricao}}</td>
+							<td width="15%">{{item.referencia}}</td>
+							<td width="25%">{{item.descricao}}</td>
 							<td width="20%" class="text-right">{{item.estoque | currency:' ':false:'1.3':'br'}}</td>
 							<td width="20%" class="text-right">{{ item.preco | currency:'R$ ':false:'1.2':'br' }}</td>
 							<td width="10%" class="text-right">
 								<button mat-icon-button color="primary" matTooltip="Adicionar Item"
-									(click)="chage(item)">
+									(click)="change(item)">
 									<i class="fas fa-check"></i>
 								</button>
 							</td>

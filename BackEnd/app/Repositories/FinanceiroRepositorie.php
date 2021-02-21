@@ -24,11 +24,11 @@ class FinanceiroRepositorie
             if (isset($params['data_ini']) && !empty($params['data_ini'])) {
                 $data = $params['data_ini'];
 
-                $movs = Caixa::where('data', 'like', '%' . $data . '%')->get();
+                $movs = Caixa::where('data', 'like', '%' . $data . '%');
             } else {
                 $data = $this->dateNow;
 
-                $movs = Caixa::where('data', 'like', '%' . $data . '%')->get();
+                $movs = Caixa::where('data', 'like', '%' . $data . '%');
             }
         } else {
             if (
@@ -39,19 +39,19 @@ class FinanceiroRepositorie
                 $data_ini = $params['data_ini'];
                 $data_fim = $params['data_fim'];
 
-                $movs = Caixa::whereBetween('data', [$data_ini, $data_fim])->get();
+                $movs = Caixa::whereBetween('data', [$data_ini, $data_fim]);
             } elseif (isset($params['data_ini']) && !empty($params['data_ini'])) {
                 $data = $params['data_ini'];
 
-                $movs = Caixa::where('data', 'like', '%' . $data . '%')->get();
+                $movs = Caixa::where('data', 'like', '%' . $data . '%');
             } else {
                 $data = $this->dateNow;
 
-                $movs = Caixa::where('data', 'like', '%' . $data . '%')->get();
+                $movs = Caixa::where('data', 'like', '%' . $data . '%');
             }
         }
 
-
+        $movs = $movs->where('empresa_id', $this->user->empresa_id)->get();
 
         $total_entradas = 0;
         $total_saidas = 0;

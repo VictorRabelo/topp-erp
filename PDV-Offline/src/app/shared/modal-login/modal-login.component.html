@@ -1,0 +1,29 @@
+<form #form="ngForm" (ngSubmit)="submit(form)">
+  <div class="modal-header bg-blue">
+    <h4 class="modal-title" id="modal-basic-title">
+      <i class="fas fa-user-lock mr-3"></i> <span>LOGIN</span>
+    </h4>
+    <button type="button" class="close text-white" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+
+    <div class="row">
+      <div class="col-12 form-group">
+        <span>Email:</span>
+        <input type="email" #inputEmail required name="email" ngModel email="true" class="form-control">
+      </div>
+
+      <div class="col-12 form-group">
+        <span>Senha:</span>
+        <input type="password" required name="password" ngModel class="form-control">
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer" align="center">
+    <button type="submit" class="btn btn-primary">Entrar</button>
+  </div>
+</form>

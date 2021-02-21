@@ -63,8 +63,10 @@ class Util
         $printer->text((strlen($business->cnpj) == 11) ? $this->mask($business->cnpj, '###.###.###-##') :
             $this->mask($business->cnpj, '##.###.###/####-##') . "\n");
 
-        $printer->text($business->logra . ', ' . $business->numero . ' - ' . $business->bairro . "\n");
-        $printer->text($business->cidade . '/' . $business->uf . ' - ' . $this->mask($business->cep, '##.###-###') . "\n\n\n");
+        $printer->text($business->logradouro . ', ' . $business->numero . ' - ' . $business->bairro . "\n");
+        $printer->text($business->cidade . '/' . $business->uf . ' - ' . $this->mask($business->cep, '##.###-###') . "\n\n");
+
+        $printer->text($this->mask($business->celular, '(##) # ####-####') . "\n\n");
 
         $printer->setFont(Printer::FONT_A);
 

@@ -1,0 +1,54 @@
+<div class="modal-header bg-blue">
+  <h4 class="modal-title" id="modal-basic-title">
+    <i class="fas fa-search mr-3"></i> <span>Pesquisa de Produtos</span>
+  </h4>
+  <button type="button" class="close text-white" aria-label="Close" (click)="close()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <div class="row">
+
+    <div class="col-5 form-group">
+      <!-- <span>Email:</span> -->
+      <input type="text" #inputSearch [(ngModel)]="termo" class="form-control" placeholder="Digite os termos de busca..."
+        (keyup.enter)="getProducts()">
+    </div>
+  </div>
+
+  <table class="table table-hover mb-0">
+    <thead>
+      <th width="10%">Código</th>
+      <th width="15%">Código de Barras</th>
+      <th width="15%">Referência</th>
+      <th width="30%">Nome do Produto</th>
+      <th width="15%" align="center">Estoque</th>
+      <th width="15%" align="right">Valor Unitário</th>
+    </thead>
+  </table>
+  <div [style.height.px]="screen * 0.65" style="overflow-y: auto;">
+    <table class="table table-hover">
+      <tbody>
+        <tr *ngFor="let item of products" (click)="open_item(item)">
+          <td width="10%">{{item.id | number}}</td>
+          <td width="15%">{{item.codigo_barras}}</td>
+          <td width="15%">{{item.referencia}}</td>
+          <td width="30%">{{item.descricao | slice:0:40}}</td>
+          <td width="15%" align="center">{{item.estoque | number}}</td>
+          <td width="15%" align="right">{{ item.preco | currency:'R$' }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div align="center" *ngIf="products.length == 0">
+      <strong>Nenhum produto localizado!</strong>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- <div class="modal-footer" align="center">
+  <button type="submit" class="btn btn-primary">Entrar</button>
+</div> -->

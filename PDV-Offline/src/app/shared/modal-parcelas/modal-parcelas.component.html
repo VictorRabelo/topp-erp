@@ -1,0 +1,63 @@
+<div class="modal-header bg-blue">
+  <h4 class="modal-title" id="modal-basic-title">
+    <i class="fas fa-cash-register mr-3"></i> <span>Gerar Parcelas</span>
+  </h4>
+  <button type="button" class="close text-white" aria-label="Close" (click)="close()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <div class="row" style="margin-bottom: 10px;">
+    <div class="col-sm-3">
+      <span>Valor a parcelar:</span>
+      <input type="text" class="form-control" currencyMask disabled [(ngModel)]="payment.aparcelar">
+    </div>
+    <div class="col-sm-3">
+      <span>Parcelas:</span>
+      <input type="number" class="form-control" (keyup)="gera_parcelas()" (change)="gera_parcelas()"
+        [(ngModel)]="payment.qtd_parcelas">
+    </div>
+    <div class="col-sm-2">
+      <span>Pago:</span>
+      <select class="form-control" [(ngModel)]="payment.status_pago">
+        <option value="0">Não</option>
+        <option value="10">Sim</option>
+      </select>
+    </div>
+    <div class="col-sm-4">
+      <span>Data da 1°:</span>
+      <input type="date" class="form-control" (keyup)="gera_parcelas()" (change)="gera_parcelas()"
+        [(ngModel)]="payment.data_start">
+    </div>
+
+  </div>
+
+  <div class=" table-responsive">
+    <table class="table">
+      <thead class="">
+        <th class="text-left" width="30%">Parcela</th>
+        <!-- <th class="text-center" width="30%">Documento</th> -->
+        <th class="text-center" width="40%">Vencimento</th>
+        <th class="text-right" width="30%">Valor R$</th>
+      </thead>
+      <tbody>
+        <tr *ngFor="let parcela of payment.parcelas; let i = index;">
+          <td class="text-left" width="30%">{{parcela.num}} ª</td>
+          <!-- <td class="text-center" width="30%">{{parcela.documento}}</td> -->
+          <td class="text-center" width="40%">
+            <input type="date" class="form-control form-control-sm" [(ngModel)]="parcela.data_vence">
+          </td>
+          <td class="text-right" width="30%">{{ parcela.valor | currency:'R$ ' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="modal-footer" align="center">
+  <button type="button" class="btn btn-outline-dark">Voltar</button>
+  <button type="button" class="btn btn-primary" (click)="confirm_parcelas()">Confirmar</button>
+</div>

@@ -1,0 +1,146 @@
+<header class="header-custom bg-gray">
+    <div class="row" style="align-items: center;">
+        <div class="col-5">
+            <i class="fas fa-user mr-2" (click)="open_login()"></i> <span>{{ vendaCurrent.cliente | uppercase }}</span>
+        </div>
+        <div class="col-3" align="right">
+            <span>Venda: #{{vendaCurrent.id}}</span>
+        </div>
+        <div class="col-3" align="right">
+            <i class="far fa-clock mr-2"></i><span>{{currentTime()}}</span>
+        </div>
+        <div class="col-1" align="right">
+            <div ngbDropdown class="d-inline-block">
+                <button class="btn btn-sm" ngbDropdownToggle>
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div ngbDropdownMenu>
+                    <button ngbDropdownItem (click)="startSale()">F2 - Nova Venda</button>
+                    <button ngbDropdownItem (click)="open_products()">F3 - Checkout</button>
+                    <button ngbDropdownItem (click)="cancel_item()">F4 - Cancelar Item</button>
+                    <button ngbDropdownItem (click)="cancel_venda()">F5 - Cancelar Venda</button>
+                    <button ngbDropdownItem (click)="open_clientes()">F6 - Pesquisar Produtos</button>
+                    <button ngbDropdownItem (click)="add_cliente()">F7 - Incluir Cliente</button>
+                    <button ngbDropdownItem (click)="open_sales()">F10 - Minhas Vendas</button>
+                    <button ngbDropdownItem (click)="open_desconto()">CTRL + D - Desconto</button>
+                    <button ngbDropdownItem (click)="receiveCloud()">
+                        <!-- <i class="fas fa-cloud-upload-alt"></i> Sync Cloud -->
+                        <i class="fas fa-cloud-download-alt"></i> Sync Cloud
+                    </button>
+                    <!-- <button ngbDropdownItem>Push Carga</button> -->
+                    <button ngbDropdownItem (click)="open_settings()">
+                        <i class="fas fa-cog"></i> Configurações
+                    </button>
+                    <button ngbDropdownItem (click)="exit()">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+            </div>
+            <!-- <button class="btn btn-sm" (click)="open_settings()">
+                <i class="fas fa-cog mr-2"></i>
+            </button> -->
+        </div>
+    </div>
+
+</header>
+<div class="subheader-custom" align="center">
+    {{ labelDisplay | uppercase }}
+</div>
+
+<div class="container-custom">
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="row" [style.height.px]="screenHeight * 0.6">
+                <div class="col-12 form-group">
+                    <div class="input-group">
+                        <input type="text" #inputProduct class="form-control form-control-lg"
+                            placeholder="Digite o código ou passe o leitor..."
+                            (keyup.enter)="searchProduct($event.target.value)" (keyup)="shortCode($event)">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" (click)="open_products()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="col-6 form-group" align="center">
+                    <img src="assets/images/icon-topp-automacao.png" class="logo-img">
+                </div> -->
+
+                <div class="col-12 form-group" align="center">
+                    <img src="assets/images/no-image.png" class="logo-img">
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-sm-6">
+            <div id="boxItems" class="card list-group overlay-y" [style.height.px]="screenHeight * 0.6">
+                <a class="list-group-item list-group-item-action" *ngFor="let item of itens; let i = index;"
+                    (click)="console.log('item', item)">
+                    <div class="row">
+                        <div class="col-sm-1" style="padding: 10px 5px; text-align: center;">
+                            <!-- <span class="nItem rounded-circle border mr-2">
+                                {{item.item}}
+                            </span> -->
+                            <strong>{{i + 1}}</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <strong>{{ item.descricao | uppercase }}</strong>
+                            <div>
+                                {{ item.quantidade | number }} X {{ item.valor_unitario | currency:'R$' }} <span
+                                    class="text-danger" *ngIf="item.desconto > 0">- {{ item.desconto | currency:'R$'
+                                    }}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" align="right">
+                            <strong>{{ item.total | currency:'R$' }}</strong>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+            <div class="card-custom bg-blue mt-2">
+                <div class="row">
+                    <div class="col-6" *ngIf="vendaCurrent.desconto > 0">
+                        Subtotal:
+                    </div>
+                    <div class="col-6" align="right" *ngIf="vendaCurrent.desconto > 0">
+                        <strong>{{ vendaCurrent.subtotal | currency:'R$' }}</strong>
+                    </div>
+                    <div class="col-6" *ngIf="vendaCurrent.desconto > 0">
+                        <span>Desconto:</span>
+                    </div>
+                    <div class="col-6" align="right" *ngIf="vendaCurrent.desconto > 0">
+                        <span>{{ vendaCurrent.desconto | currency:'R$' }}</span>
+                    </div>
+                    <div class="col-6">
+                        Total:
+                    </div>
+                    <div class="col-6" align="right">
+                        <strong>{{ vendaCurrent.total | currency:'R$' }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer class="footer-custom">
+    <div class="row">
+        <div class="col-3">
+            <span>Operador: </span> <strong> {{user.nome | uppercase}}</strong>
+        </div>
+        <div class="col-3">
+            <i class="fas fa-print mr-2" (click)="testPrint()"></i>
+            <span *ngIf="settings.tipo_print == 1">CUPOM</span>
+            <span *ngIf="settings.tipo_print == 2">NFC-e</span>
+        </div>
+        <div class="col-3">
+            <i class="fas fa-sync fa-spin mr-2"></i>
+        </div>
+    </div>
+</footer>

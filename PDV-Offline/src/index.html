@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>PDV NFCe | TOPP ERP</title>
+  <base href="">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <meta name="theme-color" content="#445cd6">
+
+</head>
+<style>
+  /* ///loading */
+  .lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+  }
+
+  .lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #0051bb;
+    border-color: #0088c5 transparent #0088c5 transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+  }
+
+  @keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  #loading {
+    display: flex;
+    position: fixed;
+    z-index: 1060;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-direction: row;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    padding: 0.625em;
+    overflow-x: hidden;
+    -webkit-transition: background-color 0.1s;
+    transition: background-color 0.1s;
+    -webkit-overflow-scrolling: touch;
+    -webkit-box-align: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .loading-body {
+    display: flex;
+    position: relative;
+    box-sizing: border-box;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    justify-content: center;
+    width: 30em;
+    max-width: 100%;
+    padding: 1.25em;
+    border: none;
+    border-radius: 1.3125em;
+    background: #fff;
+    font-family: inherit;
+    font-size: 1rem;
+    align-items: center;
+  }
+
+  .loading-sm {
+    max-width: 20% !important;
+    width: auto !important;
+  }
+
+  .loading-md {
+    max-width: 40% !important;
+    width: auto !important;
+  }
+</style>
+
+<body>
+  <app-root></app-root>
+
+  <div id="loading">
+    <div class="loading-body loading-md">
+      <div class="lds-dual-ring"></div>
+      <span>Carregando o Sistema...</span>
+    </div>
+  </div>
+</body>
+
+</html>
