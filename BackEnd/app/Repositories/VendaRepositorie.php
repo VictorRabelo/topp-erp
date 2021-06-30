@@ -155,9 +155,10 @@ class VendaRepositorie
                         $conta['data_pago'] = $item['data_vence'];
 
                         $this->geraCaixa($venda, $payment);
+                    } else {
+                        ContasReceber::create($conta);
                     }
-
-                    ContasReceber::create($conta);
+                    
                 }
             } else {
                 $this->geraCaixa($venda, $payment);
